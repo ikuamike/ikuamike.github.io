@@ -1,0 +1,23 @@
+body{
+	background-color: darkgrey;
+	/*background-image: url("background.png");*/
+	background-repeat: no-repeat;
+	background-position: top;
+}
+
+.wide_card.mdl-card{
+	width: 900px;
+	
+}
+
+.wide_card > .mdl-card__title{
+	height: 500px;
+	background: url(background.png);
+	background-repeat: no-repeat;
+	background-size: 100% ;
+
+}
+
+.menu > .mdl-card__menu{
+	color: red;
+}
