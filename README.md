@@ -1,2 +1,2 @@
-This is the personal portfolio site for Michael Ikua.
-# ikuamike.me
+## This is the personal portfolio site for Michael Ikua.
+
