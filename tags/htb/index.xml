@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on ikuamike</title>
-    <link>https://ikuamike.github.io/tags/</link>
-    <description>Recent content in Tags on ikuamike</description>
+    <title>HTB on ikuamike</title>
+    <link>https://ikuamike.github.io/tags/htb/</link>
+    <description>Recent content in HTB on ikuamike</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
     <lastBuildDate>Fri, 06 Sep 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ikuamike.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ikuamike.github.io/tags/htb/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>HTB</title>
-      <link>https://ikuamike.github.io/tags/htb/</link>
+      <title>Hack The Box: Bastion</title>
+      <link>https://ikuamike.github.io/posts/2019/bastion-htb/</link>
       <pubDate>Fri, 06 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/htb/</guid>
+      <guid>https://ikuamike.github.io/posts/2019/bastion-htb/</guid>
       <description></description>
     </item>
     

