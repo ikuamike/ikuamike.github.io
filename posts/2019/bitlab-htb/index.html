@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Hack The Box: Bitlab :: ikuamike — CTFs :: InfoSec :: Hacking</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content=""/>
+<meta name="keywords" content=", "/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://ikuamike.github.io/posts/2019/bitlab-htb/" />
+
+
+<link rel="stylesheet" href="https://ikuamike.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://ikuamike.github.io/assets/green.css">
+
+
+
+<link rel="stylesheet" href="https://ikuamike.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://ikuamike.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://ikuamike.github.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Hack The Box: Bitlab :: ikuamike — CTFs :: InfoSec :: Hacking" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:site" content="https://ikuamike.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Hack The Box: Bitlab :: ikuamike — CTFs :: InfoSec :: Hacking">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://ikuamike.github.io/posts/2019/bitlab-htb/" />
+<meta property="og:site_name" content="Hack The Box: Bitlab" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2020-01-11 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    &gt; cd ~
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About Me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About Me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://ikuamike.github.io/posts/2019/bitlab-htb/">Hack The Box: Bitlab</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-01-11
+    </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://ikuamike.github.io/tags/htb/">HTB</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  <div class="post-content">
+    <img src="/img/bitlab/info_card.png"  alt="Bastion Info Card"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h1 id="summary">Summary</h1>
+
+<p>As the name suggests this box had a instance of gitlab where the initial foothold involves getting credentials from obfuscated javascript and once logged into the gitlab instance we abuse webhooks to add our own code and execute it to get a reverse shell. Read on to see how I able to root the box.</p>
+
+<h1 id="enumeration">Enumeration</h1>
+
+<p>As usual I start with a quick nmap scan to find open ports and then run a second scan for service and version detection.</p>
+
+<pre><code>nmap -sS -p- --min-rate=1000 10.10.10.114
+</code></pre>
+
+<pre><code>Nmap scan report for 10.10.10.114
+Host is up (0.21s latency).
+Not shown: 65533 filtered ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+</code></pre>
+
+<p>Thorough scan:</p>
+
+<pre><code>nmap -Pn -sC -sV -p 22,80 -oA nmap/bitlab 10.10.10.114
+</code></pre>
+
+<pre><code>Nmap scan report for 10.10.10.114
+Host is up (0.47s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   2048 a2:3b:b0:dd:28:91:bf:e8:f9:30:82:31:23:2f:92:18 (RSA)
+|   256 e6:3b:fb:b3:7f:9a:35:a8:bd:d0:27:7b:25:d4:ed:dc (ECDSA)
+|_  256 c9:54:3d:91:01:78:03:ab:16:14:6b:cc:f0:b7:3a:55 (ED25519)
+80/tcp open  http    nginx
+| http-robots.txt: 55 disallowed entries (15 shown)
+| / /autocomplete/users /search /api /admin /profile
+| /dashboard /projects/new /groups/new /groups/*/edit /users /help
+|_/s/ /snippets/new /snippets/*/edit
+|_http-server-header: nginx
+| http-title: Sign in \xC2\xB7 GitLab
+|_Requested resource was http://10.10.10.114/users/sign_in
+|_http-trane-info: Problem with XML parsing of /evox/about
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</code></pre>
+
+<h2 id="gitlab">Gitlab</h2>
+
+
+  <img src="/img/bitlab/bitlab-01.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>After trying out some simple combinations of username and password that didn&rsquo;t work I decided to click on links on the home page and see if I&rsquo;ll get a version number. When I opened the help link I got this.</p>
+
+
+  <img src="/img/bitlab/bitlab-02.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>In bookmarks.html the links were normal apart from the last one which was javascript.</p>
+
+
+  <img src="/img/bitlab/bitlab-03.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p><br></p>
+
+<p>The deobfuscated javascript shows a username and password.</p>
+
+<pre><code>javascript: (function ()
+{
+	var _0x4b18 = [&quot;value&quot;, &quot;user_login&quot;, &quot;getElementById&quot;, &quot;clave&quot;, &quot;user_password&quot;, &quot;11des0081x&quot;];
+	document[_0x4b18[2]](_0x4b18[1])[_0x4b18[0]] = _0x4b18[3];
+	document[_0x4b18[2]](_0x4b18[4])[_0x4b18[0]] = _0x4b18[5];
+})()
+</code></pre>
+
+<p>After logging in there are two projects.</p>
+
+
+  <img src="/img/bitlab/bitlab-04.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>My user has Developer role on the Profile repo and Reporter role on the Deployer repo. I can&rsquo;t edit the deployer but looking at the files the readme has a link about gitlab webhooks.</p>
+
+
+  <img src="/img/bitlab/bitlab-05.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>In the index.php the part that caught my eye is the if statement. If that condition is true, a command to change directory is run and then a git pull.</p>
+
+
+  <img src="/img/bitlab/bitlab-06.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>Based on the name of the script we can guess it deploys changes made to the profile repo after a merge request is made. Since it pulls to /profile this is probably the directory where it&rsquo;s hosted. We can verify this by going to /profile.</p>
+
+
+  <img src="/img/bitlab/bitlab-07.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h3 id="getting-shell">Getting Shell</h3>
+
+<p>I&rsquo;ll add a php file to the profile repo that will give me a reverse shell on the server. I will need to also create a pull request with my new file and merge it, this will create a webhook to the deployer script and it will download it on the web server, allowing me to execute it.</p>
+
+<p>Adding reverse shell php file:</p>
+
+
+  <img src="/img/bitlab/bitlab-08.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>Merging the request:</p>
+
+
+  <img src="/img/bitlab/bitlab-09.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>The file is successfully added to master branch:</p>
+
+
+  <img src="/img/bitlab/bitlab-10.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>Finally got my shell by visiting 10.10.10.114/profile/shell.php on my browser:</p>
+
+
+  <img src="/img/bitlab/bitlab-11.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h2 id="getting-user">Getting User</h2>
+
+<p>The user.txt is only readable the clave user. After a bit of local enumeration and getting stuck I decided to go back to the gitlab instance to see if I may have missed anything. I found a snippet mentioning postgresql and a db connection script.</p>
+
+
+  <img src="/img/bitlab/bitlab-12.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>Checking on the server we indeed have a postgresql instance running locally on port 5432.</p>
+
+
+  <img src="/img/bitlab/bitlab-13.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>After some tweaking I was able to get a script working that would read the db.</p>
+
+
+  <img src="/img/bitlab/bitlab-14.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.</p>
+
+
+  <img src="/img/bitlab/bitlab-15.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<h2 id="getting-root">Getting Root</h2>
+
+<p>This part was interesting as I had never heard of this technique before. The user www-data had sudo rights to run git pull.</p>
+
+
+  <img src="/img/bitlab/bitlab-16.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>In git there are scripts called git hooks which can run automatically before or after git actions like commits. You can configure them in .git/hooks. For this case I&rsquo;ll use <strong>post-merge</strong> since when git pull is run a merge action is done.</p>
+
+<p>Since we can&rsquo;t edit the current folder copy the profile repo to a world writeable directory like /tmp and create the post-merge script in hooks, the script will give a reverse shell.</p>
+
+<pre><code>cp -r /var/www/html/profile /tmp
+</code></pre>
+
+
+  <img src="/img/bitlab/bitlab-17.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>After making this file executable, we just have to make any change to the repo on the gitlab instance like creating a txt file and make sure we merge it to master. Once that is done, we can run sudo git pull and get a root reverse shell.</p>
+
+
+  <img src="/img/bitlab/bitlab-18.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
+
+
+
+<p>As you may have noticed since we used the www-data user to get root, we would have skipped the getting user path using the postgresql db and read user.txt from the root user.</p>
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="https://ikuamike.github.io/posts/2019/bastion-htb/">
+          <span class="button__text">Hack The Box: Bastion</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Michael Ikua</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://ikuamike.github.io/assets/main.js"></script>
+<script src="https://ikuamike.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
