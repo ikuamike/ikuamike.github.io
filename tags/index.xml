@@ -2,58 +2,58 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on ikuamike</title>
-    <link>https://ikuamike.github.io/tags/</link>
+    <link>https://blog.ikuamike.io/tags/</link>
     <description>Recent content in Tags on ikuamike</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
     <lastBuildDate>Fri, 12 Jun 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ikuamike.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Android</title>
-      <link>https://ikuamike.github.io/tags/android/</link>
+      <link>https://blog.ikuamike.io/tags/android/</link>
       <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/android/</guid>
+      <guid>https://blog.ikuamike.io/tags/android/</guid>
       <description></description>
     </item>
     
     <item>
       <title>CTF</title>
-      <link>https://ikuamike.github.io/tags/ctf/</link>
+      <link>https://blog.ikuamike.io/tags/ctf/</link>
       <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/ctf/</guid>
+      <guid>https://blog.ikuamike.io/tags/ctf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cyberspace</title>
-      <link>https://ikuamike.github.io/tags/cyberspace/</link>
+      <link>https://blog.ikuamike.io/tags/cyberspace/</link>
       <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/cyberspace/</guid>
+      <guid>https://blog.ikuamike.io/tags/cyberspace/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reversing</title>
-      <link>https://ikuamike.github.io/tags/reversing/</link>
+      <link>https://blog.ikuamike.io/tags/reversing/</link>
       <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/reversing/</guid>
+      <guid>https://blog.ikuamike.io/tags/reversing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>HTB</title>
-      <link>https://ikuamike.github.io/tags/htb/</link>
+      <link>https://blog.ikuamike.io/tags/htb/</link>
       <pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/tags/htb/</guid>
+      <guid>https://blog.ikuamike.io/tags/htb/</guid>
       <description></description>
     </item>
     

@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HTB on ikuamike</title>
-    <link>https://ikuamike.github.io/tags/htb/</link>
+    <link>https://blog.ikuamike.io/tags/htb/</link>
     <description>Recent content in HTB on ikuamike</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
     <lastBuildDate>Sat, 11 Jan 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ikuamike.github.io/tags/htb/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blog.ikuamike.io/tags/htb/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Hack The Box: Bitlab</title>
-      <link>https://ikuamike.github.io/posts/2020/bitlab-htb/</link>
+      <link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link>
       <pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/posts/2020/bitlab-htb/</guid>
+      <guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hack The Box: Bastion</title>
-      <link>https://ikuamike.github.io/posts/2019/bastion-htb/</link>
+      <link>https://blog.ikuamike.io/posts/2019/bastion-htb/</link>
       <pubDate>Fri, 06 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/posts/2019/bastion-htb/</guid>
+      <guid>https://blog.ikuamike.io/posts/2019/bastion-htb/</guid>
       <description></description>
     </item>
     

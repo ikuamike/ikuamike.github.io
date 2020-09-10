@@ -2,49 +2,49 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ikuamike</title>
-    <link>https://ikuamike.github.io/</link>
+    <link>https://blog.ikuamike.io/</link>
     <description>Recent content on ikuamike</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
     <lastBuildDate>Fri, 12 Jun 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ikuamike.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blog.ikuamike.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Cyberspace Kenya CTF: ZuluMeats3</title>
-      <link>https://ikuamike.github.io/posts/2020/cyberspacectf-zulumeats3/</link>
+      <link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link>
       <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/posts/2020/cyberspacectf-zulumeats3/</guid>
+      <guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hack The Box: Bitlab</title>
-      <link>https://ikuamike.github.io/posts/2020/bitlab-htb/</link>
+      <link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link>
       <pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/posts/2020/bitlab-htb/</guid>
+      <guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hack The Box: Bastion</title>
-      <link>https://ikuamike.github.io/posts/2019/bastion-htb/</link>
+      <link>https://blog.ikuamike.io/posts/2019/bastion-htb/</link>
       <pubDate>Fri, 06 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/posts/2019/bastion-htb/</guid>
+      <guid>https://blog.ikuamike.io/posts/2019/bastion-htb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Webinars</title>
-      <link>https://ikuamike.github.io/webinars/</link>
+      <link>https://blog.ikuamike.io/webinars/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://ikuamike.github.io/webinars/</guid>
+      <guid>https://blog.ikuamike.io/webinars/</guid>
       <description>2020  Cyber Ranges Community Webinar: HTTP Basics and BurpSuite 101  </description>
     </item>
     
