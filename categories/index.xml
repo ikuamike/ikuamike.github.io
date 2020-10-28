@@ -6,10 +6,6 @@
     <description>Recent content in Categories on ikuamike</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© Michael Ikua</copyright>
-    
-	<atom:link href="https://blog.ikuamike.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <copyright>© Michael Ikua</copyright><atom:link href="https://blog.ikuamike.io/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

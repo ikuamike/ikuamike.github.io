@@ -4,12 +4,32 @@
   
   <url>
     <loc>https://blog.ikuamike.io/tags/android/</loc>
-    <lastmod>2020-06-12T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://blog.ikuamike.io/tags/ctf/</loc>
-    <lastmod>2020-06-12T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.ikuamike.io/</loc>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.ikuamike.io/posts/</loc>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</loc>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.ikuamike.io/tags/</loc>
+    <lastmod>2020-10-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -23,22 +43,7 @@
   </url>
   
   <url>
-    <loc>https://blog.ikuamike.io/</loc>
-    <lastmod>2020-06-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.ikuamike.io/posts/</loc>
-    <lastmod>2020-06-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://blog.ikuamike.io/tags/reversing/</loc>
-    <lastmod>2020-06-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://blog.ikuamike.io/tags/</loc>
     <lastmod>2020-06-12T00:00:00+00:00</lastmod>
   </url>
   

@@ -251,7 +251,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 
 <p>After some tweaking I was able to get a script working that would read the db.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#75715e">&lt;?php</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
 
    $host        <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;host = 127.0.0.1&#34;</span>;
    $port        <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;port = 5432&#34;</span>;
@@ -284,8 +284,8 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
    <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;Operation done successfully</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
    <span style="color:#a6e22e">pg_close</span>($db);
-<span style="color:#75715e">?&gt;</span>
-</code></pre></div><p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.</p>
+<span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.</p>
 
   <img src="/img/bitlab/bitlab-15.png"  alt="gitlab instance"  class="center"  style="border-radius: 8px;"  />
 
@@ -322,7 +322,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
       <span class="button previous">
         <a href="https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/">
           <span class="button__icon">←</span>
-          <span class="button__text">Cyberspace Kenya CTF: ZuluMeats3</span>
+          <span class="button__text">CyberSpaceKenya CTF: ZuluMeats3</span>
         </a>
       </span>
       
