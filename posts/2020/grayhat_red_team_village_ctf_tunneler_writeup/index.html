@@ -251,8 +251,8 @@ AND REMOVE YOUR TUNNEL WHEN YOU ARE DONE
 
 
 <p>Next step is using a reverse port forward to receive the flag, we need to be quick to set the port as the flag is sent after 15s.</p>
-<pre><code>ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:17172:127.0.0.1:6000
-</code></pre><p>Then on another terminal open a listener on port 6000.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:17172:127.0.0.1:6000
+</code></pre></div><p>Then on another terminal open a listener on port 6000.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -vn 127.0.0.1 <span style="color:#ae81ff">6000</span>
 </code></pre></div>
   <img src="/img/grayhat_2020/screenshot6.png"  alt="grayhat_redteam_ctf"  class="center"  style="border-radius: 8px;"  />
