@@ -331,15 +331,15 @@ Since in pivot2 tunneling is disabled we&rsquo;ll use socat.</p>
 
 nothing to find in the shares
 </code></pre><p>Similar to the snmp one above we&rsquo;ll use socat to tunnel to the samba server.</p>
-<p>Solution:
-First we ssh into pivot2 and use socat to redirect traffic</p>
+<p>Solution:</p>
+<p>First we ssh into pivot2 and use socat to redirect traffic</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">socat -v TCP-LISTEN:5000,fork TCP:10.24.13.10:445
 </code></pre></div><p>Then perform a local portforward through pivot1 to pivot2</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 5000:10.112.3.12:5000
 </code></pre></div><p>Based on the challenge description, we need to access the root file system and nothing is in the shares. Sounds like
 we need to exploit it as there&rsquo;s no other way to access the root file system.</p>
-<p>Solution:
-Run nmap to find the samba version and check for exploit in exploitdb using searchsploit.</p>
+<p>Solution:</p>
+<p>Run nmap to find the samba version and check for exploit in exploitdb using searchsploit.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nmap -sC -sV -p <span style="color:#ae81ff">5000</span> 127.0.0.1
 searchsploit samba
 </code></pre></div>
