@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OSCP Prep on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
+    <description>Recent content in OSCP Prep on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Fri, 22 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/oscp-prep/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Symfonos 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos1/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
