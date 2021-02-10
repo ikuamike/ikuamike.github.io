@@ -81,6 +81,17 @@
     </item>
     
     <item>
+      <title>About Me</title>
+      <link>https://blog.ikuamike.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/about/</guid>
+      <description>My name is Michael Ikua, I am CyberSecurity Enthusiast from Kenya 🇰🇪.
+I am a Penetration Tester, Active CTF player and Passive Bug Hunter.
+Twitter, Github, CTFTime, HackTheBox, Hackerone, Medium, Pentesterlab</description>
+    </item>
+    
+    <item>
       <title>Webinars</title>
       <link>https://blog.ikuamike.io/webinars/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
