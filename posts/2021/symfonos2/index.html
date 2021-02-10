@@ -230,9 +230,11 @@ of the anonymous share:</p>
   <img src="/img/symfonos2/symfonos2-3.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
 
 
-<p>We can exfiltrate information to the anonymous share by exploiting file copy on proftpd. Using the PoC shown here <a href="https://www.exploit-db.com/exploits/36742,">https://www.exploit-db.com/exploits/36742,</a>
-let&rsquo;s get the shadow.bak file.</p>
-
+<p>We can exfiltrate information to the anonymous share by exploiting file copy on proftpd. Using the PoC shown here
+<a href="https://www.exploit-db.com/exploits/36742,">https://www.exploit-db.com/exploits/36742,</a> let&rsquo;s get the shadow.bak file. You can either use netcat or telnet.
+In this case I use netcat.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -vn 192.168.191.129 <span style="color:#ae81ff">21</span>
+</code></pre></div>
   <img src="/img/symfonos2/symfonos2-4.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
 
 
