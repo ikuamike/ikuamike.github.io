@@ -7,22 +7,112 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Fri, 22 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CVE-2015-3306</title>
+      <link>https://blog.ikuamike.io/tags/cve-2015-3306/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/cve-2015-3306/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CVE-2018-20434</title>
+      <link>https://blog.ikuamike.io/tags/cve-2018-20434/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/cve-2018-20434/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LibreNMS</title>
+      <link>https://blog.ikuamike.io/tags/librenms/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/librenms/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MySQL</title>
+      <link>https://blog.ikuamike.io/tags/mysql/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/mysql/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>OSCP Prep</title>
       <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
-      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>ProFTPD</title>
+      <link>https://blog.ikuamike.io/tags/proftpd/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/proftpd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Samba</title>
+      <link>https://blog.ikuamike.io/tags/samba/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/samba/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sudo</title>
+      <link>https://blog.ikuamike.io/tags/sudo/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/sudo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Vulnhub</title>
       <link>https://blog.ikuamike.io/tags/vulnhub/</link>
-      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LFI</title>
+      <link>https://blog.ikuamike.io/tags/lfi/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/lfi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SUID</title>
+      <link>https://blog.ikuamike.io/tags/suid/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/suid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Wordpress</title>
+      <link>https://blog.ikuamike.io/tags/wordpress/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/wordpress/</guid>
       <description></description>
     </item>
     
