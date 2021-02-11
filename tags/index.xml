@@ -7,7 +7,61 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Wed, 10 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Directory Bruteforce</title>
+      <link>https://blog.ikuamike.io/tags/directory-bruteforce/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/directory-bruteforce/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ffuf</title>
+      <link>https://blog.ikuamike.io/tags/ffuf/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/ffuf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSCP Prep</title>
+      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ShellShock</title>
+      <link>https://blog.ikuamike.io/tags/shellshock/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/shellshock/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tcpdump</title>
+      <link>https://blog.ikuamike.io/tags/tcpdump/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/tcpdump/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub</title>
+      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>CVE-2015-3306</title>
       <link>https://blog.ikuamike.io/tags/cve-2015-3306/</link>
@@ -45,15 +99,6 @@
     </item>
     
     <item>
-      <title>OSCP Prep</title>
-      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
-      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>ProFTPD</title>
       <link>https://blog.ikuamike.io/tags/proftpd/</link>
       <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
@@ -77,15 +122,6 @@
       <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/sudo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vulnhub</title>
-      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
-      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
       <description></description>
     </item>
     

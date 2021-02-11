@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Directory Bruteforce on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/directory-bruteforce/</link>
+    <description>Recent content in Directory Bruteforce on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/directory-bruteforce/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Symfonos3</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos3/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
