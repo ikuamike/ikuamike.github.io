@@ -7,7 +7,61 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Mon, 15 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 17 Feb 2021 21:54:20 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LDAP</title>
+      <link>https://blog.ikuamike.io/tags/ldap/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/ldap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LDAP Injection</title>
+      <link>https://blog.ikuamike.io/tags/ldap-injection/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/ldap-injection/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LFI</title>
+      <link>https://blog.ikuamike.io/tags/lfi/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/lfi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSCP Prep</title>
+      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sudo</title>
+      <link>https://blog.ikuamike.io/tags/sudo/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/sudo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub</title>
+      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
+      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Deserialization</title>
       <link>https://blog.ikuamike.io/tags/deserialization/</link>
@@ -36,24 +90,6 @@
     </item>
     
     <item>
-      <title>LFI</title>
-      <link>https://blog.ikuamike.io/tags/lfi/</link>
-      <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/lfi/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>OSCP Prep</title>
-      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
-      <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Pickle</title>
       <link>https://blog.ikuamike.io/tags/pickle/</link>
       <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
@@ -68,15 +104,6 @@
       <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/sqli/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vulnhub</title>
-      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
-      <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
       <description></description>
     </item>
     
@@ -149,15 +176,6 @@
       <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/samba/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Sudo</title>
-      <link>https://blog.ikuamike.io/tags/sudo/</link>
-      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/sudo/</guid>
       <description></description>
     </item>
     
