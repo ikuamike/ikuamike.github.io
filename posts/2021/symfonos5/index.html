@@ -181,6 +181,11 @@
 
 
 <h1 id="summary">Summary</h1>
+<p>In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read
+local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get
+ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded
+password that we could use to ssh into the machine. For privilege escalation to a root shell we abused sudo permission granted on
+dpkg.</p>
 <h1 id="reconnaissance">Reconnaissance</h1>
 <p>Nmap</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Nmap scan report <span style="color:#66d9ef">for</span> 192.168.191.132
@@ -249,13 +254,13 @@ then thought to try out ldap injection. Since we have ldap running on this host 
 
 
 <p>The url parameter takes in a url, changing the input to <code>../../../../etc/passwd</code> we can read the passwd file. This confirms
-an LFI vulnerability.</p>
+we can abuse LFI to access other files on disk by directory traversal.</p>
 
   <img src="/img/symfonos5/symfonos5-9.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
 
 
 <p>I tried accessing log files to try for RCE like the previous boxes but nothing came up. We can still use this to read
-local files so we can check the source code of the app.</p>
+files so we can check the source code of the app.</p>
 <p>Accessing the php files directly just executes them, so we need to use php wrappers.</p>
 <p><strong>home.php</strong></p>
 <pre><code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
