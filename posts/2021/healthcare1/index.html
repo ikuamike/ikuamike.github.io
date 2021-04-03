@@ -402,6 +402,76 @@ is executed it will created a copy of the bash binary which has suid permissions
 root.txt.</p>
 
   <img src="/img/healthcare1/healthcare-15.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>After getting root I found I has skipped over user.txt in almirant&rsquo;s home directory</p>
+
+  <img src="/img/healthcare1/healthcare-16.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<h1 id="extras">Extras</h1>
+<p>After looking at other writeups, I discovered other possible paths for exploiting this
+machine.</p>
+<p>Initial step needed was exploiting the sql injection. Using sqlmap would have been a quicker way
+and achieved the same results. I intentionally didn&rsquo;t use sqlmap on my initial exploitation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sqlmap -u <span style="color:#e6db74">&#34;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&#34;</span> --batch --dump -T users -C username,password
+</code></pre></div>
+  <img src="/img/healthcare1/healthcare-25.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Using the obtained credentials, we can login to openemr as administrator and we can either upload a php file or
+edit existing php files for command execution.</p>
+<ul>
+<li>
+<h4 id="file-upload">File upload</h4>
+</li>
+</ul>
+
+  <img src="/img/healthcare1/healthcare-17.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>The file upload functionality does not have restrictions, therefore we can upload our php reverse shell and it will
+be stored in that images directory.</p>
+
+  <img src="/img/healthcare1/healthcare-18.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>We can the trigger the reverse shell by visiting the revshell.php in the /openemr/sites/default/images/ directory.</p>
+
+  <img src="/img/healthcare1/healthcare-19.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Reverse shell obtained.</p>
+
+  <img src="/img/healthcare1/healthcare-20.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li>
+<h4 id="edit-existing-php-files">Edit existing php files</h4>
+</li>
+</ul>
+<p>Using the same files functionality, we can also perform edits to existing files. In this case we can edit config.php
+and add our reverse shell payload. After saving it and refreshing the page, a reverse shell is obtained on netcat
+listener.</p>
+
+  <img src="/img/healthcare1/healthcare-24.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Another possible path that would have been taken after initial shell was that, the shadow file in the
+/var/backups directory was world readable.</p>
+
+  <img src="/img/healthcare1/healthcare-21.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Therefore we can crack this hash and switch user to almirant.</p>
+
+  <img src="/img/healthcare1/healthcare-22.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Then we get user.txt.</p>
+
+  <img src="/img/healthcare1/healthcare-23.png"  alt="symfonos"  class="center"  style="border-radius: 8px;"  />
   </div>
 
   
