@@ -7,13 +7,76 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 13 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cron</title>
+      <link>https://blog.ikuamike.io/tags/cron/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/cron/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Directory Bruteforce</title>
       <link>https://blog.ikuamike.io/tags/directory-bruteforce/</link>
-      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/directory-bruteforce/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ffuf</title>
+      <link>https://blog.ikuamike.io/tags/ffuf/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/ffuf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSCP Prep</title>
+      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PHPMyAdmin</title>
+      <link>https://blog.ikuamike.io/tags/phpmyadmin/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/phpmyadmin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub</title>
+      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WordPress</title>
+      <link>https://blog.ikuamike.io/tags/wordpress/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/wordpress/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WPScan</title>
+      <link>https://blog.ikuamike.io/tags/wpscan/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/tags/wpscan/</guid>
       <description></description>
     </item>
     
@@ -23,15 +86,6 @@
       <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/openemr/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>OSCP Prep</title>
-      <link>https://blog.ikuamike.io/tags/oscp-prep/</link>
-      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/oscp-prep/</guid>
       <description></description>
     </item>
     
@@ -54,38 +108,11 @@
     </item>
     
     <item>
-      <title>Vulnhub</title>
-      <link>https://blog.ikuamike.io/tags/vulnhub/</link>
-      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/vulnhub/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Password Bruteforce</title>
       <link>https://blog.ikuamike.io/tags/password-bruteforce/</link>
       <pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/password-bruteforce/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>WordPress</title>
-      <link>https://blog.ikuamike.io/tags/wordpress/</link>
-      <pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/wordpress/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>WPScan</title>
-      <link>https://blog.ikuamike.io/tags/wpscan/</link>
-      <pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/wpscan/</guid>
       <description></description>
     </item>
     
@@ -131,15 +158,6 @@
       <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.ikuamike.io/tags/deserialization/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ffuf</title>
-      <link>https://blog.ikuamike.io/tags/ffuf/</link>
-      <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/tags/ffuf/</guid>
       <description></description>
     </item>
     
