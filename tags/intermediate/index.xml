@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Intermediate on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/intermediate/</link>
+    <description>Recent content in Intermediate on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/intermediate/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Healthcare 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/healthcare1/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/healthcare1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub: Symfonos 4</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos4/</link>
+      <pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos4/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub: Symfonos 3</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos3/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vulnhub: Symfonos 2</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos2/</link>
+      <pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

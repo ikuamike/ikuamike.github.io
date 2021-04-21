@@ -234,11 +234,9 @@ PORT     STATE SERVICE VERSION
 |_  /scripts/: Potentially interesting directory w/ listing on <span style="color:#e6db74">&#39;apache/2.4.29 (ubuntu)&#39;</span>
 |_http-server-header: Apache/2.4.29 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
 |_http-title: Apache2 Ubuntu Default Page: It works
-</code></pre></div><p>FFUF</p>
+</code></pre></div><p>ffuf</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.136:8080/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t <span style="color:#ae81ff">50</span> 
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Basic ffuf Scan <span style="color:#66d9ef">for</span> http port <span style="color:#ae81ff">8080</span>
-
-js                      <span style="color:#f92672">[</span>Status: 301, Size: 322, Words: 20, Lines: 10<span style="color:#f92672">]</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">js                      <span style="color:#f92672">[</span>Status: 301, Size: 322, Words: 20, Lines: 10<span style="color:#f92672">]</span>
 help                    <span style="color:#f92672">[</span>Status: 301, Size: 324, Words: 20, Lines: 10<span style="color:#f92672">]</span>
 wordpress               <span style="color:#f92672">[</span>Status: 301, Size: 329, Words: 20, Lines: 10<span style="color:#f92672">]</span>
 manual                  <span style="color:#f92672">[</span>Status: 301, Size: 326, Words: 20, Lines: 10<span style="color:#f92672">]</span>
