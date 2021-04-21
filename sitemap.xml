@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://blog.ikuamike.io/tags/beginner/</loc>
+    <lastmod>2021-04-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://blog.ikuamike.io/</loc>
     <lastmod>2021-04-21T00:00:00+00:00</lastmod>
   </url>
@@ -39,6 +44,11 @@
   
   <url>
     <loc>https://blog.ikuamike.io/posts/2021/misdirection1/</loc>
+    <lastmod>2021-04-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.ikuamike.io/tags/writeable-passwd/</loc>
     <lastmod>2021-04-21T00:00:00+00:00</lastmod>
   </url>
   

