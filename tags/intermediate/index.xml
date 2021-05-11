@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,7 +12,6 @@
 &lt;td>Intermediate&lt;/td>
 &lt;td>29 Jul 2020&lt;/td>
 &lt;td>v1n1v131r4&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/healthcare-1,522/">https://vulnhub.com/entry/healthcare-1,522/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -219,7 +217,6 @@ listener.&lt;/p>
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -227,7 +224,6 @@ listener.&lt;/p>
 &lt;td>Intermediate&lt;/td>
 &lt;td>20 Aug 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-4,347/">https://vulnhub.com/entry/symfonos-4,347/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -370,7 +366,6 @@ what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-exis
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -378,7 +373,6 @@ what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-exis
 &lt;td>Intermediate&lt;/td>
 &lt;td>7 Apr 2020&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-31,332">https://vulnhub.com/entry/symfonos-31,332&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -479,7 +473,6 @@ os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -487,7 +480,6 @@ os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74
 &lt;td>Intermediate&lt;/td>
 &lt;td>18 July 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-2,331">https://vulnhub.com/entry/symfonos-2,331&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>

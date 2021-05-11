@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,7 +12,6 @@
 &lt;td>Intermediate&lt;/td>
 &lt;td>29 Jul 2020&lt;/td>
 &lt;td>v1n1v131r4&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/healthcare-1,522/">https://vulnhub.com/entry/healthcare-1,522/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -219,7 +217,6 @@ listener.&lt;/p>
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -227,7 +224,6 @@ listener.&lt;/p>
 &lt;td>Intermediate&lt;/td>
 &lt;td>20 Aug 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-4,347/">https://vulnhub.com/entry/symfonos-4,347/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>

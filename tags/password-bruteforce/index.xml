@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,7 +12,6 @@
 &lt;td>Beginner&lt;/td>
 &lt;td>2 Nov 2019&lt;/td>
 &lt;td>Ic0de&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/evm-1,391/">https://vulnhub.com/entry/evm-1,391/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>

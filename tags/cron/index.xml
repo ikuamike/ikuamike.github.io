@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,7 +12,6 @@
 &lt;td>Beginner&lt;/td>
 &lt;td>26 Apr 2020&lt;/td>
 &lt;td>James Hay&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/lemonsqueezy-1,473/">https://vulnhub.com/entry/lemonsqueezy-1,473/&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>

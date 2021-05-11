@@ -5,7 +5,6 @@
 &lt;th>Difficulty&lt;/th>
 &lt;th>Release Date&lt;/th>
 &lt;th>Author&lt;/th>
-&lt;th>Machine link&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -13,7 +12,6 @@
 &lt;td>Intermediate&lt;/td>
 &lt;td>7 Apr 2020&lt;/td>
 &lt;td>Zayotic&lt;/td>
-&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-31,332">https://vulnhub.com/entry/symfonos-31,332&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
