@@ -12,9 +12,9 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/symfonos1/symfonos1.png" alt="symfonos1" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Beginner   | 29 June 2019   | Zayotic | https://vulnhub.com/entry/symfonos-1,322/ |
+| Difficulty | Release Date | Author | 
+| ---------- | ------------ | ------ | 
+| Beginner   | 29 June 2019   | Zayotic | 
 
 # Summary 
 

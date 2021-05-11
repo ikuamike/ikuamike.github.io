@@ -13,9 +13,9 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/evm/evm.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Beginner   | 2 Nov 2019   | Ic0de  | https://vulnhub.com/entry/evm-1,391/ |
+| Difficulty | Release Date | Author |
+| ---------- | ------------ | ------ | 
+| Beginner   | 2 Nov 2019   | Ic0de  | 
 
 
 # Summary

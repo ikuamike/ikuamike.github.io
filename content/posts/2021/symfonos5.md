@@ -13,9 +13,9 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/symfonos1/symfonos1.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Beginner | 2 Mar 2020 | Zayotic | https://vulnhub.com/entry/symfonos-52,415/ |
+| Difficulty | Release Date | Author | 
+| ---------- | ------------ | ------ | 
+| Beginner | 2 Mar 2020 | Zayotic | 
 
 # Summary
 

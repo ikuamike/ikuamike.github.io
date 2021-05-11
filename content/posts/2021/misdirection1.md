@@ -14,17 +14,17 @@ draft = false
 <!--more-->
 {{< image src="/img/misdirection1/misdirection.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Beginner | 24 Sep 2019 | FalconSpy | https://vulnhub.com/entry/misdirection-1,371/ |
+| Difficulty | Release Date | Author |
+| ---------- | ------------ | ------ |
+| Beginner | 24 Sep 2019 | FalconSpy | 
 
-# Summary
+## Summary
 
 For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user
 and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a 
 privileged container that can read and write the whole file system by mounting it in the container.
 
-# Reconnaissance
+## Reconnaissance
 
 Nmap
 
@@ -38,9 +38,9 @@ PORT     STATE SERVICE VERSION
 3306/tcp open  mysql   MySQL (unauthorized)
 8080/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
 ```
-# Enumeration
+## Enumeration
 
-## 8080 (HTTP)
+### 8080 (HTTP)
 
 Nmap
 
@@ -92,7 +92,7 @@ contains a web shell.
 
 {{< image src="/img/misdirection1/misdirection-1.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# Shell as www-data
+## Shell as www-data
 
 Supplying the following command we are able to get a reverse shell.
 
@@ -108,7 +108,7 @@ any password requirement.
 
 {{< image src="/img/misdirection1/misdirection-3.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# Shell as brexit
+## Shell as brexit
 
 ```sh
 sudo -u brexit /bin/bash
@@ -120,7 +120,7 @@ On running id we see that brexit is in the lxd group and no images are present.
 
 {{< image src="/img/misdirection1/misdirection-10.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# Shell as root
+## Shell as root
 
 Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.
 
@@ -188,7 +188,7 @@ To get shell as root I added a public key to authorized_keys of the root user an
 
 {{< image src="/img/misdirection1/misdirection-9.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# Extras
+## Extras
 
 After looking at other writeups, there was another easy privesc that I didn't explore.
 
@@ -208,7 +208,7 @@ echo 'user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash' >>/etc/passw
 
 {{< image src="/img/misdirection1/misdirection-12.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# References
+## References
 
 https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 

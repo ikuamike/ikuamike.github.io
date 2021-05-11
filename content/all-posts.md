@@ -60,9 +60,9 @@ title = "All Posts"
 
 [**MitreCTF 2019 Writeup (Medium)**](https://ikuamike.medium.com/mitrectf-writeup-b0ce9465c38b)
 
-[**Basic Pentesing : 2 WriteUp - Vulnhub (Medium)**](https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d)
+[**Basic Pentesing: 2 WriteUp - Vulnhub (Medium)**](https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d)
 
-[**Basic Pentesing : 1 WriteUp — VulnHub (Medium)**](https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85)
+[**Basic Pentesing: 1 WriteUp — VulnHub (Medium)**](https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85)
 
 # 2018
 

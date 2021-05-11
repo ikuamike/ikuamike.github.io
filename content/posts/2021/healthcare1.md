@@ -13,9 +13,9 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/healthcare1/healthcare.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Intermediate | 29 Jul 2020 | v1n1v131r4 | https://vulnhub.com/entry/healthcare-1,522/ |
+| Difficulty | Release Date | Author | 
+| ---------- | ------------ | ------ | 
+| Intermediate | 29 Jul 2020 | v1n1v131r4 |
 
 # Summary
 

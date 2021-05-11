@@ -13,9 +13,9 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/lemonsqueezy1/lemon.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-| Difficulty | Release Date | Author | Machine link |
-| ---------- | ------------ | ------ | ------- |
-| Beginner | 26 Apr 2020 | James Hay | https://vulnhub.com/entry/lemonsqueezy-1,473/ |
+| Difficulty | Release Date | Author |
+| ---------- | ------------ | ------ |
+| Beginner | 26 Apr 2020 | James Hay | 
 
 # Summary
 
