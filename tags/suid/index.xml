@@ -54,8 +54,8 @@ We can look at this again when we have credentials.&lt;/p>
 we discover an sql injection vulnerability.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Unfortunately the PoC provided doesn&amp;rsquo;t work. I found a better one from packetstormsecurity:&lt;/p>
-&lt;p>&lt;a href="https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html">https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html&lt;/a>&lt;/p>
-&lt;p>The PoC provided shows a blind sql injection. The below payload causes the request to delay for about 5 seconds.&lt;/p>
+&lt;pre>&lt;code>https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html
+&lt;/code>&lt;/pre>&lt;p>The PoC provided shows a blind sql injection. The below payload causes the request to delay for about 5 seconds.&lt;/p>
 &lt;pre>&lt;code>http://192.168.56.106/openemr/interface/login/validateUser.php?u='%2b(SELECT%201%20FROM%20(SELECT%20SLEEP(25))A)%2b'
 &lt;/code>&lt;/pre>&lt;p>Using this, I was able to create a script to extract username and password hash of all existing users. Soon to be
 submitted to exploit-db.&lt;/p>

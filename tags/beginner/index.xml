@@ -130,9 +130,10 @@ echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-12.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="references">References&lt;/h2>
-&lt;p>&lt;a href="https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/">https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://www.hackingarticles.in/lxd-privilege-escalation/">https://www.hackingarticles.in/lxd-privilege-escalation/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd">https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd&lt;/a>&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
+&lt;pre>&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
+https://www.hackingarticles.in/lxd-privilege-escalation/
+https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
+&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
 &lt;table>
 &lt;thead>
 &lt;tr>

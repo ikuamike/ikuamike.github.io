@@ -114,8 +114,9 @@ b &lt;span style="color:#f92672">=&lt;/span> [chr(s) &lt;span style="color:#66d9
 &lt;p>Since I found flag3 first I must have missed some stuff.&lt;/p>
 &lt;h2 id="flag-1">Flag 1&lt;/h2>
 &lt;p>Refering back to my earlier screenshot, after performing the grep there&amp;rsquo;s some base64 encoded data which I should have been more keen to look at!&lt;/p>
-&lt;p>base64: &lt;code>Q1NfS0V7YmFzZTY0X2VuY29kaW5nX2lzX25vdF90aGF0X3NlY3VyZX0=&lt;/code>&lt;/p>
-&lt;p>Flag 1: &lt;code>CS_KE{base64_encoding_is_not_that_secure}&lt;/code>&lt;/p>
+&lt;p>base64:&lt;/p>
+&lt;pre>&lt;code>Q1NfS0V7YmFzZTY0X2VuY29kaW5nX2lzX25vdF90aGF0X3NlY3VyZX0=
+&lt;/code>&lt;/pre>&lt;p>Flag 1: &lt;code>CS_KE{base64_encoding_is_not_that_secure}&lt;/code>&lt;/p>
 &lt;h2 id="flag-2">Flag 2&lt;/h2>
 &lt;p>Now flag 2 was the last to find. Since most of the clues we have been finding were in that &lt;code>assets/index.android.bundle&lt;/code> file let me have a look at it.&lt;/p>
 &lt;p>&lt;del>Something I noted was that jadx didn’t find this file, that why the approach to use two tools is good IMO.&lt;/del> A friend of mine has pointed out that it was actually there under Resources/assets on the jadx ui, nevertheless using two or more tools for analysis is still a good practice IMO. There is a lot of code in this file that is not easily readable, so I just googled what this file is.&lt;/p>
