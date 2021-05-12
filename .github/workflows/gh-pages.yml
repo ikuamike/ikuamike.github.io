@@ -32,6 +32,7 @@ jobs:
 
       - name: readd cname
         run: |
+          git pull
           cd public
           echo "blog.ikuamike.io" > CNAME
           git add .
