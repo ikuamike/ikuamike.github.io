@@ -94,7 +94,10 @@ Since I found flag3 first I must have missed some stuff.
 
 Refering back to my earlier screenshot, after performing the grep there's some base64 encoded data which I should have been more keen to look at!
 
-base64: ```Q1NfS0V7YmFzZTY0X2VuY29kaW5nX2lzX25vdF90aGF0X3NlY3VyZX0=```
+base64: 
+```
+Q1NfS0V7YmFzZTY0X2VuY29kaW5nX2lzX25vdF90aGF0X3NlY3VyZX0=
+```
 
 Flag 1: ```CS_KE{base64_encoding_is_not_that_secure}``` 
 

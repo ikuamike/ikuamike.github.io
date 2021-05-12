@@ -7,11 +7,12 @@ tags = ["CTF", "SSH", "Tunneling"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
+toc = true
 +++
 
 <!--more-->
 
-# Summary
+## Summary
 During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided
 to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges
 that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for 
@@ -20,7 +21,7 @@ ssh tunneling techniques.
 I am writing this to serve as a personal reference for ssh tunneling as it has a very good practical aspect to use as an example. I will show different 
 ways these challenges could have been solved.
 
-### 1. Bastion
+## 1. Bastion
 
 Challenge description:
 ```
@@ -41,7 +42,7 @@ we are droppped in a docker container.
 
 {{< image src="/img/grayhat_2020/screenshot1.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 2. Browsing Websites
+## 2. Browsing Websites
 
 Challenge Description:
 ```
@@ -89,7 +90,7 @@ curl 10.174.12.14
 
 {{< image src="/img/grayhat_2020/screenshot2.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 3. SSH in tunnels
+## 3. SSH in tunnels
 
 Challenge Description:
 ```
@@ -123,7 +124,7 @@ ssh pivot1
 
 {{< image src="/img/grayhat_2020/screenshot3.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 4. Beacons Everywhere
+## 4. Beacons Everywhere
 
 Challenge Description:
 ```
@@ -159,7 +160,7 @@ Then we just run ```ssh pivot1``` and open a netcat listener.
 
 {{< image src="/img/grayhat_2020/screenshot4.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 5. Beacons Annoying
+## 5. Beacons Annoying
 
 Challenge Description:
 ```
@@ -195,7 +196,7 @@ nc -vn 127.0.0.1 6000
 
 It was an annoying beacon indeed, we needed 4 terminal panes open (I use tmux).
 
-### 6. Scan me
+## 6. Scan me
 
 Challenge Description:
 ```
@@ -228,7 +229,7 @@ Next is to just connect to the ftp server, the flag was in the banner.
 
 {{< image src="/img/grayhat_2020/screenshot8.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 7. Another Pivot
+## 7. Another Pivot
 
 Challenge Description:
 ```
@@ -264,7 +265,7 @@ This host is connected to multiple networks and it seems portforwarding is disab
 
 {{< image src="/img/grayhat_2020/screenshot9.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 8. SNMP
+## 8. SNMP
 
 Challenge Description:
 ```
@@ -296,7 +297,7 @@ snmpwalk -v1 -c public localhost
 
 {{< image src="/img/grayhat_2020/screenshot10.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 9. Samba
+## 9. Samba
 
 Challenge Description:
 ```
@@ -334,7 +335,7 @@ The exploit that worked is ```exploit/linux/samba/is_known_pipename``` and we ge
 
 {{< image src="/img/grayhat_2020/screenshot12.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
-### 10. Browsing website 2
+## 10. Browsing website 2
 
 Challenge Description:
 ```
@@ -379,7 +380,7 @@ Host pivot2
  ProxyJump pivot1
 ```
 
-# Conclusion
+## Conclusion
 
 There are several techniques to make your tunneling much easier, for quick use like in a ctf I think crafting the full ssh command is better and
 faster. For frequent connection, using sshuttle combined with a good ssh config can make your life much easier.
@@ -389,12 +390,12 @@ After all those connections here's a Network Diagram that visualizes the access 
 {{< image src="/img/grayhat_2020/Tunneler.png" alt="grayhat_redteam_ctf" position="center" style="border-radius: 8px;" >}}
 
 Here's a nice writeup by [@Rayhan0x01](https://twitter.com/Rayhan0x01) on how he used a different approach using metasploit: 
-
+```sh
 https://rayhan0x01.github.io/ctf/2020/08/08/defcon-redteamvillage-ctf-tunneler-1,2,3,4,5,7,9.html
-
-# Resources
+```
+## Resources
 Some resources I think are helpful in understanding ssh tunneling properly.
-
+```sh
 1. https://www.redhat.com/sysadmin/ssh-proxy-bastion-proxyjump
 2. https://www.cyberciti.biz/faq/linux-unix-ssh-proxycommand-passing-through-one-host-gateway-server/
 3. https://book.hacktricks.xyz/tunneling-and-port-forwarding
@@ -403,7 +404,7 @@ Some resources I think are helpful in understanding ssh tunneling properly.
 6. https://app.cyberranges.com/scenario/5d5c06ed960f032f2eadd733
 7. https://app.cyberranges.com/scenario/5d5eaf28960f032f2eae6add
 8. https://app.cyberranges.com/scenario/5d640b0c960f032f2eb033a8
-
+```
 You can reach/follow me on Twitter if you have some feedback or questions.
 
 Twitter: [ikuamike](https://twitter.com/ikuamike)

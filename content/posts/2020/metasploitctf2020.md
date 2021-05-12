@@ -7,6 +7,7 @@ tags = ["CTF"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
+toc = true
 +++
 
 <!--more-->
@@ -15,7 +16,7 @@ showFullContent = false
 Over the weekend I participated in [Metasploit Community December CTF](https://ctftime.org/event/1200) by Rapid7 
 with team [fr334aks](https://twitter.com/fr334aks). We ended up getting position 57/413. The CTF was meant to be beginner-friendly. 
 
-# Intro
+## Intro
 Teams are provided with their own instance of a kali box which is public facing to act as a jump host to reach
 an ubuntu VM which hosts the challenges.
 
@@ -27,9 +28,9 @@ I decided to tunnel all connections to the victim through ssh with sshuttle usin
 ```bash
 sshuttle -r kali@52.90.96.4 -e "ssh -i metasploit_ctf_kali_ssh_key.pem" 172.15.18.101/32
 ```
-# Challenges:
+## Challenges:
 
-## 4 of Hearts
+### 4 of Hearts
 
 After tunneling the connections to the Ubuntu VM the first flag is on port 80, ```http://172.15.18.101/4_of_hearts.png```.
 
@@ -37,7 +38,7 @@ After tunneling the connections to the Ubuntu VM the first flag is on port 80, `
 
 {{< image src="/img/metasploitctf2020/4_of_hearts.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 6 of Hearts
+### 6 of Hearts
 
 {{< image src="/img/metasploitctf2020/port6868.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
@@ -75,7 +76,7 @@ We can then get the flag with these initials at the url ```http://172.15.18.101:
 
 {{< image src="/img/metasploitctf2020/6_of_hearts.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-# 3 of Spades
+### 3 of Spades
 
 To solve this one we are required to identify a valid username aside from guest. When you submit guest which is a valid username, the 
 request takes about 5 seconds to complete but if you supply a non-valid username it takes less than a second. The password doesn't 
@@ -111,7 +112,10 @@ It found the user to be demo:
 
 {{< image src="/img/metasploitctf2020/port8080_2.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-When we submit it we get the url to the flag, ```http://172.15.18.101:8080/a3lk3d939d993201ld.png```.
+When we submit it we get the url to the flag, 
+```
+http://172.15.18.101:8080/a3lk3d939d993201ld.png
+```
 
 {{< image src="/img/metasploitctf2020/port8080_1.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
@@ -120,7 +124,7 @@ When we submit it we get the url to the flag, ```http://172.15.18.101:8080/a3lk3
 
 {{< image src="/img/metasploitctf2020/3_of_spades.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 2 of Spades
+### 2 of Spades
 
 There's a website with the ability to search for reviews on port 9001.
 
@@ -150,7 +154,7 @@ overwatch' union select 1,flag,link FROM hidden-- -
 
 {{< image src="/img/metasploitctf2020/2_of_spades.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 8 of Hearts
+### 8 of Hearts
 
 On port 4545, We are provided with 2 files:
 
@@ -168,7 +172,7 @@ All we needed to do was guess how many buffaloes it needed, the exact value was 
 
 {{< image src="/img/metasploitctf2020/8_of_hearts.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 8 of Spades
+### 8 of Spades
 
 On port 1080 a socks5 proxy is running on this port without any authentication. We can edit ```/etc/proxychains.conf``` and add this server as a socks5
 proxy server.
@@ -195,7 +199,7 @@ proxychains curl 127.0.0.1:8000
 
 {{< image src="/img/metasploitctf2020/8_of_spades.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## Red Joker
+### Red Joker
 
 On port 9007, we get a zip file.
 
@@ -211,7 +215,7 @@ Only thing needed is to extract it:
 
 {{< image src="/img/metasploitctf2020/joker_red.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 6 of Diamonds
+### 6 of Diamonds
 
 On port 8200, there's a website that we can upload images.
 
@@ -239,7 +243,7 @@ Flag was found at ```http://172.15.18.101:8200/157a7640-0fa4-11eb-adc1-0242ac120
 
 {{< image src="/img/metasploitctf2020/6_of_diamonds.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## Queen of Spades
+### Queen of Spades
 
 On port 8202, we have another website with barely any functionality to interact with.
 
@@ -272,7 +276,7 @@ The below query gives the location of the flag.
 
 {{< image src="/img/metasploitctf2020/queen_of_spades.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 2 of Hearts
+### 2 of Hearts
 
 On port 9000, there's another website similar to the one port 9001 but this one has a different way in which it handles searches. When we search using
 just a single character a, the first result is interesting as it looks like a folder in a terminal.
@@ -296,7 +300,7 @@ The vulnerable code is using the find command:
 
 {{< image src="/img/metasploitctf2020/2_of_hearts.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## Black Joker
+### Black Joker
 
 {{< image src="/img/metasploitctf2020/port8123.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
@@ -343,7 +347,7 @@ Supplying the email and password to /admin, we get the flag.
 
 {{< image src="/img/metasploitctf2020/black_joker.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-## 4 of Clubs
+### 4 of Clubs
 
 Port 8092:
 
@@ -357,7 +361,7 @@ For this challenge, we were able to bypass the hash check by supplying the passw
 
 {{< image src="/img/metasploitctf2020/4_of_clubs.png" alt="metasploit_ctf_2020" position="center" style="border-radius: 8px;" >}}
 
-# Conclusion
+## Conclusion
 
 This was a very nice ctf to brush up on some basic concepts. As we didn't solve all challenges, that means we still have some
 things to learn.

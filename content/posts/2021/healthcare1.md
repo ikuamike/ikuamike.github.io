@@ -76,9 +76,9 @@ we discover an sql injection vulnerability.
 {{< image src="/img/healthcare1/healthcare-4.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
 
 Unfortunately the PoC provided doesn't work. I found a better one from packetstormsecurity:
-
+```
 https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html
-
+```
 The PoC provided shows a blind sql injection. The below payload causes the request to delay for about 5 seconds.
 
 ```
