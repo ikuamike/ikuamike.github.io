@@ -13,6 +13,10 @@ showFullContent = false
 <!--more-->
 {{< image src="/img/sar1/sar1.png" alt="" position="center" style="border-radius: 8px;" >}}
 
+| Difficulty | Release Date | Author |
+| ---------- | ------------ | ------ |
+| Beginner | 15 Feb 2020 | Love |
+
 # Summary
 
 In this box there's only one port open that is running a vulnerable version of sar2html that
