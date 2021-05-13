@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>sar2html on ikuamike</title><link>https://blog.ikuamike.io/tags/sar2html/</link><description>Recent content in sar2html on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/sar2html/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/sar1/sar1.png" class="center" style="border-radius: 8px;" />
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Difficulty&lt;/th>
+&lt;th>Release Date&lt;/th>
+&lt;th>Author&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Beginner&lt;/td>
+&lt;td>15 Feb 2020&lt;/td>
+&lt;td>Love&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
 &lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that
 we take advantage of to get a low priv shell. For privilege escalation there was a cron job

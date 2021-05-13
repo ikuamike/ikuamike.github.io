@@ -2,7 +2,7 @@
 #<a href=https://blog.ikuamike.io/tags/vulnhub/>Vulnhub</a>&nbsp;
 #<a href=https://blog.ikuamike.io/tags/oscp-prep/>OSCP Prep</a>&nbsp;
 #<a href=https://blog.ikuamike.io/tags/sar2html/>sar2html</a>&nbsp;
-#<a href=https://blog.ikuamike.io/tags/cron/>Cron</a>&nbsp;</span><div class=post-content><div><img src=/img/sar1/sar1.png class=center style=border-radius:8px><h1 id=summary>Summary<a href=#summary class=hanchor arialabel=Anchor>&#8983;</a></h1><p>In this box there&rsquo;s only one port open that is running a vulnerable version of sar2html that
+#<a href=https://blog.ikuamike.io/tags/cron/>Cron</a>&nbsp;</span><div class=post-content><div><img src=/img/sar1/sar1.png class=center style=border-radius:8px><table><thead><tr><th>Difficulty</th><th>Release Date</th><th>Author</th></tr></thead><tbody><tr><td>Beginner</td><td>15 Feb 2020</td><td>Love</td></tr></tbody></table><h1 id=summary>Summary<a href=#summary class=hanchor arialabel=Anchor>&#8983;</a></h1><p>In this box there&rsquo;s only one port open that is running a vulnerable version of sar2html that
 we take advantage of to get a low priv shell. For privilege escalation there was a cron job
 running as root that was running a script we could write in.</p><h1 id=reconnaissance>Reconnaissance<a href=#reconnaissance class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Nmap</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>Nmap scan report <span style=color:#66d9ef>for</span> 192.168.56.107
 Host is up <span style=color:#f92672>(</span>0.000040s latency<span style=color:#f92672>)</span>.
