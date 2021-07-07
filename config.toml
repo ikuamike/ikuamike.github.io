@@ -24,7 +24,8 @@ enableemoji = true
   [languages.en]
     languageName = "English"
     title = "ikuamike"
-    subtitle = "CTFs :: InfoSec :: Hacking"
+    subtitle = "Capture The Flag Writeups :: Cyber Security :: Hacking"
+    description = "Blog about Cyber Security and Capture The Flag Writeups by Michael Ikua"
     keywords = ""
     copyright = "© Michael Ikua"
     menuMore = "Show more"
