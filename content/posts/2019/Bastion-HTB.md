@@ -7,6 +7,7 @@ tags = ["HTB", "SMB", "SAM", "John", "mRemoteNG"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/bastion/info_card.png"]
 +++
 <!--more-->
 {{< image src="/img/bastion/info_card.png" alt="Bastion Info Card" position="center" style="border-radius: 8px;" >}}
