@@ -2,13 +2,12 @@
 title = "Vulnhub: Sar 1"
 date = "2021-05-13"
 author = ""
-authorTwitter = "ikuamike" #do not include @
-cover = "/img/sar1/sar1.png"
+authorTwitter = "" #do not include @
+cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "sar2html", "Cron"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/sar1/sar1.png"]
 +++
 
 <!--more-->
