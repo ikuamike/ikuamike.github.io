@@ -24,7 +24,7 @@ enableemoji = true
 [languages]
   [languages.en]
     languageName = "English"
-    title = "ikuamike"
+    title = ""
     subtitle = "Capture The Flag Writeups :: Cyber Security :: Hacking"
     keywords = ""
     copyright = "© Michael Ikua"
