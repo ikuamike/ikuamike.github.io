@@ -19,6 +19,13 @@ enableemoji = true
   centerTheme = true
   # set a custom favicon (default is a `themeColor` square)
   # favicon = "favicon.ico"
+
+[params.twitter]
+  # set Twitter handles for Twitter cards
+  # see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
+  # do not include @
+  creator = "ikuamike"
+  site = "ikuamike"
   description = "Cyber Security :: Capture The Flag Writeups :: Hacking"
 
 [languages]
