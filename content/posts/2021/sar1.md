@@ -8,6 +8,7 @@ tags = ["Beginner", "Vulnhub", "OSCP Prep", "sar2html", "Cron"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/sar1/sar1.png"]
 +++
 
 <!--more-->
