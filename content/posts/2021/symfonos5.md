@@ -8,6 +8,7 @@ tags = ["Beginner", "Vulnhub", "OSCP Prep", "LDAP Injection", "LFI", "LDAP", "Su
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/symfonos1/symfonos1.png"]
 +++
 
 <!--more-->

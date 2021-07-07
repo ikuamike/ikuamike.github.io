@@ -8,6 +8,7 @@ tags = ["Intermediate", "Vulnhub", "OSCP Prep", "ffuf", "Directory Bruteforce", 
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/symfonos1/symfonos1.png"]
 +++
 
 <!--more-->

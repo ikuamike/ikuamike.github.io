@@ -8,6 +8,7 @@ tags = ["Intermediate", "Vulnhub", "OSCP Prep", "Directory Bruteforce", "OpenEMR
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/healthcare1/healthcare.png"]
 +++
 
 <!--more-->

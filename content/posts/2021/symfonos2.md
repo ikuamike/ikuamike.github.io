@@ -7,6 +7,7 @@ tags = ["Intermediate", "Vulnhub", "OSCP Prep", "Samba","ProFTPD", "CVE-2015-330
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/symfonos1/symfonos1.png"]
 +++
 
 <!--more-->

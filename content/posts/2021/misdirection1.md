@@ -9,6 +9,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 draft = false
+images = ["/img/misdirection1/misdirection.png"]
 +++
 
 <!--more-->

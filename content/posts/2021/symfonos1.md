@@ -7,6 +7,7 @@ tags = ["Beginner", "Vulnhub", "OSCP Prep", "Wordpress", "LFI", "SUID"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/symfonos1/symfonos1.png"]
 +++
 
 <!--more-->

@@ -8,6 +8,7 @@ tags = ["Beginner", "Vulnhub", "OSCP Prep", "Directory Bruteforce", "ffuf", "Wor
 keywords = ["", ""]
 description = ""
 showFullContent = false
+images = ["/img/lemonsqueezy1/lemon.png"]
 +++
 
 <!--more-->
