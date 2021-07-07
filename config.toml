@@ -19,7 +19,7 @@ enableemoji = true
   centerTheme = true
   # set a custom favicon (default is a `themeColor` square)
   # favicon = "favicon.ico"
-  description = "Blog about Cyber Security and Capture The Flag Writeups by Michael Ikua"
+  description = "Capture The Flag Writeups :: Cyber Security :: Hacking"
 
 [languages]
   [languages.en]
