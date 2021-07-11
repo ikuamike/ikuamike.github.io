@@ -1,5 +1,5 @@
 +++
-title = "Netcat - All You Need to Know"
+title = "Netcat - All you need to know"
 date = "2021-07-08"
 author = ""
 authorTwitter = "" #do not include @
