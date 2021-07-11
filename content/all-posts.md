@@ -4,6 +4,8 @@ title = "All Posts"
 
 # 2021
 
+[**Netcat - All you need to know**](https://blog.ikuamike.io/posts/2021/netcat/)
+
 [**Vulnhub: Sar 1**](https://blog.ikuamike.io/posts/2021/sar1/)
 
 [**Vulnhub: Misdirection 1**](https://blog.ikuamike.io/posts/2021/misdirection1/)
