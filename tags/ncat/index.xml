@@ -142,8 +142,8 @@ we haven&amp;rsquo;t looked into feel free to explore them, but I think we&amp;r
 &lt;p>Challenge for you, play around with netcat for windows (specifically ncat because of ssl feature). It&amp;rsquo;s a nice utility that can help you get reverse shells and doesn&amp;rsquo;t get flagged as a virus.&lt;/p>
 &lt;p>Happy Hacking!&lt;/p>
 &lt;h2 id="references">References&lt;/h2>
-&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Netcat">https://en.wikipedia.org/wiki/Netcat&lt;/a>
-&lt;a href="https://nmap.org/ncat/guide/index.html">https://nmap.org/ncat/guide/index.html&lt;/a>
-&lt;a href="http://netcat.sourceforge.net/">http://netcat.sourceforge.net/&lt;/a>
-&lt;a href="https://nc110.sourceforge.io/">https://nc110.sourceforge.io/&lt;/a>
-&lt;a href="https://eternallybored.org/misc/netcat/">https://eternallybored.org/misc/netcat/&lt;/a>&lt;/p></content></item></channel></rss>
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Netcat">https://en.wikipedia.org/wiki/Netcat&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://nmap.org/ncat/guide/index.html">https://nmap.org/ncat/guide/index.html&lt;/a>&lt;/p>
+&lt;p>&lt;a href="http://netcat.sourceforge.net/">http://netcat.sourceforge.net/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://nc110.sourceforge.io/">https://nc110.sourceforge.io/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://eternallybored.org/misc/netcat/">https://eternallybored.org/misc/netcat/&lt;/a>&lt;/p></content></item></channel></rss>
