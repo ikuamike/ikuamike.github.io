@@ -302,7 +302,11 @@ Happy Hacking!
 ## References
 
 https://en.wikipedia.org/wiki/Netcat
+
 https://nmap.org/ncat/guide/index.html
+
 http://netcat.sourceforge.net/
+
 https://nc110.sourceforge.io/
+
 https://eternallybored.org/misc/netcat/
