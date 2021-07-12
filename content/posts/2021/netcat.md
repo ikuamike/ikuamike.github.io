@@ -16,7 +16,7 @@ images = ["/img/netcat/netcat.png"]
 <!--more-->
 {{< image src="/img/netcat/netcat.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-# Introduction
+## Introduction
 
 Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
 In this article we'll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc...
