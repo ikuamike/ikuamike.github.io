@@ -43,7 +43,7 @@ By running ```apt search netcat``` on an ubuntu/debian based machine, it appears
 
 To install it you can then run ```sudo apt install netcat-traditional``` or via compiling from source which you can get from the project page https://nc110.sourceforge.io/.
 
-If you the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we'll run ```nc.traditional -h``` to see the command line
+If you install the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we'll run ```nc.traditional -h``` to see the command line
 options.
 
 {{< image src="/img/netcat/netcat-4.png" alt="" position="center" style="border-radius: 8px;" >}}
