@@ -16,7 +16,7 @@ longer maintained and is on version 1.10.&lt;/p>
 &lt;p>By running &lt;code>apt search netcat&lt;/code> on an ubuntu/debian based machine, it appears as netcat or netcat-traditional.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/netcat/netcat-1.png" class="center" style="border-radius: 8px;" />
 &lt;p>To install it you can then run &lt;code>sudo apt install netcat-traditional&lt;/code> or via compiling from source which you can get from the project page &lt;a href="https://nc110.sourceforge.io/">https://nc110.sourceforge.io/&lt;/a>.&lt;/p>
-&lt;p>If you the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we&amp;rsquo;ll run &lt;code>nc.traditional -h&lt;/code> to see the command line
+&lt;p>If you install the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we&amp;rsquo;ll run &lt;code>nc.traditional -h&lt;/code> to see the command line
 options.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/netcat/netcat-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>You notice the -e option, this is not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.&lt;/p>
