@@ -3,7 +3,7 @@ languageCode = "en-us"
 theme = "terminal"
 paginate = 7
 enableemoji = true
-googleAnalytics = "G-HMFQ8QDB0D"
+googleAnalytics = "UA-202973704-2"
 
 [params]
   # dir name of your blog content (default is `content/posts`)
