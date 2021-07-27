@@ -225,7 +225,7 @@ nc -lvnp 8080 > outfile (server2)
 This feature is not implemented in ncat but is available in the other variants. According to their website they omitted this feature because
 they have a better tool for that, which would be nmap.
 
-Therefore if you find a system with netcat-openbsd and can install nmap you can't run basic port scans as below.
+Therefore if you find a system with netcat-openbsd and can't install nmap you can run basic port scans as below.
 
 To scan TCP ports on a target we can use the below syntax.
 
