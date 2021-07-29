@@ -29,8 +29,8 @@ link below.
 
 ## Variants
 
-There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written to be used on linux
-the variants are linux based but you can still have netcat on windows.
+There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written for Unix,
+the variants we will look at are linux based. You can also find netcat ports for windows that support similar commands to what we'll look at.
 
 ### Netcat Traditional
 
