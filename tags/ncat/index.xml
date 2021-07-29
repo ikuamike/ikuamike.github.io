@@ -8,8 +8,8 @@ link below.&lt;/p>
 &lt;p>&lt;a href="https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8" target="_blank" rel="noopener">Netcat Scenario&lt;/a>
 &lt;/p>
 &lt;h2 id="variants">Variants&lt;/h2>
-&lt;p>There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written to be used on linux
-the variants are linux based but you can still have netcat on windows.&lt;/p>
+&lt;p>There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written for Unix,
+the variants we will look at are linux based. You can also find netcat ports for windows that support similar commands to what we&amp;rsquo;ll look at.&lt;/p>
 &lt;h3 id="netcat-traditional">Netcat Traditional&lt;/h3>
 &lt;p>Netcat traditional is the original implementation and was written by a guy known as Hobbit. This does not typically come preinstalled unless you are using a distro like kali linux. It is no
 longer maintained and is on version 1.10.&lt;/p>
