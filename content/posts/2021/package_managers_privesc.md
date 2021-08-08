@@ -8,7 +8,6 @@ tags = ["Linux Privilege Escalation", "Sudo"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-draft = true
 toc = true
 images = ["/img/package_manager_privesc/package.png"]
 +++
