@@ -433,10 +433,6 @@ task. Therefore, only provide this permission with these risks in mind.
 Althrough out this tutorial the fpm package has been very useful, it's a really nice tool to quickly create packages for our use case.
 It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.
 
-Althrough out this tutorial the fpm package has been useful, it's a really nice tool to quickly create packages for our use case.
-
-It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.
-
 There are some techniques I haven't fully explored like using **rpm**, feel free to try this out on the provided cyberranges lab. 
 
 
