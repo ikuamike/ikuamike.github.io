@@ -257,8 +257,6 @@ same way as earlier.&lt;/p>
 task. Therefore, only provide this permission with these risks in mind.&lt;/p>
 &lt;p>Althrough out this tutorial the fpm package has been very useful, it&amp;rsquo;s a really nice tool to quickly create packages for our use case.
 It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.&lt;/p>
-&lt;p>Althrough out this tutorial the fpm package has been useful, it&amp;rsquo;s a really nice tool to quickly create packages for our use case.&lt;/p>
-&lt;p>It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.&lt;/p>
 &lt;p>There are some techniques I haven&amp;rsquo;t fully explored like using &lt;strong>rpm&lt;/strong>, feel free to try this out on the provided cyberranges lab.&lt;/p>
 &lt;h2 id="references">References&lt;/h2>
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">https://github.com/jordansissel/fpm/
