@@ -369,7 +369,7 @@ touch hooks/install
 Now we will put our malicious commands in the install file and make it and executable bash script. 
 
 Since our goal is to obtain a root shell, we will use another technique of adding a new user with uid 0 to give us 
-root privileges. You can also use a reverse shell commmand.
+root privileges. You can also use a reverse shell command.
 
 ```sh
 #!/bin/bash
