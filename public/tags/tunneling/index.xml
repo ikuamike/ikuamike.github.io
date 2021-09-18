@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tunneling on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/tunneling/</link>
+    <description>Recent content in Tunneling on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Sun, 01 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/tunneling/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title>
+      <link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link>
+      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid>
+      <description></description>
+      <content>&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+&lt;p&gt;During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided
+to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges
+that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for
+ssh tunneling techniques.&lt;/p&gt;
+&lt;p&gt;I am writing this to serve as a personal reference for ssh tunneling as it has a very good practical aspect to use as an example. I will show different
+ways these challenges could have been solved.&lt;/p&gt;
+&lt;h2 id=&#34;1-bastion&#34;&gt;1. Bastion&lt;/h2&gt;
+&lt;p&gt;Challenge description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Connect to the bastion host 104.131.101.182
+
+User: tunneler 
+Password: tunneler 
+SSH Port: 2222
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Solution:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh tunneler@104.131.101.182 -p &lt;span style=&#34;color:#ae81ff&#34;&gt;2222&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once we ssh in, we get the following welcome message and also the bastion host is connected to multiple networks. We don&amp;rsquo;t see the ip we used to ssh in as
+we are droppped in a docker container.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot1.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;2-browsing-websites&#34;&gt;2. Browsing Websites&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Browse to http://10.174.12.14/
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This challenge requires a local port forward.&lt;/p&gt;
+&lt;p&gt;Solution 1:&lt;/p&gt;
+&lt;p&gt;Using ssh command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh tunneler@104.131.101.182 -p &lt;span style=&#34;color:#ae81ff&#34;&gt;2222&lt;/span&gt; -L 8000:10.174.12.14:80
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then use curl to reach the website.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl 127.0.0.1:8000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Solution 2:&lt;/p&gt;
+&lt;p&gt;Using ssh config and add &lt;code&gt;LocalForward&lt;/code&gt; entry.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host bastion
+ Hostname 104.131.101.182
+ User tunneler
+ Port 2222
+ LocalForward 8000 10.174.12.14:80
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then ssh into bastion and run curl as above.&lt;/p&gt;
+&lt;p&gt;Solution 3:&lt;/p&gt;
+&lt;p&gt;Running sshuttle to add a route to the target ip, this utilizes the ssh config for bastion without the localforward entry.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sshuttle -r bastion 10.174.12.14/32
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The beauty about this one is that I can reach the ip directly now.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl 10.174.12.14
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot2.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;3-ssh-in-tunnels&#34;&gt;3. SSH in tunnels&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SSH through the bastion to the pivot.
+
+IP: 10.218.176.199 
+User: whistler 
+Pass: cocktailparty
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For this challenge we need to jump through the bastion host and access the pivot.&lt;/p&gt;
+&lt;p&gt;Solution 1:&lt;/p&gt;
+&lt;p&gt;Using the &lt;code&gt;-J&lt;/code&gt; option in ssh command, this sets up a proxyjump.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Solution 2:&lt;/p&gt;
+&lt;p&gt;Using ssh config, this builds on the config we started with in the previous challenge and uses &lt;code&gt;ProxyJump&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host pivot1
+ Hostname 10.218.176.199
+ User whistler
+ ProxyJump bastion
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then all we need to do is run the following command and see that pivot1 is also connected to more than one network.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh pivot1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot3.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;4-beacons-everywhere&#34;&gt;4. Beacons Everywhere&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Something is Beaconing to the pivot on port 58671-58680 
+to ip 10.112.3.199, can you tunnel it back?
+
+NOTE: IT IS THE SAME ON EACH PORT ONLY USE ONE PORT 
+AND REMOVE YOUR TUNNEL WHEN YOU ARE DONE
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For this challenge we need to achieve a remote port forward.&lt;/p&gt;
+&lt;p&gt;Solution 1:&lt;/p&gt;
+&lt;p&gt;Using ssh command. First we proxyjump then perform the remote port forward.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:58671:127.0.0.1:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then on another terminal window, open a netcat listener.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;5000&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Solution 2:&lt;/p&gt;
+&lt;p&gt;Using ssh config. For this I&amp;rsquo;ll add a &lt;code&gt;RemoteForward&lt;/code&gt; option under pivot1.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host pivot1
+ Hostname 10.218.176.199
+ User whistler
+ ProxyJump bastion
+ RemoteForward 58671 127.0.0.1:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we just run &lt;code&gt;ssh pivot1&lt;/code&gt; and open a netcat listener.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot4.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;5-beacons-annoying&#34;&gt;5. Beacons Annoying&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Connect to ip: 10.112.3.88 port: 7000, a beacon awaits you
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This challenge needs a local port forward and a remote port forward.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;Using ssh command, here we proxyjump and then forward localport 7000 to our target at port 7000.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 7000:10.112.3.88:7000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then connect using netcat.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -vn 127.0.0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;7000&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot5.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Next step is using a reverse port forward to receive the flag, we need to be quick to set the port as the flag is sent after 15s.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -R 10.112.3.199:17172:127.0.0.1:6000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then on another terminal open a listener on port 6000.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -vn 127.0.0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;6000&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot6.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;It was an annoying beacon indeed, we needed 4 terminal panes open (I use tmux).&lt;/p&gt;
+&lt;h2 id=&#34;6-scan-me&#34;&gt;6. Scan me&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;We deployed a ftp server but we forgot which port, find it and connect
+
+ftp: 10.112.3.207 user: bishop pass: geese
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For this challenge we need to perform a portscan then a local portforward. However, port scanning over a tunnel can be quite slow
+or sometimes fail. I ended up uploading an nmap binary to pivot1 and then scan the target.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;Building on the previous ssh config, I&amp;rsquo;ll use scp to upload nmap. Nmap needs a services file to run, we need to upload that as well. Then from pivot1
+we can perform a full portscan.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;scp /opt/nmap-7.91SVN-x86_64-portable/nmap pivot1:/tmp
+scp /opt/nmap-7.91SVN-x86_64-portable/data/nmap-services pivot1:/tmp
+./nmap --datadir /tmp -p- 10.112.3.207
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot7.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After getting the port, let&amp;rsquo;s use sshuttle to add a route to the ftp server.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sshuttle -r pivot1 10.112.3.207/32
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next is to just connect to the ftp server, the flag was in the banner.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot8.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;7-another-pivot&#34;&gt;7. Another Pivot&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Connect to the second pivot
+
+IP: 10.112.3.12 
+User: crease 
+Pass: NoThatsaV
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;More proxyjumps.&lt;/p&gt;
+&lt;p&gt;Solution 1:&lt;/p&gt;
+&lt;p&gt;Multiple proxyjumps can be separated by a comma.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222,whistler@10.218.176.199 crease@10.112.3.12
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Solution 2:&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ll update ssh config with this new pivot.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host pivot2
+ Hostname 10.112.3.12
+ User crease
+ ProxyJump pivot1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then run&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh pivot2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This host is connected to multiple networks and it seems portforwarding is disabled here, therefore we&amp;rsquo;ll have some fun with socat!&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot9.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;8-snmp&#34;&gt;8. SNMP&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;There is a snmp server at 10.24.13.161
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This challenge is interesting because snmp runs over udp, you can&amp;rsquo;t really create a udp tunnel. We&amp;rsquo;ll tunnel udp inside a tcp tunnel.
+Since in pivot2 tunneling is disabled we&amp;rsquo;ll use socat.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;First we ssh into pivot2 then open a tcp listener which redirects traffic to udp out to snmp.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;socat TCP4-LISTEN:5000,fork UDP4:10.24.13.161:161
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next we open a local portforward through pivot1 to the tcp port on pivot2 we opened above, I&amp;rsquo;ll use the full ssh command here.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 5000:10.112.3.12:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then on our local machine we use socat again to redirect from local udp 161 to local port 5000 that would be forwarded by the above tunnel.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sudo socat UDP4-LISTEN:161,fork TCP:localhost:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then finally we run snmpwalk against localhost and the traffic is forwarded through the long tunnel created.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;snmpwalk -v1 -c public localhost
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot10.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;9-samba&#34;&gt;9. Samba&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;There is a samba server at 10.24.13.10, find a flag sitting in the root file system /
+
+nothing to find in the shares
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Similar to the snmp one above we&amp;rsquo;ll use socat to tunnel to the samba server.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;First we ssh into pivot2 and use socat to redirect traffic&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;socat -v TCP-LISTEN:5000,fork TCP:10.24.13.10:445
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then perform a local portforward through pivot1 to pivot2&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh -J tunneler@104.131.101.182:2222 whistler@10.218.176.199 -L 5000:10.112.3.12:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Based on the challenge description, we need to access the root file system and nothing is in the shares. Sounds like
+we need to exploit it as there&amp;rsquo;s no other way to access the root file system.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;Run nmap to find the samba version and check for exploit in exploitdb using searchsploit.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nmap -sC -sV -p &lt;span style=&#34;color:#ae81ff&#34;&gt;5000&lt;/span&gt; 127.0.0.1
+searchsploit samba
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot11.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;There are several metasploit exploits listed for samba therefore we&amp;rsquo;ll use it.
+The exploit that worked is &lt;code&gt;exploit/linux/samba/is_known_pipename&lt;/code&gt; and we get the flag.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot12.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;10-browsing-website-2&#34;&gt;10. Browsing website 2&lt;/h2&gt;
+&lt;p&gt;Challenge Description:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Browse to http://2a02:6b8:b010:9010:1::86/
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This challenge shows portforwarding from ipv4 to ipv6. We&amp;rsquo;ll use socat too on this one.&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;First we ssh into pivot1 then use socat to redirect traffic from ipv4 to ipv6.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;socat -v TCP-LISTEN:5000,fork TCP6:&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;2a02:6b8:b010:9010:1::86&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;:80
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then forward local port 5000 through pivot1 to pivot 2&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ssh pivot1 -L 5000:10.112.3.12:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then make the web request to local port 5000 which will be forwarded through the tunnel created.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl localhost:5000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/screenshot13.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The final base ssh config looked like this without the port forwards:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host bastion
+ Hostname 104.131.101.182
+ User tunneler
+ Port 2222
+
+Host pivot1
+ Hostname 10.218.176.199
+ User whistler
+ ProxyJump bastion
+
+Host pivot2
+ Hostname 10.112.3.12
+ User crease
+ ProxyJump pivot1
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;There are several techniques to make your tunneling much easier, for quick use like in a ctf I think crafting the full ssh command is better and
+faster. For frequent connection, using sshuttle combined with a good ssh config can make your life much easier.&lt;/p&gt;
+&lt;p&gt;After all those connections here&amp;rsquo;s a Network Diagram that visualizes the access we were able to achieve with the tunnels:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/grayhat_2020/Tunneler.png&#34;  alt=&#34;grayhat_redteam_ctf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Here&amp;rsquo;s a nice writeup by &lt;a href=&#34;https://twitter.com/Rayhan0x01&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;@Rayhan0x01&lt;/a&gt;
+
+ on how he used a different approach using metasploit:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;https://rayhan0x01.github.io/ctf/2020/08/08/defcon-redteamvillage-ctf-tunneler-1,2,3,4,5,7,9.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;resources&#34;&gt;Resources&lt;/h2&gt;
+&lt;p&gt;Some resources I think are helpful in understanding ssh tunneling properly.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;1. https://www.redhat.com/sysadmin/ssh-proxy-bastion-proxyjump
+2. https://www.cyberciti.biz/faq/linux-unix-ssh-proxycommand-passing-through-one-host-gateway-server/
+3. https://book.hacktricks.xyz/tunneling-and-port-forwarding
+4. https://linuxize.com/post/how-to-setup-ssh-tunneling/
+5. https://www.tecmint.com/create-ssh-tunneling-port-forwarding-in-linux/
+6. https://app.cyberranges.com/scenario/5d5c06ed960f032f2eadd733
+7. https://app.cyberranges.com/scenario/5d5eaf28960f032f2eae6add
+8. https://app.cyberranges.com/scenario/5d640b0c960f032f2eb033a8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p&gt;
+&lt;p&gt;Twitter: &lt;a href=&#34;https://twitter.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

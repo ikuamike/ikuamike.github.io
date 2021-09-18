@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>jadx-gui on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/jadx-gui/</link>
+    <description>Recent content in jadx-gui on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Wed, 28 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/jadx-gui/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RaziCTF 2020 WriteUp: Chasing a lock</title>
+      <link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link>
+      <pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid>
+      <description></description>
+      <content>&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;I recently participated in &lt;a href=&#34;https://ctftime.org/event/1167&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;RaziCTF 2020&lt;/a&gt;
+
+ with team
+&lt;a href=&#34;https://ctftime.org/team/112710&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;fr344aks&lt;/a&gt;
+
+ and I was able to solve an android challenge that I thought
+needs a proper writeup.
+I was able to reverse engineer the provided app and use frida for dynamic analysis for a quick win.&lt;/p&gt;
+&lt;h3 id=&#34;challenge-description&#34;&gt;Challenge Description:&lt;/h3&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot1.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;I first installed the app in my genymotion emulator to see the basic functionality. There is a padlock icon
+constantly changing position on the screen and text at the bottom that says &lt;code&gt;20000 to break the lock&lt;/code&gt;.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot2.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;When I click on the padlock the number decreases by 1. This is definitely chasing a lock as the challenge name.&lt;/p&gt;
+&lt;p&gt;The goal seems pretty straightforward, we need to get the value to zero to get the flag. Now to decompile the app and see if we
+can find a way. Like my previous writeup, I&amp;rsquo;ll use jadx-gui.&lt;/p&gt;
+&lt;p&gt;From the AndroidManifest.xml we get the MainActivity that is loaded when the app starts.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot3.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Looking at the MainActivity code we see a switcher object being initialized just before the if statement that does some
+check before displaying the flag. The switcher object has a method &lt;code&gt;run&lt;/code&gt; that takes in a value &lt;code&gt;i&lt;/code&gt; and the output is checked
+if it&amp;rsquo;s not null and then the flag is displayed.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot4.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Let&amp;rsquo;s look at run method in the switcher class as it&amp;rsquo;s output determines whether the flag is displayed.
+In the switcher code we can see the method &lt;code&gt;run&lt;/code&gt;. Instead of trying to figure out what each line does, I saw it easier to just hook into
+this method and manipulate the &lt;code&gt;i&lt;/code&gt; value, which at this point I believe is the 20000 value.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot5.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;I found two ways to solve this with frida, the run method was actually the one returning the flag:&lt;/p&gt;
+&lt;p&gt;First one is to hook into the method and change the input value &lt;code&gt;i&lt;/code&gt; as it gets called.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;Java&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;perform&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt;(){
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcher&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Java&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;use&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;com.example.razictf_2.switcher&amp;#34;&lt;/span&gt;);
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcher&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;)
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hooking...&amp;#34;&lt;/span&gt;);
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;overload&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;int&amp;#39;&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;implementation&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;x&lt;/span&gt;){
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[*] Original Input: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;x&lt;/span&gt;);
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ret&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;x&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[*] Original return: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ret&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[*] Modified Input: 0&amp;#34;&lt;/span&gt;);
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[*] Modified return: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;))
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ret&lt;/span&gt;;
+ };
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;When I click on the padlock in the app, the flag is given.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot6.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Second one is to just initialize the switcher object ourselves and call the run method directly with our input without hooking.
+This way I don&amp;rsquo;t need to interact with the app.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;Java&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;perform&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt;(){
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcher&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Java&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;use&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;com.example.razictf_2.switcher&amp;#34;&lt;/span&gt;);
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcherInstance&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcher&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;$new&lt;/span&gt;();
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Flag: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;switcherInstance&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;));
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/razictf_2020/screenshot7.png&#34;  alt=&#34;razictf&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;&lt;code&gt;Flag:  RaziCTF{IN_HATE_0F_RUNN!NG_L0CK5}&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;This was a good learning experience for me especially the second part which is quicker and has less code.&lt;/p&gt;
+&lt;p&gt;You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p&gt;
+&lt;p&gt;Twitter: &lt;a href=&#34;https://twitter.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/ikuamike&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ikuamike&lt;/a&gt;
+
+&lt;/p&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

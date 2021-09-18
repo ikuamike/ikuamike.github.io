@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Directory Bruteforce :: ikuamike</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://blog.ikuamike.io/tags/directory-bruteforce/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-202973704-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-202973704-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Directory Bruteforce"/>
+<meta name="twitter:description" content="Cyber Security :: Capture The Flag Writeups :: Hacking"/>
+<meta name="twitter:site" content="@ikuamike"/>
+
+
+
+<link rel="stylesheet" href="https://blog.ikuamike.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://blog.ikuamike.io/assets/green.css">
+
+
+
+<link rel="stylesheet" href="https://blog.ikuamike.io/style.css">
+
+
+<link rel="apple-touch-icon" href="https://blog.ikuamike.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://blog.ikuamike.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@ikuamike"/>
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Directory Bruteforce">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://blog.ikuamike.io/tags/directory-bruteforce/" />
+<meta property="og:site_name" content="ikuamike" />
+
+  
+    <meta property="og:image" content="https://blog.ikuamike.io/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+  <link href="/tags/directory-bruteforce/index.xml" rel="alternate" type="application/rss+xml" title="ikuamike" />
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    &gt; cd ~
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About Me</a></li>
+        
+      
+        
+          <li><a href="/all-posts">All Posts</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+        <ul class="menu__sub-inner">
+          <li class="menu__sub-inner-more-trigger">Show more ▾</li>
+
+          <ul class="menu__sub-inner-more hidden">
+            
+              
+                <li><a href="/webinars">Webinars</a></li>
+              
+            
+          </ul>
+        </ul>
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About Me</a></li>
+      
+    
+      
+        <li><a href="/all-posts">All Posts</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+      
+        <li><a href="/webinars">Webinars</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+  
+  <div class="posts">
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://blog.ikuamike.io/posts/2021/lemonsqueezy1/">Vulnhub: Lemon Squeezy 1</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-04-13
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://blog.ikuamike.io/tags/beginner/">Beginner</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/vulnhub/">Vulnhub</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/directory-bruteforce/">Directory Bruteforce</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/ffuf/">ffuf</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/wordpress/">WordPress</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/wpscan/">WPScan</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/phpmyadmin/">PHPMyAdmin</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/cron/">Cron</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          
+          
+          
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2021/lemonsqueezy1/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://blog.ikuamike.io/posts/2021/healthcare1/">Vulnhub: Healthcare 1</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-04-03
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://blog.ikuamike.io/tags/intermediate/">Intermediate</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/vulnhub/">Vulnhub</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/directory-bruteforce/">Directory Bruteforce</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/openemr/">OpenEMR</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/sqli/">SQLi</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/suid/">SUID</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          
+          
+          
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2021/healthcare1/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://blog.ikuamike.io/posts/2021/symfonos4/">Vulnhub: Symfonos 4</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-02-15
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://blog.ikuamike.io/tags/intermediate/">Intermediate</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/vulnhub/">Vulnhub</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/ffuf/">ffuf</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/directory-bruteforce/">Directory Bruteforce</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/lfi/">LFI</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/pickle/">Pickle</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/deserialization/">Deserialization</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/sqli/">SQLi</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          
+          
+          
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2021/symfonos4/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://blog.ikuamike.io/posts/2021/symfonos3/">Vulnhub: Symfonos 3</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-02-11
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://blog.ikuamike.io/tags/intermediate/">Intermediate</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/vulnhub/">Vulnhub</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/oscp-prep/">OSCP Prep</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/ffuf/">ffuf</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/directory-bruteforce/">Directory Bruteforce</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/shellshock/">ShellShock</a>&nbsp;
+            
+            #<a href="https://blog.ikuamike.io/tags/tcpdump/">Tcpdump</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          
+          
+          
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2021/symfonos3/">Read more →</a>
+        </div>
+        
+      </div>
+    
+    <div class="pagination">
+  <div class="pagination__buttons">
+    
+    
+  </div>
+</div>
+
+  </div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Michael Ikua</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://blog.ikuamike.io/assets/main.js"></script>
+<script src="https://blog.ikuamike.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>
+addBackToTop({
+  diameter: 40,
+  backgroundColor: 'rgb(120, 226, 160)',
+  textColor: '#1F222A',
+  cornerOffset: 30
+})
+</script>
+</body>
+</html>
