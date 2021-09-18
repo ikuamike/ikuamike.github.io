@@ -1,6 +1,6 @@
 +++
 title = "H@cktivityCon 2021 CTF Writeup"
-date = "2021-09-19"
+date = "2021-09-18"
 author = ""
 authorTwitter = "" #do not include @
 cover = ""
