@@ -127,7 +127,7 @@ ssh -i redis root@127.0.0.1
 
 {{< image src="/img/hacktivitycon-2021/redlike-3.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-### 4. Race Car
+### 4. Miscellaneous: Race Car
 
 Challenge Description:
 
