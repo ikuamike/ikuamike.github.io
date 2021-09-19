@@ -58,7 +58,7 @@ chmod &lt;span style="color:#ae81ff">600&lt;/span> redis
 ssh -i redis root@127.0.0.1
 &lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/redlike-3.png" class="center" style="border-radius: 8px;" />
-&lt;h3 id="4-race-car">4. Race Car&lt;/h3>
+&lt;h3 id="4-miscellaneous-race-car">4. Miscellaneous: Race Car&lt;/h3>
 &lt;p>Challenge Description:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/racecar-1.png" class="center" style="border-radius: 8px;" />
 &lt;p>I enjoyed this one as I was the second to solve it.&lt;/p>
