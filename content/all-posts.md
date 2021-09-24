@@ -4,6 +4,8 @@ title = "All Posts"
 
 # 2021
 
+[**H@cktivityCon 2021 CTF Writeup**](https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/)
+
 [**Linux Privilege Escalation - Package Managers**](https://blog.ikuamike.io/posts/2021/package_managers_privesc/)
 
 [**Netcat - All you need to know**](https://blog.ikuamike.io/posts/2021/netcat/)
