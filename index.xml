@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ikuamike</title><link>https://blog.ikuamike.io/</link><description>Recent content on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Sat, 18 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/index.xml" rel="self" type="application/rss+xml"/><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/hacktivity.jpeg" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ikuamike</title><link>https://blog.ikuamike.io/</link><description>Recent content on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Tue, 09 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/index.xml" rel="self" type="application/rss+xml"/><item><title>AfricaHackon 2021 CTF Finals WriteUp</title><link>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</link><pubDate>Tue, 09 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/ahctf1.jpg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Last week &lt;a href="https://twitter.com/mystic_kev" target="_blank" rel="noopener">@mystic_kev&lt;/a>
+and I participated in the AfricaHackon 2021 CTF finals as team NoPwnNoGain, we managed position 4.
+We were able to solve 3 challenges with first blood on 2 of them. This writeup demonstrates how I was able to solve one of them.&lt;/p>
+&lt;h2 id="challenges">Challenges&lt;/h2>
+&lt;h3 id="1-processing">1. Processing&lt;/h3>
+&lt;p>Challenge description:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing.png" class="center" style="border-radius: 8px;" />
+&lt;p>For this challenge we are provided a zip file with the java apps for the challenge.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing2.png" class="center" style="border-radius: 8px;" />
+&lt;p>The Challenge file is a shell script that allows for executing the challenge easily. On executing it we get a gui app.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing3.png" class="center" style="border-radius: 8px;" />
+&lt;p>When we supply the wrong password we get access denied.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing4.png" class="center" style="border-radius: 8px;" />
+&lt;p>Since this are jar files we can decrypt them using jadx-gui. I&amp;rsquo;ll focus on the Challenge.jar file as it&amp;rsquo;s the entrypoint
+of the challenge. From jadx-gui we can spot the functions responsible for the input interface and for checking the password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing5.png" class="center" style="border-radius: 8px;" />
+&lt;p>The next logical step would be to reverse engineer the code and build the flag from there. If you would like to see how that
+approach would have been done see these writeups.&lt;/p>
+&lt;p>&lt;a href="https://lvmalware.github.io/writeup/2021/11/06/Africahackon-Finals.html" target="_blank" rel="noopener">https://lvmalware.github.io/writeup/2021/11/06/Africahackon-Finals.html&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408" target="_blank" rel="noopener">https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408&lt;/a>
+&lt;/p>
+&lt;p>I used a different approach that I learnt from another ctf that I would like to share.&lt;/p>
+&lt;p>By using a tool called &lt;a href="https://github.com/Col-E/Recaf" target="_blank" rel="noopener">recaf&lt;/a>
+we can edit the application&amp;rsquo;s code and repackage it again to run
+our modified code. This means that we can utilize the existing functions and classes in the application to achieve our goal.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing6.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-java" data-lang="java"> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">boolean&lt;/span> &lt;span style="color:#a6e22e">checkPW&lt;/span>&lt;span style="color:#f92672">(&lt;/span>String pw&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+ArrayList&lt;span style="color:#f92672">&amp;lt;&lt;/span>Character&lt;span style="color:#f92672">&amp;gt;&lt;/span> output &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> ArrayList&lt;span style="color:#f92672">&amp;lt;&lt;/span>Character&lt;span style="color:#f92672">&amp;gt;();&lt;/span>
+&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> 0&lt;span style="color:#f92672">;&lt;/span>
+&lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#f92672">(&lt;/span>i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">s_key&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">length&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;span style="color:#66d9ef">char&lt;/span> test &lt;span style="color:#f92672">=&lt;/span> PApplet&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">parseChar&lt;/span>&lt;span style="color:#f92672">(&lt;/span>Challenge&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">unhex&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">s_key&lt;/span>&lt;span style="color:#f92672">[&lt;/span>i&lt;span style="color:#f92672">]));&lt;/span>
+output&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">add&lt;/span>&lt;span style="color:#f92672">(&lt;/span>test&lt;span style="color:#f92672">);&lt;/span>
+&lt;span style="color:#f92672">++&lt;/span>i&lt;span style="color:#f92672">;&lt;/span>
+&lt;span style="color:#f92672">}&lt;/span>
+System&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">out&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">println&lt;/span>&lt;span style="color:#f92672">(&lt;/span>output&lt;span style="color:#f92672">);&lt;/span>
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;span style="color:#f92672">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>I edited the checkPW function as shown above, and then saved the new Challenge.jar by exporting it.&lt;/p>
+&lt;pre>&lt;code>File -&amp;gt; Export Program
+&lt;/code>&lt;/pre>&lt;p>With our Challenge.jar modified we can run the challenge and get the flag. Also I am not so good with java so I let the output appear as an array
+then cleaned it up manually.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing7.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">flag&lt;span style="color:#f92672">{&lt;/span>Processing_1s_a_c00l_Pr0gramm1ng_language&lt;span style="color:#f92672">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="2-phished">2. Phished&lt;/h3>
+&lt;p>I was to solve phished and get &lt;strong>first blood&lt;/strong> but I followed John Hammond&amp;rsquo;s video on a previous ctf that solved this similar challenge so I&amp;rsquo;ll just link it
+as the explanation is good enough. Only difference is I used &lt;a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener">cyberchef&lt;/a>
+for find and replace to clean up the output
+from the xls instead of an editor.&lt;/p>
+&lt;p>&lt;a href="https://youtu.be/QgHhgwKL79Q" target="_blank" rel="noopener">https://youtu.be/QgHhgwKL79Q&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://twitter.com/trevorsaudi" target="_blank" rel="noopener">@trevorsaudi&lt;/a>
+also shows how to solve this in his writeup.&lt;/p>
+&lt;pre>&lt;code>https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408
+&lt;/code>&lt;/pre>&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>Thanks to &lt;a href="https://twitter.com/AfricaHackon" target="_blank" rel="noopener">@AfricaHackon&lt;/a>
+and the partners for the CTF, we don&amp;rsquo;t get to play many locally organised ctfs so this was good to compete against local teams.&lt;/p>
+&lt;p>You can still play the challenges by visiting this link &lt;a href="https://ctfroom.com/vaults/" target="_blank" rel="noopener">https://ctfroom.com/vaults/&lt;/a>
+&lt;/p></content></item><item><title>Hackfest 2021 Ctf</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Fri, 29 Oct 2021 14:55:33 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content/></item><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/hacktivity.jpeg" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>H@cktivityCon 2021 was happening over the weekend and I participated in their ctf with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">@fr334aks&lt;/a>
 . We managed position 49 out of 2527 teams.
