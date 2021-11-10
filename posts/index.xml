@@ -27,7 +27,7 @@ approach would have been done see these writeups.&lt;/p>
 we can edit the application&amp;rsquo;s code and repackage it again to run
 our modified code. This means that we can utilize the existing functions and classes in the application to achieve our goal.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing6.png" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-java" data-lang="java"> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">boolean&lt;/span> &lt;span style="color:#a6e22e">checkPW&lt;/span>&lt;span style="color:#f92672">(&lt;/span>String pw&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-java" data-lang="java">&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">boolean&lt;/span> &lt;span style="color:#a6e22e">checkPW&lt;/span>&lt;span style="color:#f92672">(&lt;/span>String pw&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 ArrayList&lt;span style="color:#f92672">&amp;lt;&lt;/span>Character&lt;span style="color:#f92672">&amp;gt;&lt;/span> output &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> ArrayList&lt;span style="color:#f92672">&amp;lt;&lt;/span>Character&lt;span style="color:#f92672">&amp;gt;();&lt;/span>
 &lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> 0&lt;span style="color:#f92672">;&lt;/span>
 &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#f92672">(&lt;/span>i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">s_key&lt;/span>&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">length&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
@@ -40,8 +40,8 @@ System&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#a6e22e">o
 &lt;span style="color:#f92672">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>I edited the checkPW function as shown above, and then saved the new Challenge.jar by exporting it.&lt;/p>
 &lt;pre>&lt;code>File -&amp;gt; Export Program
-&lt;/code>&lt;/pre>&lt;p>With our Challenge.jar modified we can run the challenge and get the flag. Also I am not so good with java so I let the output appear as an array
-then cleaned it up manually.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>With our Challenge.jar modified we can run the challenge then supply any input as the password check is removed and get the flag. I am not so good with java
+so I let the output appear as an array then cleaned it up manually.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing7.png" class="center" style="border-radius: 8px;" />
 &lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">flag&lt;span style="color:#f92672">{&lt;/span>Processing_1s_a_c00l_Pr0gramm1ng_language&lt;span style="color:#f92672">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="2-phished">2. Phished&lt;/h3>
