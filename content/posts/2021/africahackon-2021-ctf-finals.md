@@ -60,18 +60,18 @@ our modified code. This means that we can utilize the existing functions and cla
 {{< image src="/img/ahfinals2021/processing6.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 ```java
-    public boolean checkPW(String pw) {
-        ArrayList<Character> output = new ArrayList<Character>();
-        int i = 0;
-        while (i < this.s_key.length) {
-            char test = PApplet.parseChar(Challenge.unhex(this.s_key[i]));
-            output.add(test);
-            ++i;
-        }
-        System.out.println(output);
-        return true;
+public boolean checkPW(String pw) {
+	ArrayList<Character> output = new ArrayList<Character>();
+	int i = 0;
+	while (i < this.s_key.length) {
+	    char test = PApplet.parseChar(Challenge.unhex(this.s_key[i]));
+	    output.add(test);
+	    ++i;
+	}
+	System.out.println(output);
+	return true;
 
-    }
+}
 ```
 I edited the checkPW function as shown above, and then saved the new Challenge.jar by exporting it.
 
@@ -79,8 +79,8 @@ I edited the checkPW function as shown above, and then saved the new Challenge.j
 File -> Export Program
 ```
 
-With our Challenge.jar modified we can run the challenge and get the flag. Also I am not so good with java so I let the output appear as an array
-then cleaned it up manually.
+With our Challenge.jar modified we can run the challenge then supply any input as the password check is removed and get the flag. I am not so good with java 
+so I let the output appear as an array then cleaned it up manually.
 
 {{< image src="/img/ahfinals2021/processing7.png" alt="" position="center" style="border-radius: 8px;" >}}
 
