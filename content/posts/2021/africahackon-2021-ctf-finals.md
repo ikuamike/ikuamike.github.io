@@ -13,7 +13,7 @@ images = ["/img/ahfinals2021/ahctf1.jpg"]
 +++
 
 <!--more-->
-{{< image src="/img/ahfinals2021/ahctf1.jpg" alt="" position="center" style="border-radius: 8px;" >}}
+{{< image src="/img/ahfinals2021/processing0.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 ## Introduction
 
