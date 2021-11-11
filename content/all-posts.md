@@ -4,6 +4,10 @@ title = "All Posts"
 
 # 2021
 
+[**SheHacksKE HackFest 2021 CTF WriteUp**](https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/)
+
+[**AfricaHackon 2021 CTF Finals WriteUp**](https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/)
+
 [**H@cktivityCon 2021 CTF Writeup**](https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/)
 
 [**Linux Privilege Escalation - Package Managers**](https://blog.ikuamike.io/posts/2021/package_managers_privesc/)
@@ -46,39 +50,37 @@ title = "All Posts"
 
 [**HTB: Bastion**](https://blog.ikuamike.io/posts/2019/bastion-htb/)
 
-[**Vulnhub: DC 2 (Medium)**](https://ikuamike.medium.com/hacking-dc-2-vulnhub-f65b8c58e419)
+[**Vulnhub: DC 2 (medium.com)**](https://ikuamike.medium.com/hacking-dc-2-vulnhub-f65b8c58e419)
 
-[**Vulnhub: DC 1 (Medium)**](https://ikuamike.medium.com/hacking-dc-1-vulnhub-1d56bc94d558)
+[**Vulnhub: DC 1 (medium.com)**](https://ikuamike.medium.com/hacking-dc-1-vulnhub-1d56bc94d558)
 
-[**Nairobi Tech Week Main CTF 2019 WriteUp (Medium)**](https://ikuamike.medium.com/nairobi-tech-week-main-ctf-2019-writeup-30daef666ef4)
+[**Nairobi Tech Week Main CTF 2019 WriteUp (medium.com)**](https://ikuamike.medium.com/nairobi-tech-week-main-ctf-2019-writeup-30daef666ef4)
 
-[**Nairobi Tech Week CTF Teaser 2019 WriteUp (Medium)**](https://ikuamike.medium.com/nairobi-tech-week-ctf-teaser-2019-writeup-bfa3c5c55634)
+[**Nairobi Tech Week CTF Teaser 2019 WriteUp (medium.com)**](https://ikuamike.medium.com/nairobi-tech-week-ctf-teaser-2019-writeup-bfa3c5c55634)
 
-[**ByteBanditsCTF 2019 WriteUp (Medium)**](https://ikuamike.medium.com/bytebanditsctf-2019-writeup-7924d1d1a710)
+[**ByteBanditsCTF 2019 WriteUp (medium.com)**](https://ikuamike.medium.com/bytebanditsctf-2019-writeup-7924d1d1a710)
 
-[**HTB: Frolic (Medium)**](https://ikuamike.medium.com/frolic-htb-writeup-827d2ec7d4f)
+[**HTB: Frolic (medium.com)**](https://ikuamike.medium.com/frolic-htb-writeup-827d2ec7d4f)
 
-[**BSidesSF 2019 CTF Writeup (Medium)**](https://ikuamike.medium.com/bsidessf-2019-ctf-writeup-92e84d5cf785)
+[**BSidesSF 2019 CTF Writeup (medium.com)**](https://ikuamike.medium.com/bsidessf-2019-ctf-writeup-92e84d5cf785)
 
-[**TAMU CTF 2019 Writeup (Part 2) (Medium)**](https://ikuamike.medium.com/tamu-ctf-19-writeup-part-2-6c2b31ff8852)
+[**TAMU CTF 2019 Writeup (Part 2) (medium.com)**](https://ikuamike.medium.com/tamu-ctf-19-writeup-part-2-6c2b31ff8852)
 
-[**TAMU CTF 2019 Writeup (Part 1) (Medium)**](https://ikuamike.medium.com/tamu-ctf-19-writeup-984c5356c4e0)
+[**TAMU CTF 2019 Writeup (Part 1) (medium.com)**](https://ikuamike.medium.com/tamu-ctf-19-writeup-984c5356c4e0)
 
-[**HTB: Access (Medium)**](https://ikuamike.medium.com/access-htb-writeup-6e528f8f4608)
+[**HTB: Access (medium.com)**](https://ikuamike.medium.com/access-htb-writeup-6e528f8f4608)
 
-[**MitreCTF 2019 Writeup (Medium)**](https://ikuamike.medium.com/mitrectf-writeup-b0ce9465c38b)
+[**MitreCTF 2019 Writeup (medium.com)**](https://ikuamike.medium.com/mitrectf-writeup-b0ce9465c38b)
 
-[**Basic Pentesing: 2 WriteUp - Vulnhub (Medium)**](https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d)
+[**Basic Pentesing: 2 WriteUp - Vulnhub (medium.com)**](https://ikuamike.medium.com/basic-pentesing-2-writeup-vulnhub-vm-f47b5beb3c4d)
 
-[**Basic Pentesing: 1 WriteUp — VulnHub (Medium)**](https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85)
+[**Basic Pentesing: 1 WriteUp — VulnHub (medium.com)**](https://ikuamike.medium.com/basic-pentesing-1-writeup-vulnhub-vm-5f71988df85)
 
 # 2018
 
-[**Junior 35C3 CTF Writeup (Medium)**](https://ikuamike.medium.com/junior-35c3-ctf-writeup-d76edd74fbc6)
+[**Junior 35C3 CTF Writeup (medium.com)**](https://ikuamike.medium.com/junior-35c3-ctf-writeup-d76edd74fbc6)
 
-[**Vulnhub: Toppo 1 (Medium)**](https://ikuamike.medium.com/toppo-1-vulnhub-vm-writeup-6ef37586345e)
+[**Vulnhub: Toppo 1 (medium.com)**](https://ikuamike.medium.com/toppo-1-vulnhub-vm-writeup-6ef37586345e)
 
-[**Vulnhub: JIS-CTF VulnUpload (Medium)**](https://ikuamike.medium.com/vulnhub-jis-ctf-vulnupload-write-up-ec938d79c508)
-
-
+[**Vulnhub: JIS-CTF VulnUpload (medium.com)**](https://ikuamike.medium.com/vulnhub-jis-ctf-vulnupload-write-up-ec938d79c508)
 
