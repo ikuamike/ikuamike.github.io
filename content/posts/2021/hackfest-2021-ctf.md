@@ -48,7 +48,7 @@ To provide the flag in decimal we minus the header that identifies the firmware 
 2097216 - 64 = 2097152
 ```
 
-Flag: Hackfest{2097152}
+Flag: `Hackfest{2097152}`
 
 ### 2. Backups
 
@@ -72,7 +72,7 @@ sudo mount -t squashfs squashfs1 mount1
 
 On mounting the filesystem we see the backup folders.
 
-Flag: Hackfest{backupa,backupd,backupk}
+Flag: `Hackfest{backupa,backupd,backupk}`
 
 ### 3. Semiconductor
 
@@ -86,7 +86,7 @@ Searching this name on google shows this is a semiconductor company confirming t
 
 {{< image src="/img/shehacks-hackfest-2021/kernel8.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-Flag: Hackfest{Ingenic}
+Flag: `Hackfest{Ingenic}`
 
 ### 4. Leaky Developer
 
@@ -142,7 +142,7 @@ home directory.
 
 {{< image src="/img/shehacks-hackfest-2021/kernel14.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-Flag: Hackfest{xuxuequan}
+Flag: `Hackfest{xuxuequan}`
 
 ### 5. Root
 
@@ -157,7 +157,7 @@ hits.
 
 {{< image src="/img/shehacks-hackfest-2021/kernel11.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-Flag: Hackfest{ismart12}
+Flag: `Hackfest{ismart12}`
 
 ### 6. Extras
 
@@ -196,7 +196,7 @@ Once we connect we start receiving messages, after a while the flag is sent as a
 
 {{< image src="/img/shehacks-hackfest-2021/kernel18.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-Flag: Hackfest{Howdy Friend}
+Flag: `Hackfest{Howdy Friend}`
 
 ### 2. Hardcoded
 
@@ -222,7 +222,7 @@ openssl aes-256-cbc -d -K 383432643432623938383736663538316630646662656662306364
 
 {{< image src="/img/shehacks-hackfest-2021/kernel22.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-Flag: Hackfest{kalcaddle@qq.com}
+Flag: `Hackfest{kalcaddle@qq.com}`
 
 ## Conclusion
 
@@ -230,13 +230,7 @@ This was a nice CTF with some not so common categories. Playing with dd was a le
 
 Here are the challenge files incase the CTF site goes down.
 
+[demo.zip](https://blog.ikuamike.io/files/shehacks-hackfest-2021/demo.zip)
 
-
-
-
-
-
-
-
-
+[terramaster.zip](https://blog.ikuamike.io/files/shehacks-hackfest-2021/terramaster.zip)
 
