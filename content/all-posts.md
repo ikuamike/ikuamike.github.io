@@ -8,6 +8,8 @@ title = "All Posts"
 
 [**AfricaHackon 2021 CTF Finals WriteUp**](https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/)
 
+[**AfricaHackon 2021 CTF BootCamp [Slides]**](https://blog.ikuamike.io/slides/AH2021-CTF-Bootcamp.pdf)
+
 [**H@cktivityCon 2021 CTF Writeup**](https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/)
 
 [**Linux Privilege Escalation - Package Managers**](https://blog.ikuamike.io/posts/2021/package_managers_privesc/)
