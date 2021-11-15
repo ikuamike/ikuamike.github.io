@@ -170,13 +170,17 @@ binwalk -e demo.bin
 After this and looking through the resulting directories and some google searches later I found this post that allowed me to quickly answer
 the questions.
 
-[https://research.nccgroup.com/2020/07/31/lights-camera-hacked-an-insight-into-the-world-of-popular-ip-cameras/](https://research.nccgroup.com/2020/07/31/lights-camera-hacked-an-insight-into-the-world-of-popular-ip-cameras/)
+```
+https://research.nccgroup.com/2020/07/31/lights-camera-hacked-an-insight-into-the-world-of-popular-ip-cameras/
+```
 
 ### 7. The Rest
 
 The rest of the challenges in this category were solved by Kelvin.
 
-[https://github.com/mystickev/CTFwriteups/tree/Writeups/shehacks-2021](https://github.com/mystickev/CTFwriteups/tree/Writeups/shehacks-2021)
+```
+https://github.com/mystickev/CTFwriteups/tree/Writeups/shehacks-2021
+```
 
 ## Challenges: Protocols
 
@@ -212,7 +216,9 @@ Using this google search I found an article with the decryption method.
 
 {{< image src="/img/shehacks-hackfest-2021/kernel21.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-[https://blog.securityevaluators.com/terramaster-nas-vulnerabilities-discovered-and-exploited-b8e5243e7a63](https://blog.securityevaluators.com/terramaster-nas-vulnerabilities-discovered-and-exploited-b8e5243e7a63)
+```
+https://blog.securityevaluators.com/terramaster-nas-vulnerabilities-discovered-and-exploited-b8e5243e7a63
+```
 
 By running the below command we can get the email from the config.php
 
