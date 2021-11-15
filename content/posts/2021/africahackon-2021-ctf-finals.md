@@ -48,9 +48,11 @@ of the challenge. From jadx-gui we can spot the functions responsible for the in
 The next logical step would be to reverse engineer the code and build the flag from there. If you would like to see how that
 approach would have been done see these writeups.
 
-[https://lvmalware.github.io/writeup/2021/11/06/Africahackon-Finals.html](https://lvmalware.github.io/writeup/2021/11/06/Africahackon-Finals.html)
+```
+https://lvmalware.github.io/writeup/2021/11/06/Africahackon-Finals.html
 
-[https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408](https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408)
+https://trevorsaudi.medium.com/africahackon-2021-ctf-finals-8111f8edc408
+```
 
 I used a different approach that I learnt from another ctf that I would like to share.
 
