@@ -7,6 +7,13 @@ My name is Michael Ikua, I am a CyberSecurity Professional from Kenya :kenya:.
 
 I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunter.
 
-[Twitter](https://twitter.com/ikuamike), [LinkedIn](https://www.linkedin.com/in/ikuamike), [Github](https://github.com/ikuamike), [CTFtime](https://ctftime.org/user/36989), [HackTheBox](https://app.hackthebox.eu/profile/23062), [Hackerone](https://hackerone.com/ikuamike), [Medium](https://ikuamike.medium.com/), [Pentesterlab](https://pentesterlab.com/profile/ikuamike)
+**Links:** 
 
+[Twitter](https://twitter.com/ikuamike), [LinkedIn](https://www.linkedin.com/in/ikuamike), [Github](https://github.com/ikuamike), [CTFtime](https://ctftime.org/user/36989), [HackTheBox](https://app.hackthebox.eu/profile/23062), [Medium](https://ikuamike.medium.com/), [Hackerone](https://hackerone.com/ikuamike), [Pentesterlab](https://pentesterlab.com/profile/ikuamike)
+
+**Certs:** 
+
+{{< rawhtml >}}
+<img  src="/img/offensive-security-certified-professional-oscp.png" alt="oscp" position="center" style="border-radius: 8px;float:left;" ></img>
+{{< /rawhtml >}}
 
