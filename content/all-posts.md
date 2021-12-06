@@ -4,7 +4,7 @@ title = "All Posts"
 
 # 2021
 
-[**Metasploit Community CTF 2021**](https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/)
+[**Metasploit Community CTF 2021 WriteUp**](https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/)
 
 [**SheHacksKE HackFest 2021 CTF WriteUp**](https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/)
 
