@@ -1,5 +1,5 @@
 +++
-title = "Metasploit CTF 2021 WriteUp"
+title = "Metasploit Community CTF 2021 WriteUp"
 date = "2021-12-06"
 author = ""
 authorTwitter = "" #do not include @
