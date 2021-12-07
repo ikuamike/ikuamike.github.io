@@ -85,7 +85,9 @@ With the reverse shell we can get the md5sum of the image to submit as our flag.
 
 **Reference:**
 
-`https://isc.sans.edu/forums/diary/Apache+2449+Directory+Traversal+Vulnerability+CVE202141773/27908/`
+```
+https://isc.sans.edu/forums/diary/Apache+2449+Directory+Traversal+Vulnerability+CVE202141773/27908/
+```
 
 ### 2 of Clubs
 
@@ -265,7 +267,9 @@ We can then use this cookies to load the private page and get the flag.
 
 **Reference:**
 
-`https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/`
+```
+https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/
+```
 
 ## Post CTF Solutions
 
@@ -345,5 +349,8 @@ If you have any questions or feedback feel free to reach out.
 
 Another writeup you can read:
 
+```
 https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review
 
+https://ctf.zeyu2001.com/2021/metasploit-community-ctf
+```
