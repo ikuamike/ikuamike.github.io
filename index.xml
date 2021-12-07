@@ -36,8 +36,8 @@ advisories floating around for this version regarding a directory traveral vulne
 &lt;p>&lt;strong>Flag:&lt;/strong>&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/10ofclubs.png" class="center" style="border-radius: 8px;" />
 &lt;p>&lt;strong>Reference:&lt;/strong>&lt;/p>
-&lt;p>&lt;code>https://isc.sans.edu/forums/diary/Apache+2449+Directory+Traversal+Vulnerability+CVE202141773/27908/&lt;/code>&lt;/p>
-&lt;h3 id="2-of-clubs">2 of Clubs&lt;/h3>
+&lt;pre>&lt;code>https://isc.sans.edu/forums/diary/Apache+2449+Directory+Traversal+Vulnerability+CVE202141773/27908/
+&lt;/code>&lt;/pre>&lt;h3 id="2-of-clubs">2 of Clubs&lt;/h3>
 &lt;p>This challenge was on port 20000 and 20001. When we visit port 20000 on our browser, we get the following:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ctf-6.png" class="center" style="border-radius: 8px;" />
 &lt;p>The &lt;code>/client&lt;/code> directory just has a file for us to download.&lt;/p>
@@ -142,8 +142,8 @@ page.&lt;/p>
 &lt;p>&lt;strong>Flag:&lt;/strong>&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/3ofhearts.png" class="center" style="border-radius: 8px;" />
 &lt;p>&lt;strong>Reference:&lt;/strong>&lt;/p>
-&lt;p>&lt;code>https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/&lt;/code>&lt;/p>
-&lt;h2 id="post-ctf-solutions">Post CTF Solutions&lt;/h2>
+&lt;pre>&lt;code>https://regilero.github.io/english/security/2019/10/17/security_apache_traffic_server_http_smuggling/
+&lt;/code>&lt;/pre>&lt;h2 id="post-ctf-solutions">Post CTF Solutions&lt;/h2>
 &lt;p>Solutions to challenges I figured out after the CTF ended.&lt;/p>
 &lt;h3 id="9-of-spades">9 of Spades&lt;/h3>
 &lt;p>This challenge was on port 20055. The objective was to bypass the filter in place for uploading a file we can
@@ -183,7 +183,9 @@ below content that enables a file with .mike extension to be executed as a php f
 &lt;p>The last challenge definitely made me feel like I need to get back to Web Security Academy.&lt;/p>
 &lt;p>If you have any questions or feedback feel free to reach out.&lt;/p>
 &lt;p>Another writeup you can read:&lt;/p>
-&lt;p>&lt;a href="https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review">https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review&lt;/a>&lt;/p></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
+&lt;pre>&lt;code>https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review
+https://ctf.zeyu2001.com/2021/metasploit-community-ctf
+&lt;/code>&lt;/pre></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>&lt;a href="https://twitter.com/shehacks_ke" target="_blank" rel="noopener">@SheHacksKE&lt;/a>
 held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF
