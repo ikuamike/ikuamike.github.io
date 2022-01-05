@@ -26,6 +26,15 @@ link below.
 
 [Netcat Scenario](https://app.cyberranges.com/scenario/60e782766596fe0006aeceb8)
 
+## OPSEC
+
+Update: 01-07-2022. 
+
+I came to the realization that most of the material we consume when learning pentesting touches very little on secure practices on live engagements once you have those hacking skills, hence this update for
+anyone coming across this post. 
+
+Especially for pentesters, using netcat could be bad for operational security during live pentest engagements. Someone sniffing the network could capture your activity in plain text in cases such as a reverse shell. 
+Put some more consideration into securing your pentest operations. Netcat is a great tool and valuable for CTFs and PoCs.
 
 ## Variants
 
