@@ -2,6 +2,10 @@
 title = "All Posts"
 +++
 
+# 2022
+
+[**100 Days of Hacking - Shells \[Slides\]**](https://blog.ikuamike.io/slides/100DaysofHacking-Shells.pdf)
+
 # 2021
 
 [**Metasploit Community CTF 2021 WriteUp**](https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/)
