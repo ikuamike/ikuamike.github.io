@@ -1,6 +1,6 @@
 +++
 title = "Hack The Box: Forest"
-date = "2022-02-25"
+date = "2022-03-01"
 author = ""
 authorTwitter = ""
 cover = ""
