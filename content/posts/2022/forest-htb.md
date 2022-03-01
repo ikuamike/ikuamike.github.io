@@ -9,7 +9,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/forest/logo.png"]
+images = ["/img/forest/logo-card.png"]
 +++
 
 <!--more-->
