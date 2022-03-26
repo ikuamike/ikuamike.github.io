@@ -4,6 +4,10 @@ title = "All Posts"
 
 # 2022
 
+[**Hack The Box: Forest**](https://blog.ikuamike.io/posts/2022/forest-htb/)
+
+[**100 Days of Hacking - Shells \[Video\]**](https://youtu.be/B-kvARcJwuk)
+
 [**100 Days of Hacking - Shells \[Slides\]**](https://blog.ikuamike.io/slides/100DaysofHacking-Shells.pdf)
 
 # 2021
