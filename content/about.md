@@ -14,7 +14,7 @@ I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunt
 **Certs:** 
 
 {{< rawhtml >}}
-<img  src="/img/OSCP.png" alt="oscp" position="center" style="border-radius: 10px;float:left;" width="150" height="150"></img>
+<img  src="/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;" width="150" height="150"></img>
 <img  src="/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;" width="200" height="150"></img>
 {{< /rawhtml >}}
 
