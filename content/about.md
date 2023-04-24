@@ -14,7 +14,12 @@ I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunt
 **Certs:** 
 
 {{< rawhtml >}}
-<img  src="/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;" width="160" height="160"></img>
-<img  src="/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;" width="185" height="150"></img>
+<a href="https://blog.ikuamike.io/certs/Michael-Ikua-OSCP.pdf" target="_blank">
+  <img  src="/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;" width="160" height="160"></img>
+</a>
+
+<a href="https://blog.ikuamike.io/certs/Michael-Ikua-eCPPT-v2.pdf" target="_blank">
+  <img  src="/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;" width="185" height="150"></img>
+</a>
 {{< /rawhtml >}}
 
