@@ -3511,7 +3511,8 @@ for the prize.&lt;/p>
 &lt;/ul></content></item><item><title>About Me</title><link>https://blog.ikuamike.io/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/about/</guid><description>My name is Michael Ikua, I am a CyberSecurity Professional from Kenya 🇰🇪.
 I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunter.
 Links:
-Twitter , LinkedIn , Github , CTFtime , HackTheBox , Medium , Hackerone , Pentesterlab Certs:</description><content>&lt;p>My name is Michael Ikua, I am a CyberSecurity Professional from Kenya 🇰🇪.&lt;/p>
+Twitter , LinkedIn , Github , CTFtime , HackTheBox , Medium , Hackerone , Pentesterlab Certs:
+Support My Blog:</description><content>&lt;p>My name is Michael Ikua, I am a CyberSecurity Professional from Kenya 🇰🇪.&lt;/p>
 &lt;p>I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunter.&lt;/p>
 &lt;p>&lt;strong>Links:&lt;/strong>&lt;/p>
 &lt;p>&lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">Twitter&lt;/a>
@@ -3525,11 +3526,16 @@ Twitter , LinkedIn , Github , CTFtime , HackTheBox , Medium , Hackerone , Pentes
 &lt;/p>
 &lt;p>&lt;strong>Certs:&lt;/strong>&lt;/p>
 &lt;a href="https://blog.ikuamike.io/certs/Michael-Ikua-OSCP.pdf" target="_blank">
-&lt;img src="https://blog.ikuamike.io/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;" width="160" height="160">&lt;/img>
+&lt;img src="https://blog.ikuamike.io/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;padding: 20px 20px" width="200" height="200">&lt;/img>
 &lt;/a>
 &lt;a href="https://blog.ikuamike.io/certs/Michael-Ikua-eCPPT-v2.pdf" target="_blank">
-&lt;img src="https://blog.ikuamike.io/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;" width="185" height="150">&lt;/img>
-&lt;/a></content></item><item><title>All Posts</title><link>https://blog.ikuamike.io/all-posts/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/all-posts/</guid><description>2022 Hack The Box: Forest 100 Days of Hacking - Shells [Video] 100 Days of Hacking - Shells [Slides] 2021 Metasploit Community CTF 2021 WriteUp SheHacksKE HackFest 2021 CTF WriteUp AfricaHackon 2021 CTF Finals WriteUp AfricaHackon 2021 CTF BootCamp [Slides] H@cktivityCon 2021 CTF Writeup Linux Privilege Escalation - Package Managers Netcat - All you need to know Vulnhub: Sar 1 Vulnhub: Misdirection 1 Vulnhub: Lemon Squeezy 1 Vulnhub: Healthcare 1 Vulnhub: EVM 1 Vulnhub: Symfonos 5 Vulnhub: Symfonos 4 Vulnhub: Symfonos 3 Vulnhub: Symfonos 2 Vulnhub: Symfonos 1 2020 Metasploit Community CTF December 2020 WriteUp Grayhat Red Team Village CTF 2020 WriteUp: Tunneler RaziCTF 2020 WriteUp: Chasing a lock CyberSpaceKenya CTF: ZuluMeats3 HTB: Bitlab 2019 HTB: Bastion Vulnhub: DC 2 (medium.</description><content>&lt;h1 id="2022">2022&lt;/h1>
+&lt;img src="https://blog.ikuamike.io/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding:25px 7.5px;" width="200" height="200">&lt;/img>
+&lt;/a>
+&lt;div style="clear: both;padding: 10px;">&lt;/div>
+&lt;p>&lt;strong>Support My Blog:&lt;/strong>&lt;/p>
+&lt;div style="text-align: center;display: flex;justify-content: left;padding-top: 10px;clear: both;">
+&lt;script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="ikuamike" data-color="#78E2A0" data-emoji="" data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#1F222A" data-coffee-color="#FFDD00" >&lt;/script>
+&lt;/div></content></item><item><title>All Posts</title><link>https://blog.ikuamike.io/all-posts/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/all-posts/</guid><description>2022 Hack The Box: Forest 100 Days of Hacking - Shells [Video] 100 Days of Hacking - Shells [Slides] 2021 Metasploit Community CTF 2021 WriteUp SheHacksKE HackFest 2021 CTF WriteUp AfricaHackon 2021 CTF Finals WriteUp AfricaHackon 2021 CTF BootCamp [Slides] H@cktivityCon 2021 CTF Writeup Linux Privilege Escalation - Package Managers Netcat - All you need to know Vulnhub: Sar 1 Vulnhub: Misdirection 1 Vulnhub: Lemon Squeezy 1 Vulnhub: Healthcare 1 Vulnhub: EVM 1 Vulnhub: Symfonos 5 Vulnhub: Symfonos 4 Vulnhub: Symfonos 3 Vulnhub: Symfonos 2 Vulnhub: Symfonos 1 2020 Metasploit Community CTF December 2020 WriteUp Grayhat Red Team Village CTF 2020 WriteUp: Tunneler RaziCTF 2020 WriteUp: Chasing a lock CyberSpaceKenya CTF: ZuluMeats3 HTB: Bitlab 2019 HTB: Bastion Vulnhub: DC 2 (medium.</description><content>&lt;h1 id="2022">2022&lt;/h1>
 &lt;p>&lt;a href="https://blog.ikuamike.io/posts/2022/forest-htb/" target="_blank" rel="noopener">&lt;strong>Hack The Box: Forest&lt;/strong>&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://youtu.be/B-kvARcJwuk" target="_blank" rel="noopener">&lt;strong>100 Days of Hacking - Shells [Video]&lt;/strong>&lt;/a>
