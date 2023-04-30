@@ -26,7 +26,7 @@ I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunt
 
 {{< /rawhtml >}}
 
-**Support Me:**
+**Support My Blog:**
 
 {{< rawhtml >}}
 <div style="text-align: center;display: flex;justify-content: left;padding-top: 10px;clear: both;">
