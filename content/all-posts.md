@@ -54,6 +54,8 @@ title = "All Posts"
 
 [**RaziCTF 2020 WriteUp: Chasing a lock**](https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/)
 
+[**CYBER RANGES Community Webinar: HTTP Basics and BurpSuite 101 \[Video\]**](https://d1f7pnslmqdgqf.cloudfront.net/u240014/278551-616281500975014831.mp4)
+
 [**CyberSpaceKenya CTF: ZuluMeats3**](https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/)
 
 [**HTB: Bitlab**](https://blog.ikuamike.io/posts/2020/bitlab-htb/)
