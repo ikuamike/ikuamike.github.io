@@ -45,10 +45,6 @@ googleAnalytics = "UA-202973704-2"
         name = "About Me"
         url = "/about"
       [[languages.en.menu.main]]
-        identifier = "webinars"
-        name = "Webinars"
-        url = "/webinars"
-      [[languages.en.menu.main]]
         identifier = "tags"
         name = "Tags"
         url = "/tags"
