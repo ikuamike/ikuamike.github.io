@@ -26,7 +26,7 @@ googleAnalytics = "UA-202973704-2"
   twitter = "ikuamike"
 
 [languages]
-  [languages.en]
+  [languages.en.params]
     languageName = "English"
     title = "ikuamike"
     subtitle = "Cyber Security :: Capture The Flag Writeups :: Hacking"
