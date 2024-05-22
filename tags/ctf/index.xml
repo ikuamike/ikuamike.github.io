@@ -1,4 +1,52 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 06 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ascii.png" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 22 May 2024 00:25:15 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
+.&lt;/p>
+&lt;h3 id="1-hidden-path">1. Hidden Path&lt;/h3>
+&lt;p>This challenge was rated &lt;strong>Easy&lt;/strong>. We are provided with files to download, allowing us to read the app&amp;rsquo;s source code.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/hidden_path_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>On reading the code, we see that the app accepts user input on the &lt;em>&lt;strong>/server_status&lt;/strong>&lt;/em> endpoint. It takes in &lt;em>&lt;strong>choice&lt;/strong>&lt;/em> parameter and something else.&lt;/p>
+&lt;p>Initially I didn&amp;rsquo;t immediately pick this out but after looking closely, my code editor highlights that there is another parameter. Hovering my mouse over it revealed that it was the invisible unicode character U+3164. This character also appears to be also used in the array listing command choices that can be executed.&lt;/p>
+&lt;p>What this means is that, we can supply a command to this character then select it as our command choice using the index in the array .&lt;/p>
+&lt;p>I copied the unicode character from this &lt;a href="https://unicode-explorer.com/c/3164" target="_blank" rel="noopener">unicode-explorer&lt;/a>
+link, then crafted my request as below in burp.ㅤ&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/hidden_path_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;strong>HTB{1nvi5IBl3_cH4r4cT3rS_n0t_sO_v1SIbL3_2b06cb9b519dd72e472ccdadda3917ce}&lt;/strong>&lt;/p>
+&lt;h3 id="2-locked-away">2. Locked Away&lt;/h3>
+&lt;p>This challenge was also rated &lt;strong>Easy&lt;/strong>. Here we are also provided the code. For the challenge.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/locked_away_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>As seen, our input will be checked against a blacklist then passed to exec command.&lt;/p>
+&lt;p>Since exec will execute any python code we supply, we can override the blacklist list by assigning it something different rendering it useless then read the flag by calling the openchest function.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>blacklist &lt;span style="color:#f92672">=&lt;/span> str(&lt;span style="color:#ae81ff">1&lt;/span>),str(&lt;span style="color:#ae81ff">2&lt;/span>),str(&lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can also drop into a shell by import pty module.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/locked_away_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;strong>HTB{bYp4sSeD_tH3_fIlT3r5?_aLw4Ys_b3_c4RefUL!_ab204eba259a305414b338855f2fd91d}&lt;/strong>&lt;/p>
+&lt;h3 id="3-zephyr">3. Zephyr&lt;/h3>
+&lt;p>This challenge was rated &lt;strong>Medium&lt;/strong>. We are also provided with the challenge files.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>On the terminal, when we navigate to the folder, we note that this is a git repo with only two files. My terminal prompt also picks up the main branch.&lt;/p>
+&lt;p>Let&amp;rsquo;s check the commit history on the main branch.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git --no-pager log
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>We only have 2 commits, lets view the modification using git diff.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git --no-pager diff &lt;span style="color:#ae81ff">1501&lt;/span> ae4f
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>We see that only the &lt;em>&lt;strong>database.db&lt;/strong>&lt;/em> file has been modified. Let&amp;rsquo;s checkout the initial commit to view what sensitive info was removed.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>From this initial commit, we get a piece of the flag: &lt;strong>_gOT_thE_DB_&lt;/strong>.&lt;/p>
+&lt;p>Now let&amp;rsquo;s check if there are any other branches and switch to them.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>On the &lt;em>&lt;strong>w4rri0r-changes&lt;/strong>&lt;/em> branch, we see there is a new commit. We can use &lt;em>git log&lt;/em> again but with &lt;em>-p&lt;/em> option to view the changes.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git --no-pager log -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>We now have another piece of the flag: &lt;strong>HTB{g0t_tH3_p4s5&lt;/strong>.&lt;/p>
+&lt;p>Finally, after some time going through the files trying to get the final piece. I discovered file changes in a git repo can also be stored in stash.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>After checking the stash, we now have the final piece of the flag: &lt;strong>g0T_TH3_sT4sH}&lt;/strong>.&lt;/p>
+&lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ascii.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Similar to last year&amp;rsquo;s ctf we are provided with a kali machine as the jump box and an Ubuntu VM with ports open for the different challenges.&lt;/p>
 &lt;p>As usual I participated with team @&lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
