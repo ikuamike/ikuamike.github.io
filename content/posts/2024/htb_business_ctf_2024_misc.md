@@ -102,6 +102,10 @@ We now have another piece of the flag: **HTB{g0t_tH3_p4s5**.
 
 Finally, after some time going through the files trying to get the final piece. I discovered file changes in a git repo can also be stored in stash.
 
+```sh
+git --no-pager stash show -p
+```
+
 {{< image src="/img/htb_business_ctf_2024/misc/zephyr_7.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 After checking the stash, we now have the final piece of the flag: **g0T_TH3_sT4sH}**.
