@@ -44,6 +44,8 @@ link, then crafted my request as below in burp.ㅤ&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_6.png" class="center" style="border-radius: 8px;" />
 &lt;p>We now have another piece of the flag: &lt;strong>HTB{g0t_tH3_p4s5&lt;/strong>.&lt;/p>
 &lt;p>Finally, after some time going through the files trying to get the final piece. I discovered file changes in a git repo can also be stored in stash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git --no-pager stash show -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_7.png" class="center" style="border-radius: 8px;" />
 &lt;p>After checking the stash, we now have the final piece of the flag: &lt;strong>g0T_TH3_sT4sH}&lt;/strong>.&lt;/p>
 &lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item></channel></rss>
