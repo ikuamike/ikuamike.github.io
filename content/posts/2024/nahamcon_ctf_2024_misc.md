@@ -12,11 +12,9 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/htb_business_ctf_2024/ctf_logo.jpg"]
+images = ["/img/nahamcon_ctf_2024/logo.jpeg"]
 +++
 
-<!--more-->
-{{< image src="/img/nahamcon_ctf_2024/logo.jpeg" alt="" position="center" style="border-radius: 8px;" >}}
 
 ## Introduction
 NahamCon 2024 is taking place this weekend and they had a CTF as part of the online conference. I participated with team [fr334aks](https://twitter.com/fr334aks). 
