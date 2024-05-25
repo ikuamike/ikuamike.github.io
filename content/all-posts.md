@@ -2,6 +2,13 @@
 title = "All Posts"
 +++
 
+# 2024
+
+[**NahamCon CTF 2024 WriteUp - Misc**](http://localhost:1313/posts/2024/nahamcon_ctf_2024_misc/)
+
+
+[**HTB Business CTF 2024 WriteUp - FullPwn**](http://localhost:1313/posts/2024/htb_business_ctf_2024_fullpwn/)
+
 # 2022
 
 [**Hack The Box: Forest**](https://blog.ikuamike.io/posts/2022/forest-htb/)
