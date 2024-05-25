@@ -1,5 +1,5 @@
 +++
-title = "NahamCon CTF 2024 WriteUp - Miscellaneous"
+title = "NahamCon CTF 2024 WriteUp - Misc"
 date = "2024-05-25T21:17:45+03:00"
 author = ""
 authorTwitter = "" #do not include @
@@ -27,7 +27,7 @@ We managed position 197. We did good on Web, Mobile and WarmUps but not well on 
 
 It was our first CTF of the year together, so it's not a bad start from a long break. Hopefully we get back to our winning ways :).
 
-I only solved 2 Miscellaneous challenges that I am writing about in this post.
+I only solved 2 challenges in Miscellaneous category that I am writing about in this post.
 
 
 ## 1. SecureSurfer
