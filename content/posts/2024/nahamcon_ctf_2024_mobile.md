@@ -13,7 +13,6 @@ hideComments = false
 color = "" #color from the theme settings
 toc = true
 images = ["/img/nahamcon_ctf_2024/logo.jpeg"]
-draft = true
 +++
 
 ## Introduction
@@ -23,12 +22,68 @@ I tried my best to not look at released writeups as I worked on these challenges
 
 ## 1. Kitty Kitty Bang Bang
 
+This challenge is rated **Easy**.
 
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_2.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+We are provided with the [apk](/files/nahamcon_ctf_2024/com.nahamcon2024.kittykittybangbang.apk) file for the challenge. I'll start by loading it into [jadx-gui](https://github.com/skylot/jadx/releases) decompiler. Looking at the Android Manifest we see app info such as the package name, activity etc.
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_1.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+Navigating to the MainActivity and looking at the decompiled code, we note that the application logs several information including the flag. 
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_3.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+With this knowledge, we can install the app in an emulator, I'll use genymotion and look at the logs.
+When installed, the app only displays a picture of a cat.
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_4.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+To view the logs from the app, we first get the pid of the running app.
+
+```sh
+adb shell ps | grep kitty
+```
+
+Once we have the pid, we can supply it to logcat.
+
+```sh
+adb logcat -v color --pid=2333
+```
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_5.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+With the logs streaming in, we tap on the picture of the cat.
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_7.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+We then get the flag in the logs.
+
+{{< image src="/img/nahamcon_ctf_2024/kittykittybangbang_6.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 
 ## 2. Guitar
 
+This challenge is rated **Easy**.
+
+{{< image src="/img/nahamcon_ctf_2024/Guitar_1.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+
+We are provided with the [apk](/files/nahamcon_ctf_2024/com.nahamcon2024.guitar.apk) which I'll load into jadx.
+
+Looking through the Android Manifest and decompiled code, I eventually found the flag in the strings.xml file in base64 encoded format.
+
+{{< image src="/img/nahamcon_ctf_2024/Guitar_2.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+flag:
+
+{{< image src="/img/nahamcon_ctf_2024/Guitar_3.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+
+
 ## 3. Buggy Jumper 1
+
+This challenge is rated **Easy**.
 
 {{< image src="/img/nahamcon_ctf_2024/buggy_jumper_1.png" alt="" position="center" style="border-radius: 8px;" >}}
 
@@ -79,6 +134,8 @@ This will create a new folder with the all the gdc files in the app decompiled. 
 
 ## 4. Buggy Jumper 2
 
+This challenge is rated **Medium**.
+
 {{< image src="/img/nahamcon_ctf_2024/buggy_jumper_10.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 This is a follow up of the previous challenge and we should use the same app. From the description, the focus is in the shop.
@@ -110,10 +167,14 @@ Once we restart the app, we can get the flag.
 
 {{< image src="/img/nahamcon_ctf_2024/buggy_jumper_14.png" alt="" position="center" style="border-radius: 8px;" >}}
 
+## Conclusion
 
+The mobile app challenges were quite nice to go over, thankful to the NahamCon CTF team that they left the challenges accessible post event.
 
-## 5. Fly Away! 1
+There are 2 challenges that I didn't manage to solve. I realized the app was written in flutter and it seems there's a unique step by step for testing apps written in flutter. I'll be digging deeper to learn how to work with apps made in flutter.
 
-## 6. Fly Away! 2
+Here is a link to another writeup that covers the remaining 2 challenges:
+
+[https://hackmd.io/@avila-pwn-notes/r183kzlEA](https://hackmd.io/@avila-pwn-notes/r183kzlEA)
 
 
