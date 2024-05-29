@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Logcat on</title><link>https://blog.ikuamike.io/tags/logcat/</link><description>Recent content in Logcat on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 28 May 2024 00:02:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/logcat/index.xml" rel="self" type="application/rss+xml"/><item><title>NahamCon CTF 2024 WriteUp - Mobile</title><link>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</link><pubDate>Tue, 28 May 2024 00:02:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</guid><description>Introduction Following my previous writeup that I did for Misc challenges in the NahamCon CTF, I decided to play the challenges in the Mobile category. This is post CTF as they left the challenges up for a few days after the competition was over.
+I tried my best to not look at released writeups as I worked on these challenges as a way to learn something new or even just practice some of what I already know.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Following my previous writeup that I did for Misc challenges in the NahamCon CTF, I decided to play the challenges in the Mobile category. This is post CTF as they left the challenges up for a few days after the competition was over.&lt;/p>
+&lt;p>I tried my best to not look at released writeups as I worked on these challenges as a way to learn something new or even just practice some of what I already know.&lt;/p>
+&lt;h2 id="1-kitty-kitty-bang-bang">1. Kitty Kitty Bang Bang&lt;/h2>
+&lt;p>This challenge is rated &lt;strong>Easy&lt;/strong>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>We are provided with the &lt;a href="https://blog.ikuamike.io/files/nahamcon_ctf_2024/com.nahamcon2024.kittykittybangbang.apk">apk&lt;/a>
+file for the challenge. I&amp;rsquo;ll start by loading it into &lt;a href="https://github.com/skylot/jadx/releases" target="_blank" rel="noopener">jadx-gui&lt;/a>
+decompiler. Looking at the Android Manifest we see app info such as the package name, activity etc.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>Navigating to the MainActivity and looking at the decompiled code, we note that the application logs several information including the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>With this knowledge, we can install the app in an emulator, I&amp;rsquo;ll use genymotion and look at the logs.
+When installed, the app only displays a picture of a cat.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>To view the logs from the app, we first get the pid of the running app.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>adb shell ps | grep kitty
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we have the pid, we can supply it to logcat.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>adb logcat -v color --pid&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2333&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>With the logs streaming in, we tap on the picture of the cat.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>We then get the flag in the logs.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/kittykittybangbang_6.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="2-guitar">2. Guitar&lt;/h2>
+&lt;p>This challenge is rated &lt;strong>Easy&lt;/strong>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/Guitar_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>We are provided with the &lt;a href="https://blog.ikuamike.io/files/nahamcon_ctf_2024/com.nahamcon2024.guitar.apk">apk&lt;/a>
+which I&amp;rsquo;ll load into jadx.&lt;/p>
+&lt;p>Looking through the Android Manifest and decompiled code, I eventually found the flag in the strings.xml file in base64 encoded format.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/Guitar_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>flag:&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/Guitar_3.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="3-buggy-jumper-1">3. Buggy Jumper 1&lt;/h2>
+&lt;p>This challenge is rated &lt;strong>Easy&lt;/strong>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>We are provided with the &lt;a href="https://blog.ikuamike.io/files/nahamcon_ctf_2024/com.nahamcon2024.buggyjumper.apk">apk&lt;/a>
+file for the challenge.&lt;/p>
+&lt;p>Starting off, I loaded the app into &lt;a href="https://github.com/skylot/jadx/releases" target="_blank" rel="noopener">jadx-gui&lt;/a>
+and started with checking out the Android Manifest.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>In the manifest, we see the package name, activity, service etc. We also see a reference to godot engine.&lt;/p>
+&lt;p>Looking at the listed activity and other parts of the application on jadx-gui didn&amp;rsquo;t reveal much about the functionality of the app.&lt;/p>
+&lt;p>I then decided to load the app on genymotion emulator to have a feel of how it looks when it runs. It seems like a simple game.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>When we play, we have to click on the screen severally to make the bug jump, once the bug falls we get our score and points.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>On the shop interface, we can purchase the &amp;lsquo;drip&amp;rsquo;. All we need is 7331,7331 points but all we managed was 2 from the short gameplay.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>Back on the emulator, I got an adb shell and checked what local files I could find that could have been created by the app.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>There&amp;rsquo;s not much, but seeing libgodot here probably means that it&amp;rsquo;s important to the running of the app. Back on jadx-gui, looking at the resources/assets we have the libgodot in lib folder and also in the assets/scripts folder we have flag.gdc. This is possibly the flag but it&amp;rsquo;s not readable here.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>After some research, gdc file format is godot engine compiled script. Godot engine is a game engine. I found that we can decompile the compiled script using Godot reverse engineering tools - &lt;a href="https://github.com/bruvzg/gdsdecomp" target="_blank" rel="noopener">gdsdecomp&lt;/a>
+.&lt;/p>
+&lt;p>With the tool downloaded, we can provide the apk directly to perform the decompilation.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>./gdre_tools.x86_64 --recover&lt;span style="color:#f92672">=&lt;/span>../com.nahamcon2024.buggyjumper.apk
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>This will create a new folder with the all the gdc files in the app decompiled. In the scripts folder, we get the flag now in plain text.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_9.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="4-buggy-jumper-2">4. Buggy Jumper 2&lt;/h2>
+&lt;p>This challenge is rated &lt;strong>Medium&lt;/strong>.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>This is a follow up of the previous challenge and we should use the same app. From the description, the focus is in the shop.&lt;/p>
+&lt;p>In the shop.gd file, we see the code for the shop.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_11.png" class="center" style="border-radius: 8px;" />
+&lt;p>To buy the drip, a web request is sent to a url with an auth token and the value of points the response from this /verify endpoint will give the flag. The url is provided in the global.gd file.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_12.png" class="center" style="border-radius: 8px;" />
+&lt;p>There&amp;rsquo;s more code in the global.gd file. After reading the code, I understand the sequence needed to get the flag.&lt;/p>
+&lt;p>Below is the summary:&lt;/p>
+&lt;ul>
+&lt;li>Register via a POST request to the /register endpoint to get an auth token. The string &lt;strong>Godot&lt;/strong> is required to be in the user agent.&lt;/li>
+&lt;li>Save points via a POST request to the /save endpoint. We need to set the points to be &amp;gt;=73317331 and in json format.&lt;/li>
+&lt;li>Make a request to /verify providing points &amp;gt;=73317331 to get the flag.&lt;/li>
+&lt;/ul>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_13.png" class="center" style="border-radius: 8px;" />
+&lt;p>An alternative option to get the flag, is by letting the app make the request for us. We can manipulate the score value as this is stored in a local file &lt;strong>saved_value.dat&lt;/strong>. We have seen this referenced in the code and in the local files on the emulator.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#ae81ff">73317331&lt;/span> &amp;gt; ./data_mirror/data_ce/null/0/com.nahamcon2024.buggyjump/files/saved_value.dat
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once we restart the app, we can get the flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/nahamcon_ctf_2024/buggy_jumper_14.png" class="center" style="border-radius: 8px;" />
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>The mobile app challenges were quite nice to go over, thankful to the NahamCon CTF team that they left the challenges accessible post event.&lt;/p>
+&lt;p>There are 2 challenges that I didn&amp;rsquo;t manage to solve. I realized the app was written in flutter and it seems there&amp;rsquo;s a unique step by step for testing apps written in flutter. I&amp;rsquo;ll be digging deeper to learn how to work with apps made in flutter.&lt;/p>
+&lt;p>Here is a link to another writeup that covers the remaining 2 challenges:&lt;/p>
+&lt;p>&lt;a href="https://hackmd.io/@avila-pwn-notes/r183kzlEA" target="_blank" rel="noopener">https://hackmd.io/@avila-pwn-notes/r183kzlEA&lt;/a>
+&lt;/p></content></item></channel></rss>
