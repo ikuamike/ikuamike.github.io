@@ -4,6 +4,10 @@ title = "All Posts"
 
 # 2024
 
+http://localhost:1313/posts/2024/nahamcon_ctf_2024_mobile/
+
+[**NahamCon CTF 2024 WriteUp - Mobile**](https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/)
+
 [**NahamCon CTF 2024 WriteUp - Misc**](https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_misc/)
 
 [**HTB Business CTF 2024 WriteUp - FullPwn**](https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/)
