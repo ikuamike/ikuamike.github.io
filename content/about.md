@@ -15,11 +15,15 @@ I work as a Penetration Tester, I am an Active CTF player and a Passive Bug Hunt
 
 {{< rawhtml >}}
 <a href="https://blog.ikuamike.io/certs/Michael-Ikua-OSCP.pdf" target="_blank">
-  <img  src="/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 10px;float:left;padding: 15px 15px" width="200" height="200"></img>
+  <img  src="/img/OSCP.png" alt="OSCP" position="center" style="border-radius: 5px;float:left;padding: 5px 0px" width=auto height=200></img>
 </a>
 
-<a href="https://blog.ikuamike.io/certs/Michael-Ikua-eCPPT-v2.pdf" target="_blank">
-  <img  src="/img/eCPPTv2.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding:20px 2.5px;" width="200" height="200"></img>
+<a href="https://blog.ikuamike.io/certs/Michael-Ikua-INE-eCPPT.pdf" target="_blank">
+  <img  src="/img/eCPPT.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding: 5px 5px;" width=auto height="205"></img>
+</a>
+
+<a href="https://blog.ikuamike.io/certs/Michael-Ikua-CRTO.pdf" target="_blank">
+  <img  src="/img/CRTO.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding: 10px 10px;" width=auto height="205"></img>
 </a>
 
 <div style="clear: both;padding: 10px;"></div>
