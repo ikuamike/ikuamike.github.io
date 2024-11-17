@@ -134,4 +134,4 @@ Flag: `r00t{M4st3r_F1l3_t4bl3_1n_ntfs}`
 
 ## Conclusion
 
-I definitely learnt a thing or two here about the Master File Table (MFT). Cheers to the author [boynamedboy](https://x.com/festusgichohi1)
+I definitely learnt a thing or two here about forensics on the Master File Table (MFT). Cheers to the author [boynamedboy](https://x.com/festusgichohi1)
