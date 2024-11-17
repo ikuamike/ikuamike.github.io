@@ -281,11 +281,13 @@ except xmlrpc.client.Fault as e:
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_30.png" alt="" position="center" style="border-radius: 8px;" >}}
 
+During the CTF, it definitely wouldn't have been the first thing to try, but still interesting to see that it works.
+
 I'm not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn't really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don't really cover this. 
 
 There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.
 
-It tried using wp-json but I didn't succeed.
+It tried using wp-json as well but I didn't succeed.
 
 ## Conclusion
 This was good challenge, cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
