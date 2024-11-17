@@ -1,10 +1,10 @@
 +++
 title = "P3RF3CT R00T CTF 2024 Writeup - Active Directory"
-date = "2024-11-17T02:10:36+03:00"
+date = "2024-11-17"
 author = ""
 authorTwitter = "" #do not include @
 cover = ""
-tags = ["CTF","WordPress", "WPScan", "403 Bypass", "Active Directory", "NetExec", "BloodHound", "Certipy", "ADCS ESC1"]
+tags = ["CTF", "WordPress", "WPScan", "403 Bypass", "Active Directory", "NetExec", "BloodHound", "Certipy", "ADCS ESC1"]
 keywords = []
 description = ""
 showFullContent = false
@@ -12,6 +12,7 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
+images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 +++
 
 <!--more-->
