@@ -135,3 +135,12 @@ Flag: `r00t{M4st3r_F1l3_t4bl3_1n_ntfs}`
 ## Conclusion
 
 I definitely learnt a thing or two here about forensics on the Master File Table (MFT). Cheers to the author [boynamedboy](https://x.com/festusgichohi1)
+
+## Extras
+
+Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail.
+
+{{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+0x22 is 34 in Decimal.
+
