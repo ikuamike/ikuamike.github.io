@@ -4,6 +4,8 @@ title = "All Posts"
 
 # 2024
 
+[**P3RF3CT R00T CTF 2024 Writeup - Forensics**](https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/)
+
 [**P3RF3CT R00T CTF 2024 Writeup - Active Directory**](https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/)
 
 [**NahamCon CTF 2024 WriteUp - Mobile**](https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/)
