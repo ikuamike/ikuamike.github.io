@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/package_manager_privesc/package.png"
+images = ["/img/package_manager_privesc/package.png"]
 +++
 
 

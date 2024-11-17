@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 draft = false
 cover = "/img/misdirection1/misdirection.png"
+images = ["/img/misdirection1/misdirection.png"]
 +++
 
 

@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/ahfinals2021/ahctf1.jpg"
+images = ["/img/ahfinals2021/ahctf1.jpg"]
 +++
 
 

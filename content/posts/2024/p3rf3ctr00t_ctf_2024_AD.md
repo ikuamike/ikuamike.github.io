@@ -12,6 +12,7 @@ hideComments = false
 color = "" #color from the theme settings
 toc = true
 cover = "/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"
+images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 +++
 
 ## Introduction

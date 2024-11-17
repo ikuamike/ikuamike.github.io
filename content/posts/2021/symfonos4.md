@@ -8,6 +8,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 cover = "/img/symfonos1/symfonos1.png"
+images = ["/img/symfonos1/symfonos1.png"]
 +++
 
 

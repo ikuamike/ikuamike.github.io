@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/shehacks-hackfest-2021/banner.png"
+images = ["/img/shehacks-hackfest-2021/banner.png"]
 +++
 
 

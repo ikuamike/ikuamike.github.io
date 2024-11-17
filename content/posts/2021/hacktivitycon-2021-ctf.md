@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/hacktivitycon-2021/hacktivity.jpeg"
+images = ["/img/hacktivitycon-2021/hacktivity.jpeg"]
 +++
 
 

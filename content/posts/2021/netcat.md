@@ -10,6 +10,7 @@ showFullContent = false
 draft = false
 toc = true
 cover = "/img/netcat/netcat.png"
+images = ["/img/netcat/netcat.png"]
 +++
 
 

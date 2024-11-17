@@ -7,6 +7,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 cover = "/img/bitlab/info_card.png"
+images = ["/img/bitlab/info_card.png"]
 +++
 
 

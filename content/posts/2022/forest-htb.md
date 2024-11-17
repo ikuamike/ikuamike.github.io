@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/forest/logo-card.png"
+images = ["/img/forest/logo-card.png"]
 +++
 
 

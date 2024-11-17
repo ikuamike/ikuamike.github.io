@@ -8,6 +8,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 cover = "/img/healthcare1/healthcare.png"
+images = ["/img/healthcare1/healthcare.png"]
 +++
 
 

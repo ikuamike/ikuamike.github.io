@@ -4,6 +4,7 @@ date = "2024-11-17T12:17:45+03:00"
 author = ""
 authorTwitter = "" #do not include @
 cover = "/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"
+images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 tags = ["CTF", "Forensics", "Master File Table", "MFT", "MFTECmd", "MFT Explorer"]
 keywords = []
 description = ""
@@ -12,7 +13,6 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 +++
 
 

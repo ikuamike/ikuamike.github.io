@@ -9,6 +9,7 @@ description = ""
 showFullContent = false
 toc = true
 cover = "/img/metasploitctf2021/metasploit-ascii.png"
+images = ["/img/metasploitctf2021/metasploit-ascii.png"]
 +++
 
 

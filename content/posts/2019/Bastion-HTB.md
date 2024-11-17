@@ -7,6 +7,7 @@ keywords = ["", ""]
 description = ""
 showFullContent = false
 cover = "/img/bastion/info_card.png"
+images = ["/img/bastion/info_card.png"]
 +++
 
 

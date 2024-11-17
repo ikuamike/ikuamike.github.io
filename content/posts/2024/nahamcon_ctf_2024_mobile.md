@@ -12,6 +12,7 @@ hideComments = false
 color = "" #color from the theme settings
 toc = true
 cover = "/img/nahamcon_ctf_2024/logo.jpeg"
+images = ["/img/nahamcon_ctf_2024/logo.jpeg"]
 +++
 
 ## Introduction
