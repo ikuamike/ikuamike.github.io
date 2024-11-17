@@ -113,6 +113,10 @@ Since it's a txt file, the size will be equal to the size of the text which in t
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_10.png" alt="" position="center" style="border-radius: 8px;" >}}
 
+If we create the file locally, linux shows the size as 34.
+
+{{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_14.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 Flag: `r00t{34}`
 
 Based on the solves of the next challenges, seems the decryption was the biggest hurdle.
@@ -138,7 +142,7 @@ I definitely learnt a thing or two here about forensics on the Master File Table
 
 ## Extras
 
-Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail.
+Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail, I just assumed it's the original size of the file.
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" alt="" position="center" style="border-radius: 8px;" >}}
 
