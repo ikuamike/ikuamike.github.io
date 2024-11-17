@@ -1,4 +1,67 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on</title><link>https://blog.ikuamike.io/posts/</link><description>Recent content in Posts on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on</title><link>https://blog.ikuamike.io/posts/</link><description>Recent content in Posts on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 12:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Forensics</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</link><pubDate>Sun, 17 Nov 2024 12:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
+ctf team.&lt;/p>
+&lt;p>This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically the &lt;strong>Streams and Secrets&lt;/strong> set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this challenge under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
+&lt;h2 id="part-1">Part 1&lt;/h2>
+&lt;p>We start of with the challenge info.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>We are given 2 files, a script and the challenge artifact which we can download from the dump link.&lt;/p>
+&lt;p>This first one was easy to solve, I just got strings from the artifact.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>strings -30 &lt;span style="color:#ae81ff">\$&lt;/span>MFT.copy0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The only user I saw in the output that made sense was analyst so this was the flag.&lt;/p>
+&lt;p>Flag: &lt;code>r00t{Analyst}&lt;/code>&lt;/p>
+&lt;h2 id="part-2">Part 2&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>Here I faced a bit of a challenge since I couldn&amp;rsquo;t work with this file on linux anymore. Based on the strings, it was clear I needed to use Windows.&lt;/p>
+&lt;p>I also did a lot of googling around what MFT. I found this resource &lt;a href="https://aboutdfir.com/toolsandartifacts/windows/mft-explorer-mftecmd/" target="_blank" rel="noopener">https://aboutdfir.com/toolsandartifacts/windows/mft-explorer-mftecmd/&lt;/a>
+that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ps" data-lang="ps">&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">.\MFTECmd.exe&lt;/span> &lt;span style="color:#a6e22e">-f&lt;/span> &lt;span style="color:#a6e22e">&amp;#39;.\$MFT.copy0&amp;#39;&lt;/span> &lt;span style="color:#a6e22e">--csv&lt;/span> &lt;span style="color:#a6e22e">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>With the csv extracted, we can through the information. I applied a filter on the filename to only show filenames with the name secret.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>We can see we have two last modified columns, I used the most latest of the two.&lt;/p>
+&lt;p>Flag: &lt;code>r00t{2024-10-07_21:52:47}&lt;/code>&lt;/p>
+&lt;h2 id="part-3">Part 3&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>This was only solvable after getting the original contents of the secret.txt file. So we needed the encryption key as well as the contents of the file. From the awesomeScript.py we know the encryption function.&lt;/p>
+&lt;p>Using MFTECmd, we need to get the EntryNumber and SequenceNumber to dump the details.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_6.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ps" data-lang="ps">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">.\MFTECmd.exe&lt;/span> &lt;span style="color:#a6e22e">-f&lt;/span> &lt;span style="color:#a6e22e">&amp;#39;.\$MFT.copy0&amp;#39;&lt;/span> &lt;span style="color:#a6e22e">--de&lt;/span> &lt;span style="color:#a6e22e">107744-3&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>We now have the contents of secrets.txt and the encryption_key that was stored in the alternate data stream. This was already indicated in the csv output.&lt;/p>
+&lt;p>MFT Explorer could have also been used, it gives a nice GUI experience but is quite slow. This is also something highlighted in the resource I found, so be patient when you first load the MFT file into MFT Explorer.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>MFT Explorer can give us all the data at one glance.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_9.png" class="center" style="border-radius: 8px;" />
+&lt;p>With the key we can craft our decode script as below and get the original contents of secrets.txt&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> cryptography.fernet &lt;span style="color:#f92672">import&lt;/span> Fernet
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> base64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>key &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;MVJhfcwOV33RxMzyF1H6J9X5IVbyfzHbVHMqXP6HN7Q=&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>message &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;gAAAAABnBFRI3Z3tfxy7hD4tfW_8Lkd4hwFOXxGkguaty3Z2zTzehVjBZhs9Q57y8g--0rTvkaZw44o-Nc0NxLFHqEYPiLab0FYXf7Y-34Rz27tKq_IFClITfXafCFR5BQb07PawxhP-&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>f &lt;span style="color:#f92672">=&lt;/span> Fernet(key)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>encrypted_message &lt;span style="color:#f92672">=&lt;/span> f&lt;span style="color:#f92672">.&lt;/span>decrypt(message&lt;span style="color:#f92672">.&lt;/span>encode())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(str(encrypted_message,&lt;span style="color:#e6db74">&amp;#34;utf-8&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Once decoded, we get the following.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>secret={M4st3r_F1l3_t4bl3_1n_ntfs}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since it&amp;rsquo;s a txt file, the size will be equal to the size of the text which in this case is 34.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;code>r00t{34}&lt;/code>&lt;/p>
+&lt;p>Based on the solves of the next challenges, seems the decryption was the biggest hurdle.&lt;/p>
+&lt;h2 id="part-4">Part 4&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_11.png" class="center" style="border-radius: 8px;" />
+&lt;p>We already have the encryption key from the previous step.&lt;/p>
+&lt;p>Flag: &lt;code>r00t{MVJhfcwOV33RxMzyF1H6J9X5IVbyfzHbVHMqXP6HN7Q=}&lt;/code>&lt;/p>
+&lt;h2 id="part-5">Part 5&lt;/h2>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_12.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;code>r00t{M4st3r_F1l3_t4bl3_1n_ntfs}&lt;/code>&lt;/p>
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>I definitely learnt a thing or two here about the Master File Table (MFT). Cheers to the author &lt;a href="https://x.com/festusgichohi1" target="_blank" rel="noopener">boynamedboy&lt;/a>
+&lt;/p></content></item><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
