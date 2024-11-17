@@ -22,7 +22,7 @@ This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by [p3rf3c
 
 Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under **NoPwnNoGain**.
 
-Alright, let's get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver.
+Alright, let's get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver. Later, on there were additional solves but no one else got DA :).
 
 ## Attack
 
@@ -235,3 +235,4 @@ proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
 {{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 Flag: `r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}`
+
