@@ -116,6 +116,7 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" class="center" style="border-radius: 8px;" />
 &lt;p>Flag: &lt;code>r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}&lt;/code>&lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
+&lt;h3 id="using-xmlrpcphp">Using xmlrpc.php&lt;/h3>
 &lt;p>After finishing the CTF, I got this idea. Since I was playing around with xmlrpc, could we have just accessed the comment in trash using xmlrpc? Then we don&amp;rsquo;t need to struggle with the 403 bypass. Even though xmlrpc functionality is limited. It can pretty much read most of the things on wordpress.&lt;/p>
 &lt;p>ChatGPT for the win. ChatGPT wrote for me this python script that I could use to read the hidden comment and flag. Awesome!&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-py" data-lang="py">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> xmlrpc.client
@@ -159,6 +160,17 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;p>I&amp;rsquo;m not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn&amp;rsquo;t really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don&amp;rsquo;t really cover this.&lt;/p>
 &lt;p>There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
 &lt;p>It tried using wp-json as well but I didn&amp;rsquo;t succeed.&lt;/p>
+&lt;h3 id="haproxy-configuration">HAProxy configuration&lt;/h3>
+&lt;p>I was also curious about was the config used to block access to wp-admin and wp-login.&lt;/p>
+&lt;p>Looking at the haproxy config at &lt;code>/etc/haproxy/haproxy.cfg&lt;/code>, we can see the regex was quite basic and only focused on the standard url.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_31.png" class="center" style="border-radius: 8px;" />
+&lt;p>Therefore it was possible to bypass with other variations such as:&lt;/p>
+&lt;ul>
+&lt;li>/wp-content/../wp-admin/&lt;/li>
+&lt;li>/./wp-admin&lt;/li>
+&lt;li>/a/../wp-admin&lt;/li>
+&lt;li>//wp-admin&lt;/li>
+&lt;/ul>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>This was good challenge, especially the first part where the linux box is part of the domain that was unique. Cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
 . Thanks for reading to the end!&lt;/p></content></item><item><title>NahamCon CTF 2024 WriteUp - Mobile</title><link>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</link><pubDate>Tue, 28 May 2024 00:02:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</guid><description>Introduction Following my previous writeup that I did for Misc challenges in the NahamCon CTF, I decided to play the challenges in the Mobile category. This is post CTF as they left the challenges up for a few days after the competition was over.
