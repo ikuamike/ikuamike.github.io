@@ -3,7 +3,7 @@
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
 &lt;p>Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
-&lt;p>Alright, let&amp;rsquo;s get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver. Later, on there were additional solves but no one else got DA :).&lt;/p>
+&lt;p>Alright, let&amp;rsquo;s get into the writeup. The AD category was a challenge to everyone, I got first blood on all 3 and even after 24 hrs I was the only solver. Later on there were additional solves but no one else got Domain Admin and finished it :).&lt;/p>
 &lt;h2 id="attack">Attack&lt;/h2>
 &lt;p>We start of with the challenge information. Important info here is the IP and the Artifact.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_1.png" class="center" style="border-radius: 8px;" />
