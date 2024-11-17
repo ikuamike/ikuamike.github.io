@@ -50,6 +50,8 @@ that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>secret={M4st3r_F1l3_t4bl3_1n_ntfs}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since it&amp;rsquo;s a txt file, the size will be equal to the size of the text which in this case is 34.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_10.png" class="center" style="border-radius: 8px;" />
+&lt;p>If we create the file locally, linux shows the size as 34.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_14.png" class="center" style="border-radius: 8px;" />
 &lt;p>Flag: &lt;code>r00t{34}&lt;/code>&lt;/p>
 &lt;p>Based on the solves of the next challenges, seems the decryption was the biggest hurdle.&lt;/p>
 &lt;h2 id="part-4">Part 4&lt;/h2>
@@ -63,7 +65,7 @@ that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
 &lt;p>I definitely learnt a thing or two here about forensics on the Master File Table (MFT). Cheers to the author &lt;a href="https://x.com/festusgichohi1" target="_blank" rel="noopener">boynamedboy&lt;/a>
 &lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
-&lt;p>Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail.&lt;/p>
+&lt;p>Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail, I just assumed it&amp;rsquo;s the original size of the file.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" class="center" style="border-radius: 8px;" />
 &lt;p>0x22 is 34 in Decimal.&lt;/p></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
