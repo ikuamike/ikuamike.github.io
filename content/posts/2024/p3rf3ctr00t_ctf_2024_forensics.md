@@ -21,7 +21,7 @@ images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 ## Introduction
 This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by [p3rf3ctr00t](https://twitter.com/p3rf3ctr00t) ctf team.
 
-This is my second writeup, I'll cover the forensics category specifically the **Streams and Secrets** set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this challenge under **NoPwnNoGain**.
+This is my second writeup, I'll cover the forensics category specifically how I solved the **Streams and Secrets** set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under **NoPwnNoGain**.
 
 ## Part 1
 
