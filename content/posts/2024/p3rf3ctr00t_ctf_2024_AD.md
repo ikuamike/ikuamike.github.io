@@ -238,6 +238,9 @@ proxychains -q evil-winrm -i 94.72.112.254 -u administrator -H d8dabcadf488114f7
 Flag: `r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}`
 
 ## Extras
+
+### Using xmlrpc.php
+
 After finishing the CTF, I got this idea. Since I was playing around with xmlrpc, could we have just accessed the comment in trash using xmlrpc? Then we don't need to struggle with the 403 bypass. Even though xmlrpc functionality is limited. It can pretty much read most of the things on wordpress.
 
 ChatGPT for the win. ChatGPT wrote for me this python script that I could use to read the hidden comment and flag. Awesome!
@@ -289,6 +292,21 @@ I'm not sure the author knew this was possible. This is a clear indication that 
 There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.
 
 It tried using wp-json as well but I didn't succeed.
+
+### HAProxy configuration
+
+I was also curious about was the config used to block access to wp-admin and wp-login.
+
+Looking at the haproxy config at `/etc/haproxy/haproxy.cfg`, we can see the regex was quite basic and only focused on the standard url. 
+
+{{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_31.png" alt="" position="center" style="border-radius: 8px;" >}}
+
+Therefore it was possible to bypass with other variations such as:
+
+- /wp-content/../wp-admin/
+- /./wp-admin
+- /a/../wp-admin
+- //wp-admin
 
 ## Conclusion
 This was good challenge, especially the first part where the linux box is part of the domain that was unique. Cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
