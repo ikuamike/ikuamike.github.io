@@ -84,7 +84,7 @@ Now we can comfortably login to wp-admin.
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/wordstress_11.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-With access to the admin panel, getting a shell is straighforward. We can modify one of the theme files to include our php shell payload. I initially did this, but later realized I had skipped the intended path. So let's follow the intended path (which is easier).
+With access to the admin panel, getting a shell is straighforward. We can modify one of the theme files to include our php shell payload. I initially did that, but later realized I had skipped the intended path. So let's follow the intended path (which is easier).
 
 ### WordStress Flag
 
@@ -291,4 +291,4 @@ There is potential to write an script that goes through xmlrpc and dumps various
 It tried using wp-json as well but I didn't succeed.
 
 ## Conclusion
-This was good challenge, cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
+This was good challenge, especially the first part where the linux box is part of the domain that was unique. Cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
