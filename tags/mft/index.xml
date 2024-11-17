@@ -61,4 +61,8 @@ that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
 &lt;p>Flag: &lt;code>r00t{M4st3r_F1l3_t4bl3_1n_ntfs}&lt;/code>&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>I definitely learnt a thing or two here about forensics on the Master File Table (MFT). Cheers to the author &lt;a href="https://x.com/festusgichohi1" target="_blank" rel="noopener">boynamedboy&lt;/a>
-&lt;/p></content></item></channel></rss>
+&lt;/p>
+&lt;h2 id="extras">Extras&lt;/h2>
+&lt;p>Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" class="center" style="border-radius: 8px;" />
+&lt;p>0x22 is 34 in Decimal.&lt;/p></content></item></channel></rss>
