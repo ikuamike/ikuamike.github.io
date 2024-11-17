@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sudo on</title><link>https://blog.ikuamike.io/tags/sudo/</link><description>Recent content in Sudo on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 08 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/sudo/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux Privilege Escalation - Package Managers</title><link>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</link><pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/package.png" class="center" style="border-radius: 8px;" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sudo on</title><link>https://blog.ikuamike.io/tags/sudo/</link><description>Recent content in Sudo on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 08 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/sudo/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux Privilege Escalation - Package Managers</title><link>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</link><pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</guid><description>Introduction Package managers are run with root permissions on linux distributions to install, update or remove software/packages. In certain cases the user should not be a root/admin user but has been assigned sudo permissions to run the package manager only for package management purposes.
+We&amp;rsquo;ll look at how this permission can be abused to gain root access to the machine via a root shell.
+If you would like to test out these commands in a lab environment without the need to install and setup your own machine have a look at my scenario on CYBERRANGES using the link below.</description><content>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/package.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Package managers are run with root permissions on linux distributions to install,
 update or remove software/packages. In certain cases the user should not be a root/admin user but
@@ -283,8 +286,7 @@ It can be installed on any of the distros but I encountered issues installing it
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://0xdf.gitlab.io/2021/07/24/htb-armageddon.html
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://youtu.be/8ikdbyOQsLg
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description>Difficulty Release Date Author Beginner 24 Sep 2019 FalconSpy Summary For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a privileged container that can read and write the whole file system by mounting it in the container.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -423,8 +425,7 @@ any password requirement.&lt;/p>
 &lt;pre tabindex="0">&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 https://www.hackingarticles.in/lxd-privilege-escalation/
 https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
-&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description>Difficulty Release Date Author Beginner 2 Mar 2020 Zayotic Summary In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded password that we could use to ssh into the machine.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -667,8 +668,7 @@ abuse this.&lt;/p>
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
 postexploitation we see that the services are running in docker containers.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 2</title><link>https://blog.ikuamike.io/posts/2021/symfonos2/</link><pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 2</title><link>https://blog.ikuamike.io/posts/2021/symfonos2/</link><pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid><description>Difficulty Release Date Author Intermediate 18 July 2019 Zayotic Summary This box had quite a good number of misconfigurations and vulnerabilities. Initial access was through copying a shadow backup file to a smb share accessible anonymously using a file copy vulnerability in proftpd. Then lateral movement and privilege escalation was achieved by exploiting rce a locally running librenms instance and finally abusing sudo permissions on mysql to get root.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>

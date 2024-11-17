@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 12:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Forensics</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</link><pubDate>Sun, 17 Nov 2024 12:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CTF on</title><link>https://blog.ikuamike.io/tags/ctf/</link><description>Recent content in CTF on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 12:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/ctf/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Forensics</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</link><pubDate>Sun, 17 Nov 2024 12:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</guid><description>Introduction This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by p3rf3ctr00t ctf team.
+This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically how I solved the Streams and Secrets set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under NoPwnNoGain.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team.&lt;/p>
 &lt;p>This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically how I solved the &lt;strong>Streams and Secrets&lt;/strong> set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
@@ -67,8 +67,8 @@ that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail, I just assumed it&amp;rsquo;s the original size of the file.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" class="center" style="border-radius: 8px;" />
-&lt;p>0x22 is 34 in Decimal.&lt;/p></content></item><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>0x22 is 34 in Decimal.&lt;/p></content></item><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description>Introduction This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by p3rf3ctr00t ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!
+Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
 &lt;p>Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
@@ -395,8 +395,8 @@ file. Our objective is to gain root access to get the flag.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>Thanks to John Hammond, NahamSec and the rest of challenge creators for putting together yet another great CTF this year. I didn&amp;rsquo;t put in a lot of time to solve more challenges but I still had a good time.&lt;/p>
 &lt;p>You can catch the conference live here: &lt;a href="https://www.youtube.com/live/76mNNVVBht0?si=E2TKu8fJD6SNXFCR" target="_blank" rel="noopener">NahamCon CTF 2024 Live Stream&lt;/a>
-&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - FullPwn</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</link><pubDate>Wed, 22 May 2024 18:22:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - FullPwn</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</link><pubDate>Wed, 22 May 2024 18:22:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</guid><description>Introduction After a long while since I participated in a CTF, I had the pleasure to participate in HTB Business CTF 2024 these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn&amp;rsquo;t rank quite high but I&amp;rsquo;m still pleased with myself.
+In this post, I&amp;rsquo;ll cover the challenges I solved under the FullPwn category which is similar to the HTB Boxes that you perform initial access and escalate to root.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>After a long while since I participated in a CTF, I had the pleasure to participate in &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
 these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn&amp;rsquo;t rank quite high but I&amp;rsquo;m still pleased with myself.&lt;/p>
 &lt;p>In this post, I&amp;rsquo;ll cover the challenges I solved under the FullPwn category which is similar to the HTB Boxes that you perform initial access and escalate to root.&lt;/p>
@@ -547,8 +547,10 @@ these past few days. I enjoyed myself despite having only solved a handful of ch
 &lt;p>It seems the rating of the challenges was skewed towards experienced players as some of the easy ones took some time to complete, hats off to HTB for the CTF. Can&amp;rsquo;t wait to play the next one. The platform is really smooth to use.&lt;/p>
 &lt;p>If you think I should have broken it up into individual posts for each challenge, let me know! You can reach me on twitter &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">@ikuamike&lt;/a>
 &lt;/p>
-&lt;p>Thanks for reading!&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Thanks for reading!&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description>Introduction In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the HTB Business CTF 2024 .
+1. Hidden Path This challenge was rated Easy. We are provided with files to download, allowing us to read the app&amp;rsquo;s source code.
+On reading the code, we see that the app accepts user input on the /server_status endpoint. It takes in choice parameter and something else.
+Initially I didn&amp;rsquo;t immediately pick this out but after looking closely, my code editor highlights that there is another parameter.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
 .&lt;/p>
 &lt;h3 id="1-hidden-path">1. Hidden Path&lt;/h3>
@@ -597,8 +599,8 @@ link, then crafted my request as below in burp.ㅤ&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_7.png" class="center" style="border-radius: 8px;" />
 &lt;p>After checking the stash, we now have the final piece of the flag: &lt;strong>g0T_TH3_sT4sH}&lt;/strong>.&lt;/p>
-&lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ascii.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description>Introduction Similar to last year&amp;rsquo;s ctf we are provided with a kali machine as the jump box and an Ubuntu VM with ports open for the different challenges.
+As usual I participated with team @fr334aks and we were able to solve 8 challenges and got position 47/265. This year most of the challenges were tougher than last year as we solved less. It was a good experience nonetheless. You can read last year&amp;rsquo;s writeup here if interested.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Similar to last year&amp;rsquo;s ctf we are provided with a kali machine as the jump box and an Ubuntu VM with ports open for the different challenges.&lt;/p>
 &lt;p>As usual I participated with team @&lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
 and we were able to solve 8 challenges and got position 47/265. This year
@@ -786,8 +788,8 @@ below content that enables a file with .mike extension to be executed as a php f
 &lt;p>Another writeup you can read:&lt;/p>
 &lt;pre tabindex="0">&lt;code>https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review
 https://ctf.zeyu2001.com/2021/metasploit-community-ctf
-&lt;/code>&lt;/pre></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/code>&lt;/pre></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description>Introduction @SheHacksKE held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF that was facilitated by @eKRAALhub . @mystic_kev and I participated in the CTF as NoPwnNoGain and won it by completed all challenges. This writeup is for the challenges I was able to solve.
+Challenges: Firmware 1. Camera Kernel The provided file when extracted contains a bin file that is a linux image.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>&lt;a href="https://twitter.com/shehacks_ke" target="_blank" rel="noopener">@SheHacksKE&lt;/a>
 held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF
 that was facilitated by &lt;a href="https://twitter.com/eKRAALhub" target="_blank" rel="noopener">@eKRAALhub&lt;/a>
@@ -916,8 +918,10 @@ the questions.&lt;/p>
 &lt;p>&lt;a href="https://blog.ikuamike.io/files/shehacks-hackfest-2021/demo.zip" target="_blank" rel="noopener">demo.zip&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://blog.ikuamike.io/files/shehacks-hackfest-2021/terramaster.zip" target="_blank" rel="noopener">terramaster.zip&lt;/a>
-&lt;/p></content></item><item><title>AfricaHackon 2021 CTF Finals WriteUp</title><link>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</link><pubDate>Tue, 09 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing0.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>AfricaHackon 2021 CTF Finals WriteUp</title><link>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</link><pubDate>Tue, 09 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</guid><description>Introduction Last week @mystic_kev and I participated in the AfricaHackon 2021 CTF finals as team NoPwnNoGain, we managed position 4. We were able to solve 3 challenges with first blood on 2 of them. This writeup demonstrates how I was able to solve one of them.
+Challenges 1. Processing Challenge description:
+For this challenge we are provided a zip file with the java apps for the challenge.
+The Challenge file is a shell script that allows for executing the challenge easily.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Last week &lt;a href="https://twitter.com/mystic_kev" target="_blank" rel="noopener">@mystic_kev&lt;/a>
 and I participated in the AfricaHackon 2021 CTF finals as team NoPwnNoGain, we managed position 4.
 We were able to solve 3 challenges with first blood on 2 of them. This writeup demonstrates how I was able to solve one of them.&lt;/p>
@@ -975,8 +979,10 @@ also shows how to solve this in his writeup.&lt;/p>
 &lt;p>Thanks to &lt;a href="https://twitter.com/AfricaHackon" target="_blank" rel="noopener">@AfricaHackon&lt;/a>
 and the partners for the CTF, we don&amp;rsquo;t get to play many locally organised ctfs so this was good to compete against local teams.&lt;/p>
 &lt;p>You can still play the challenges by visiting this link &lt;a href="https://ctfroom.com/vaults/" target="_blank" rel="noopener">https://ctfroom.com/vaults/&lt;/a>
-&lt;/p></content></item><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/hacktivity.jpeg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description>Introduction H@cktivityCon 2021 was happening over the weekend and I participated in their ctf with team @fr334aks . We managed position 49 out of 2527 teams. This writeup is of the challenges I managed to solve.
+Challenges 1. Mobile: To Do Challenge Description:
+We are provided with an apk file. First thing I typically do with apk files is open them with jadx-gui.
+jadx-gui todo.apk Here I first look at the AndroidManifest.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>H@cktivityCon 2021 was happening over the weekend and I participated in their ctf with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">@fr334aks&lt;/a>
 . We managed position 49 out of 2527 teams.
 This writeup is of the challenges I managed to solve.&lt;/p>
@@ -1058,7 +1064,9 @@ permissions, I was able to overwrite it by uploading an empty file with the same
 &lt;p>Once that was done we can ssh and get the flag.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/racecar-4.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
-&lt;p>Thanks HackerOne, John Hammond and the CTF challenge creators, it was a fun one!&lt;/p></content></item><item><title>Metasploit Community CTF December 2020 WriteUp</title><link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link><pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>Thanks HackerOne, John Hammond and the CTF challenge creators, it was a fun one!&lt;/p></content></item><item><title>Metasploit Community CTF December 2020 WriteUp</title><link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link><pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid><description>Summary Over the weekend I participated in Metasploit Community December CTF by Rapid7 with team fr334aks . We ended up getting position 57/413. The CTF was meant to be beginner-friendly.
+Intro Teams are provided with their own instance of a kali box which is public facing to act as a jump host to reach an ubuntu VM which hosts the challenges.
+On the ubuntu VM there are 20 open ports for each challenge.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>Over the weekend I participated in &lt;a href="https://ctftime.org/event/1200" target="_blank" rel="noopener">Metasploit Community December CTF&lt;/a>
 by Rapid7
 with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
@@ -1260,7 +1268,8 @@ things to learn.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title><link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link><pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid><description/><content>&lt;h2 id="summary">Summary&lt;/h2>
+&lt;/p></content></item><item><title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title><link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link><pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid><description>Summary During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for ssh tunneling techniques.
+I am writing this to serve as a personal reference for ssh tunneling as it has a very good practical aspect to use as an example.</description><content>&lt;h2 id="summary">Summary&lt;/h2>
 &lt;p>During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided
 to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges
 that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for
@@ -1484,7 +1493,8 @@ on how he used a different approach using metasploit:&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description>Summary I recently participated in RaziCTF 2020 with team fr344aks and I was able to solve an android challenge that I thought needs a proper writeup. I was able to reverse engineer the provided app and use frida for dynamic analysis for a quick win.
+Challenge Description: I first installed the app in my genymotion emulator to see the basic functionality. There is a padlock icon constantly changing position on the screen and text at the bottom that says 20000 to break the lock.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>I recently participated in &lt;a href="https://ctftime.org/event/1167" target="_blank" rel="noopener">RaziCTF 2020&lt;/a>
 with team
 &lt;a href="https://ctftime.org/team/112710" target="_blank" rel="noopener">fr344aks&lt;/a>
@@ -1544,8 +1554,9 @@ This way I don&amp;rsquo;t need to interact with the app.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
-&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
+&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description>I recently worked on a CTF challenge by CyberSpace Kenya which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.
+Flag 3 I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:
+Extracting the apk contents with apktool Reversing the app code with jadx-gui Using apktool is pretty simple just run this command on the apk:</description><content>&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
 which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.&lt;/p>
 &lt;h2 id="flag-3">Flag 3&lt;/h2>
 &lt;p>I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:&lt;/p>

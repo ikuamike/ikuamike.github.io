@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cron on</title><link>https://blog.ikuamike.io/tags/cron/</link><description>Recent content in Cron on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/cron/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/sar1/sar1.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cron on</title><link>https://blog.ikuamike.io/tags/cron/</link><description>Recent content in Cron on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/cron/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description>Difficulty Release Date Author Beginner 15 Feb 2020 Love Summary In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that we take advantage of to get a low priv shell. For privilege escalation there was a cron job running as root that was running a script we could write in.
+Reconnaissance Nmap
+Nmap scan report for 192.168.56.107 Host is up (0.000040s latency). Not shown: 65534 closed ports PORT STATE SERVICE VERSION 80/tcp open http Apache httpd 2.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -123,8 +124,7 @@ above&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/sar1/sar1-09.png" class="center" style="border-radius: 8px;" />
 &lt;p>Shoutout to Musyoka Ian, you can read his blog linked below. He does cool writeups on challenges as well.&lt;/p>
 &lt;p>&lt;a href="https://musyokaian.medium.com/" target="_blank" rel="noopener">https://musyokaian.medium.com/&lt;/a>
-&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/p></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description>Difficulty Release Date Author Beginner 26 Apr 2020 James Hay Summary For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing. On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable script.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>

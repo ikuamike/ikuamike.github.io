@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Beginner on</title><link>https://blog.ikuamike.io/tags/beginner/</link><description>Recent content in Beginner on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/beginner/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/sar1/sar1.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Beginner on</title><link>https://blog.ikuamike.io/tags/beginner/</link><description>Recent content in Beginner on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 13 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/beginner/index.xml" rel="self" type="application/rss+xml"/><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description>Difficulty Release Date Author Beginner 15 Feb 2020 Love Summary In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that we take advantage of to get a low priv shell. For privilege escalation there was a cron job running as root that was running a script we could write in.
+Reconnaissance Nmap
+Nmap scan report for 192.168.56.107 Host is up (0.000040s latency). Not shown: 65534 closed ports PORT STATE SERVICE VERSION 80/tcp open http Apache httpd 2.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -123,8 +124,7 @@ above&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/sar1/sar1-09.png" class="center" style="border-radius: 8px;" />
 &lt;p>Shoutout to Musyoka Ian, you can read his blog linked below. He does cool writeups on challenges as well.&lt;/p>
 &lt;p>&lt;a href="https://musyokaian.medium.com/" target="_blank" rel="noopener">https://musyokaian.medium.com/&lt;/a>
-&lt;/p></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/p></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description>Difficulty Release Date Author Beginner 24 Sep 2019 FalconSpy Summary For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a privileged container that can read and write the whole file system by mounting it in the container.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -263,8 +263,7 @@ any password requirement.&lt;/p>
 &lt;pre tabindex="0">&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 https://www.hackingarticles.in/lxd-privilege-escalation/
 https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
-&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description>Difficulty Release Date Author Beginner 26 Apr 2020 James Hay Summary For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing. On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable script.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -353,8 +352,8 @@ script.&lt;/p>
 &lt;ul>
 &lt;li>We could write to the wordpress folder from phpmyadmin because it was world-writeable.&lt;/li>
 &lt;/ul>
-&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: EVM 1</title><link>https://blog.ikuamike.io/posts/2021/evm/</link><pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/evm/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/evm/evm.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: EVM 1</title><link>https://blog.ikuamike.io/posts/2021/evm/</link><pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/evm/</guid><description>Difficulty Release Date Author Beginner 2 Nov 2019 Ic0de Summary This was an easy box, initial foothold was on wordpress. You needed to bruteforce the admin creds then get a reverse shell via editing a theme file to get the reverse shell. Escalating to root was straightforward as we found the root password in a txt file. Some kernel exploits could have also been used for privilege escalation.
+Reconnaissance Nmap</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -473,8 +472,7 @@ we get several hits.&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The second one &lt;code>44298&lt;/code> also works.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description>Difficulty Release Date Author Beginner 2 Mar 2020 Zayotic Summary In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded password that we could use to ssh into the machine.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -717,8 +715,8 @@ abuse this.&lt;/p>
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
 postexploitation we see that the services are running in docker containers.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description>Difficulty Release Date Author Beginner 29 June 2019 Zayotic Summary I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&amp;rsquo;s OSCP Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.
+In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths, therefore hijacking the path gives us root.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>

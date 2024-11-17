@@ -86,7 +86,8 @@ and started with checking out the Android Manifest.&lt;/p>
 &lt;p>There are 2 challenges that I didn&amp;rsquo;t manage to solve. I realized the app was written in flutter and it seems there&amp;rsquo;s a unique step by step for testing apps written in flutter. I&amp;rsquo;ll be digging deeper to learn how to work with apps made in flutter.&lt;/p>
 &lt;p>Here is a link to another writeup that covers the remaining 2 challenges:&lt;/p>
 &lt;p>&lt;a href="https://hackmd.io/@avila-pwn-notes/r183kzlEA" target="_blank" rel="noopener">https://hackmd.io/@avila-pwn-notes/r183kzlEA&lt;/a>
-&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description>Summary I recently participated in RaziCTF 2020 with team fr344aks and I was able to solve an android challenge that I thought needs a proper writeup. I was able to reverse engineer the provided app and use frida for dynamic analysis for a quick win.
+Challenge Description: I first installed the app in my genymotion emulator to see the basic functionality. There is a padlock icon constantly changing position on the screen and text at the bottom that says 20000 to break the lock.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>I recently participated in &lt;a href="https://ctftime.org/event/1167" target="_blank" rel="noopener">RaziCTF 2020&lt;/a>
 with team
 &lt;a href="https://ctftime.org/team/112710" target="_blank" rel="noopener">fr344aks&lt;/a>
@@ -146,8 +147,9 @@ This way I don&amp;rsquo;t need to interact with the app.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
-&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
+&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description>I recently worked on a CTF challenge by CyberSpace Kenya which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.
+Flag 3 I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:
+Extracting the apk contents with apktool Reversing the app code with jadx-gui Using apktool is pretty simple just run this command on the apk:</description><content>&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
 which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.&lt;/p>
 &lt;h2 id="flag-3">Flag 3&lt;/h2>
 &lt;p>I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:&lt;/p>

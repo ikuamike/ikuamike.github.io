@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title/><link>https://blog.ikuamike.io/</link><description>Recent content on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 12:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Forensics</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</link><pubDate>Sun, 17 Nov 2024 12:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title/><link>https://blog.ikuamike.io/</link><description>Recent content on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 12:17:45 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Forensics</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</link><pubDate>Sun, 17 Nov 2024 12:17:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_forensics/</guid><description>Introduction This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by p3rf3ctr00t ctf team.
+This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically how I solved the Streams and Secrets set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under NoPwnNoGain.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team.&lt;/p>
 &lt;p>This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically how I solved the &lt;strong>Streams and Secrets&lt;/strong> set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
@@ -67,8 +67,8 @@ that guided me on the using MFTECmd and MFT Explorer.&lt;/p>
 &lt;h2 id="extras">Extras&lt;/h2>
 &lt;p>Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail, I just assumed it&amp;rsquo;s the original size of the file.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" class="center" style="border-radius: 8px;" />
-&lt;p>0x22 is 34 in Decimal.&lt;/p></content></item><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>0x22 is 34 in Decimal.&lt;/p></content></item><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description>Introduction This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by p3rf3ctr00t ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!
+Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
 &lt;p>Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
@@ -395,8 +395,8 @@ file. Our objective is to gain root access to get the flag.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>Thanks to John Hammond, NahamSec and the rest of challenge creators for putting together yet another great CTF this year. I didn&amp;rsquo;t put in a lot of time to solve more challenges but I still had a good time.&lt;/p>
 &lt;p>You can catch the conference live here: &lt;a href="https://www.youtube.com/live/76mNNVVBht0?si=E2TKu8fJD6SNXFCR" target="_blank" rel="noopener">NahamCon CTF 2024 Live Stream&lt;/a>
-&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - FullPwn</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</link><pubDate>Wed, 22 May 2024 18:22:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - FullPwn</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</link><pubDate>Wed, 22 May 2024 18:22:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_fullpwn/</guid><description>Introduction After a long while since I participated in a CTF, I had the pleasure to participate in HTB Business CTF 2024 these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn&amp;rsquo;t rank quite high but I&amp;rsquo;m still pleased with myself.
+In this post, I&amp;rsquo;ll cover the challenges I solved under the FullPwn category which is similar to the HTB Boxes that you perform initial access and escalate to root.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>After a long while since I participated in a CTF, I had the pleasure to participate in &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
 these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn&amp;rsquo;t rank quite high but I&amp;rsquo;m still pleased with myself.&lt;/p>
 &lt;p>In this post, I&amp;rsquo;ll cover the challenges I solved under the FullPwn category which is similar to the HTB Boxes that you perform initial access and escalate to root.&lt;/p>
@@ -547,8 +547,10 @@ these past few days. I enjoyed myself despite having only solved a handful of ch
 &lt;p>It seems the rating of the challenges was skewed towards experienced players as some of the easy ones took some time to complete, hats off to HTB for the CTF. Can&amp;rsquo;t wait to play the next one. The platform is really smooth to use.&lt;/p>
 &lt;p>If you think I should have broken it up into individual posts for each challenge, let me know! You can reach me on twitter &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">@ikuamike&lt;/a>
 &lt;/p>
-&lt;p>Thanks for reading!&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Thanks for reading!&lt;/p></content></item><item><title>HTB Business CTF 2024 WriteUp - Misc</title><link>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</link><pubDate>Wed, 22 May 2024 00:25:15 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/htb_business_ctf_2024_misc/</guid><description>Introduction In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the HTB Business CTF 2024 .
+1. Hidden Path This challenge was rated Easy. We are provided with files to download, allowing us to read the app&amp;rsquo;s source code.
+On reading the code, we see that the app accepts user input on the /server_status endpoint. It takes in choice parameter and something else.
+Initially I didn&amp;rsquo;t immediately pick this out but after looking closely, my code editor highlights that there is another parameter.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>In this post, I&amp;rsquo;ll be covering solutions to the Misc Challenges from the &lt;a href="https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474" target="_blank" rel="noopener">HTB Business CTF 2024&lt;/a>
 .&lt;/p>
 &lt;h3 id="1-hidden-path">1. Hidden Path&lt;/h3>
@@ -597,8 +599,8 @@ link, then crafted my request as below in burp.ㅤ&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/htb_business_ctf_2024/misc/zephyr_7.png" class="center" style="border-radius: 8px;" />
 &lt;p>After checking the stash, we now have the final piece of the flag: &lt;strong>g0T_TH3_sT4sH}&lt;/strong>.&lt;/p>
-&lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item><item><title>Hack The Box: Forest</title><link>https://blog.ikuamike.io/posts/2022/forest-htb/</link><pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2022/forest-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/forest/logo.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>Flag: &lt;strong>HTB{g0t_tH3_p4s5_gOT_thE_DB_g0T_TH3_sT4sH}&lt;/strong>&lt;/p></content></item><item><title>Hack The Box: Forest</title><link>https://blog.ikuamike.io/posts/2022/forest-htb/</link><pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2022/forest-htb/</guid><description>Introduction After passing my OSCP, I am planning on doing CRTP and CRTO sometime this year. I took the OSCP exam before the updates that are focused on Active Directory so I didn&amp;rsquo;t actively focus on this area.
+So to learn and practice on AD and Windows and also as some prep for the certifications I plan on taking, I will be doing some machines that are AD related and try to get into the details of the included misconfigurations and vulnerabilities.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>After passing my OSCP, I am planning on doing CRTP and CRTO sometime this year. I took the OSCP exam before the updates that are focused on Active
 Directory so I didn&amp;rsquo;t actively focus on this area.&lt;/p>
 &lt;p>So to learn and practice on AD and Windows and also as some prep for the certifications I plan on taking, I will be doing some machines that are AD
@@ -870,8 +872,8 @@ We could also use the svc-alfresco account if we wanted.&lt;/p>
 &lt;p>&lt;a href="https://www.youtube.com/watch?v=H9FcE_FMZio&amp;amp;t=3755s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=H9FcE_FMZio&amp;t=3755s&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://vulndev.io/2020/03/21/forest-hackthebox/" target="_blank" rel="noopener">https://vulndev.io/2020/03/21/forest-hackthebox/&lt;/a>
-&lt;/p></content></item><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/metasploitctf2021/metasploit-ascii.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>Metasploit Community CTF 2021 WriteUp</title><link>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</link><pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/metasploit_ctf_2021/</guid><description>Introduction Similar to last year&amp;rsquo;s ctf we are provided with a kali machine as the jump box and an Ubuntu VM with ports open for the different challenges.
+As usual I participated with team @fr334aks and we were able to solve 8 challenges and got position 47/265. This year most of the challenges were tougher than last year as we solved less. It was a good experience nonetheless. You can read last year&amp;rsquo;s writeup here if interested.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Similar to last year&amp;rsquo;s ctf we are provided with a kali machine as the jump box and an Ubuntu VM with ports open for the different challenges.&lt;/p>
 &lt;p>As usual I participated with team @&lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
 and we were able to solve 8 challenges and got position 47/265. This year
@@ -1059,8 +1061,8 @@ below content that enables a file with .mike extension to be executed as a php f
 &lt;p>Another writeup you can read:&lt;/p>
 &lt;pre tabindex="0">&lt;code>https://ufo.stealien.com/2021-12-07/Metasploit-CTF-Review
 https://ctf.zeyu2001.com/2021/metasploit-community-ctf
-&lt;/code>&lt;/pre></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/shehacks-hackfest-2021/scoreboard.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/code>&lt;/pre></content></item><item><title>SheHacksKE HackFest 2021 CTF WriteUp</title><link>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</link><pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hackfest-2021-ctf/</guid><description>Introduction @SheHacksKE held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF that was facilitated by @eKRAALhub . @mystic_kev and I participated in the CTF as NoPwnNoGain and won it by completed all challenges. This writeup is for the challenges I was able to solve.
+Challenges: Firmware 1. Camera Kernel The provided file when extracted contains a bin file that is a linux image.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>&lt;a href="https://twitter.com/shehacks_ke" target="_blank" rel="noopener">@SheHacksKE&lt;/a>
 held their yearly hackfest event in October 2021 but it was online this year. The event included a CTF
 that was facilitated by &lt;a href="https://twitter.com/eKRAALhub" target="_blank" rel="noopener">@eKRAALhub&lt;/a>
@@ -1189,8 +1191,10 @@ the questions.&lt;/p>
 &lt;p>&lt;a href="https://blog.ikuamike.io/files/shehacks-hackfest-2021/demo.zip" target="_blank" rel="noopener">demo.zip&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://blog.ikuamike.io/files/shehacks-hackfest-2021/terramaster.zip" target="_blank" rel="noopener">terramaster.zip&lt;/a>
-&lt;/p></content></item><item><title>AfricaHackon 2021 CTF Finals WriteUp</title><link>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</link><pubDate>Tue, 09 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/ahfinals2021/processing0.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>AfricaHackon 2021 CTF Finals WriteUp</title><link>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</link><pubDate>Tue, 09 Nov 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/africahackon-2021-ctf-finals/</guid><description>Introduction Last week @mystic_kev and I participated in the AfricaHackon 2021 CTF finals as team NoPwnNoGain, we managed position 4. We were able to solve 3 challenges with first blood on 2 of them. This writeup demonstrates how I was able to solve one of them.
+Challenges 1. Processing Challenge description:
+For this challenge we are provided a zip file with the java apps for the challenge.
+The Challenge file is a shell script that allows for executing the challenge easily.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Last week &lt;a href="https://twitter.com/mystic_kev" target="_blank" rel="noopener">@mystic_kev&lt;/a>
 and I participated in the AfricaHackon 2021 CTF finals as team NoPwnNoGain, we managed position 4.
 We were able to solve 3 challenges with first blood on 2 of them. This writeup demonstrates how I was able to solve one of them.&lt;/p>
@@ -1248,8 +1252,10 @@ also shows how to solve this in his writeup.&lt;/p>
 &lt;p>Thanks to &lt;a href="https://twitter.com/AfricaHackon" target="_blank" rel="noopener">@AfricaHackon&lt;/a>
 and the partners for the CTF, we don&amp;rsquo;t get to play many locally organised ctfs so this was good to compete against local teams.&lt;/p>
 &lt;p>You can still play the challenges by visiting this link &lt;a href="https://ctfroom.com/vaults/" target="_blank" rel="noopener">https://ctfroom.com/vaults/&lt;/a>
-&lt;/p></content></item><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/hacktivity.jpeg" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/p></content></item><item><title>H@cktivityCon 2021 CTF Writeup</title><link>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</link><pubDate>Sat, 18 Sep 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/hacktivitycon-2021-ctf/</guid><description>Introduction H@cktivityCon 2021 was happening over the weekend and I participated in their ctf with team @fr334aks . We managed position 49 out of 2527 teams. This writeup is of the challenges I managed to solve.
+Challenges 1. Mobile: To Do Challenge Description:
+We are provided with an apk file. First thing I typically do with apk files is open them with jadx-gui.
+jadx-gui todo.apk Here I first look at the AndroidManifest.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>H@cktivityCon 2021 was happening over the weekend and I participated in their ctf with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">@fr334aks&lt;/a>
 . We managed position 49 out of 2527 teams.
 This writeup is of the challenges I managed to solve.&lt;/p>
@@ -1331,7 +1337,10 @@ permissions, I was able to overwrite it by uploading an empty file with the same
 &lt;p>Once that was done we can ssh and get the flag.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/hacktivitycon-2021/racecar-4.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
-&lt;p>Thanks HackerOne, John Hammond and the CTF challenge creators, it was a fun one!&lt;/p></content></item><item><title>Linux Privilege Escalation - Package Managers</title><link>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</link><pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/package.png" class="center" style="border-radius: 8px;" />
+&lt;p>Thanks HackerOne, John Hammond and the CTF challenge creators, it was a fun one!&lt;/p></content></item><item><title>Linux Privilege Escalation - Package Managers</title><link>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</link><pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/package_managers_privesc/</guid><description>Introduction Package managers are run with root permissions on linux distributions to install, update or remove software/packages. In certain cases the user should not be a root/admin user but has been assigned sudo permissions to run the package manager only for package management purposes.
+We&amp;rsquo;ll look at how this permission can be abused to gain root access to the machine via a root shell.
+If you would like to test out these commands in a lab environment without the need to install and setup your own machine have a look at my scenario on CYBERRANGES using the link below.</description><content>
+&lt;img src="https://blog.ikuamike.io/img/package_manager_privesc/package.png" class="center" style="border-radius: 8px;" />
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Package managers are run with root permissions on linux distributions to install,
 update or remove software/packages. In certain cases the user should not be a root/admin user but
@@ -1616,8 +1625,8 @@ It can be installed on any of the distros but I encountered issues installing it
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://0xdf.gitlab.io/2021/07/24/htb-armageddon.html
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>https://youtu.be/8ikdbyOQsLg
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Netcat - All you need to know</title><link>https://blog.ikuamike.io/posts/2021/netcat/</link><pubDate>Thu, 08 Jul 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/netcat/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/netcat/netcat.png" class="center" style="border-radius: 8px;" />
-&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Netcat - All you need to know</title><link>https://blog.ikuamike.io/posts/2021/netcat/</link><pubDate>Thu, 08 Jul 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/netcat/</guid><description>Introduction Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife. In this article we&amp;rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&amp;hellip;
+If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on CYBERRANGES using the link below.</description><content>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>Netcat is a tool that reads and writes data across network connections, using TCP or UDP protocol. Netcat has been referred to as the TCP/IP / networking swiss army knife.
 In this article we&amp;rsquo;ll look at different applications of netcat and how it can be useful in day to day activities of a pentester, security professional, sysadmin etc&amp;hellip;&lt;/p>
 &lt;p>If you would like to test out these commands in a lab environment without the need to install them on your own machine have a look at my scenario on &lt;a href="https://app.cyberranges.com" target="_blank" rel="noopener">&lt;strong>CYBERRANGES&lt;/strong>&lt;/a>
@@ -1778,8 +1787,9 @@ we haven&amp;rsquo;t looked into feel free to explore them, but I think we&amp;r
 &lt;p>&lt;a href="https://nc110.sourceforge.io/" target="_blank" rel="noopener">https://nc110.sourceforge.io/&lt;/a>
 &lt;/p>
 &lt;p>&lt;a href="https://eternallybored.org/misc/netcat/" target="_blank" rel="noopener">https://eternallybored.org/misc/netcat/&lt;/a>
-&lt;/p></content></item><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/sar1/sar1.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/p></content></item><item><title>Vulnhub: Sar 1</title><link>https://blog.ikuamike.io/posts/2021/sar1/</link><pubDate>Thu, 13 May 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/sar1/</guid><description>Difficulty Release Date Author Beginner 15 Feb 2020 Love Summary In this box there&amp;rsquo;s only one port open that is running a vulnerable version of sar2html that we take advantage of to get a low priv shell. For privilege escalation there was a cron job running as root that was running a script we could write in.
+Reconnaissance Nmap
+Nmap scan report for 192.168.56.107 Host is up (0.000040s latency). Not shown: 65534 closed ports PORT STATE SERVICE VERSION 80/tcp open http Apache httpd 2.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -1903,8 +1913,7 @@ above&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/sar1/sar1-09.png" class="center" style="border-radius: 8px;" />
 &lt;p>Shoutout to Musyoka Ian, you can read his blog linked below. He does cool writeups on challenges as well.&lt;/p>
 &lt;p>&lt;a href="https://musyokaian.medium.com/" target="_blank" rel="noopener">https://musyokaian.medium.com/&lt;/a>
-&lt;/p></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/misdirection1/misdirection.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/p></content></item><item><title>Vulnub: Misdirection 1</title><link>https://blog.ikuamike.io/posts/2021/misdirection1/</link><pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/misdirection1/</guid><description>Difficulty Release Date Author Beginner 24 Sep 2019 FalconSpy Summary For this box, initial access was a web shell discovered. Then with low priv shell we could run bash as brexit user and were able to pivot to that account. Once we are brexit user, we abuse his membership to the lxd to start a privileged container that can read and write the whole file system by mounting it in the container.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2043,8 +2052,7 @@ any password requirement.&lt;/p>
 &lt;pre tabindex="0">&lt;code>https://rioasmara.com/2021/01/29/privilege-escalation-with-lxd/
 https://www.hackingarticles.in/lxd-privilege-escalation/
 https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-etc-passwd
-&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon.png" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/code>&lt;/pre></content></item><item><title>Vulnhub: Lemon Squeezy 1</title><link>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/lemonsqueezy1/</guid><description>Difficulty Release Date Author Beginner 26 Apr 2020 James Hay Summary For this box we only get one port running a web server and we discover wordpress and phpmyadmin by directory bruteforcing. On the wordpress application we bruteforce credentials of the users discovered and then discover more credentials stored in a draft post. With this new credentials we access phpmyadmin and write to a file using an sql query. This serves as our initial foothold and we then escalate privileges by abusing a cron job running as root that executes a world writeable script.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2133,8 +2141,7 @@ script.&lt;/p>
 &lt;ul>
 &lt;li>We could write to the wordpress folder from phpmyadmin because it was world-writeable.&lt;/li>
 &lt;/ul>
-&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Healthcare 1</title><link>https://blog.ikuamike.io/posts/2021/healthcare1/</link><pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/healthcare1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/lemonsqueezy1/lemon-16.png" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Healthcare 1</title><link>https://blog.ikuamike.io/posts/2021/healthcare1/</link><pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/healthcare1/</guid><description>Difficulty Release Date Author Intermediate 29 Jul 2020 v1n1v131r4 Summary For this box, we perform directory bruteforce on the webserver to discover a vulnerable version of openemr. Openemr here is vulnerable to sql injection that we leverage to extract usernames and password hashes. After cracking the hashes, we use the discovered credentials to access the ftp server and upload a php reverse shell to the webserver. This serves as our initial entry.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2354,8 +2361,8 @@ listener.&lt;/p>
 &lt;p>Therefore we can crack this hash and switch user to almirant.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-22.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Then we get user.txt.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-23.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: EVM 1</title><link>https://blog.ikuamike.io/posts/2021/evm/</link><pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/evm/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/evm/evm.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/healthcare1/healthcare-23.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: EVM 1</title><link>https://blog.ikuamike.io/posts/2021/evm/</link><pubDate>Fri, 05 Mar 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/evm/</guid><description>Difficulty Release Date Author Beginner 2 Nov 2019 Ic0de Summary This was an easy box, initial foothold was on wordpress. You needed to bruteforce the admin creds then get a reverse shell via editing a theme file to get the reverse shell. Escalating to root was straightforward as we found the root password in a txt file. Some kernel exploits could have also been used for privilege escalation.
+Reconnaissance Nmap</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2474,8 +2481,7 @@ we get several hits.&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/evm/evm13.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>The second one &lt;code>44298&lt;/code> also works.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/evm/evm14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 5</title><link>https://blog.ikuamike.io/posts/2021/symfonos5/</link><pubDate>Wed, 17 Feb 2021 21:54:20 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos5/</guid><description>Difficulty Release Date Author Beginner 2 Mar 2020 Zayotic Summary In this box, we first perform ldap injection on the web application to bypass the login page. Then we are able to read local files by abusing a local file inclusion vulnerability with php base64 filter. From one of the php files we get ldap credentials that we used to authenticate to ldap and dump entries. From the entries we get a base64 encoded password that we could use to ssh into the machine.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2718,8 +2724,7 @@ abuse this.&lt;/p>
 &lt;h1 id="extras">Extras&lt;/h1>
 &lt;p>When accessing the passwd file, we couldn&amp;rsquo;t see any user with home directory in /home looking at the configuration
 postexploitation we see that the services are running in docker containers.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 4</title><link>https://blog.ikuamike.io/posts/2021/symfonos4/</link><pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos4/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/symfonos5/symfonos5-14.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 4</title><link>https://blog.ikuamike.io/posts/2021/symfonos4/</link><pubDate>Mon, 15 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos4/</guid><description>Difficulty Release Date Author Intermediate 20 Aug 2019 Zayotic Summary For this box, some directory bruteforce is needed to discover some php files. One of the php files has an lfi vulnerability but can only be access by authenticating to the other page. The login form can be bypassed and we exploit the lfi. For that we poison ssh logs for exploitation to rce. For privilege escalation we exploit a python web app running locally as root using insecure deserialization of the cookie by jsonpickle.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2870,8 +2875,7 @@ what you&amp;rsquo;re writing you&amp;rsquo;ll need to write to another non-exis
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-33.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>Then accessing it using the lfi works this time.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/symfonos4/symfonos4-34.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;p>Something else also to note is that the db user in this case is the mysql root user.&lt;/p></content></item><item><title>Vulnhub: Symfonos 3</title><link>https://blog.ikuamike.io/posts/2021/symfonos3/</link><pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;p>Something else also to note is that the db user in this case is the mysql root user.&lt;/p></content></item><item><title>Vulnhub: Symfonos 3</title><link>https://blog.ikuamike.io/posts/2021/symfonos3/</link><pubDate>Thu, 11 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos3/</guid><description>Difficulty Release Date Author Intermediate 7 Apr 2020 Zayotic Summary In this box, we need to perform some directory bruteforce then use shellshock vulnerability to get our first shell. We then sniff local traffic using tcpdump and get credentials for the next user who has permissions to write python2.7 lib directory. Using those write permissions we hijack a library that is imported in a script that is executed by root in a cron job.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -2979,8 +2983,7 @@ any imports in that ftpclient.py script.&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-17.png" alt="symfonos" class="center" style="border-radius: 8px;" />
 &lt;p>This will create a setuid bash binary in /tmp. Which can use to gain root privileges.&lt;/p>
-&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-18.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 2</title><link>https://blog.ikuamike.io/posts/2021/symfonos2/</link><pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;img src="https://blog.ikuamike.io/img/symfonos3/symfonos3-18.png" alt="symfonos" class="center" style="border-radius: 8px;" /></content></item><item><title>Vulnhub: Symfonos 2</title><link>https://blog.ikuamike.io/posts/2021/symfonos2/</link><pubDate>Wed, 10 Feb 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos2/</guid><description>Difficulty Release Date Author Intermediate 18 July 2019 Zayotic Summary This box had quite a good number of misconfigurations and vulnerabilities. Initial access was through copying a shadow backup file to a smb share accessible anonymously using a file copy vulnerability in proftpd. Then lateral movement and privilege escalation was achieved by exploiting rce a locally running librenms instance and finally abusing sudo permissions on mysql to get root.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -3099,8 +3102,8 @@ rhost and rport where the reverse shell will be received.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/symfonos1/symfonos1.png" alt="symfonos1" class="center" style="border-radius: 8px;" />
-&lt;table>
+&lt;/p></content></item><item><title>Vulnhub: Symfonos 1</title><link>https://blog.ikuamike.io/posts/2021/symfonos1/</link><pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2021/symfonos1/</guid><description>Difficulty Release Date Author Beginner 29 June 2019 Zayotic Summary I got an OSCP voucher last year and this is my active effort to prep for it using TJ-Null&amp;rsquo;s OSCP Prep list. Hopefully documenting this will help improve my methodology and get me ready for OSCP and beyond.
+In this box, initial access is through lfi to rce by using sending a payload in mail and accessing it.For privilege escalation we exploit a setuid binary that doesn&amp;rsquo;t use absolute paths, therefore hijacking the path gives us root.</description><content>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>Difficulty&lt;/th>
@@ -3246,7 +3249,9 @@ curl command.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>Metasploit Community CTF December 2020 WriteUp</title><link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link><pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;/p></content></item><item><title>Metasploit Community CTF December 2020 WriteUp</title><link>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</link><pubDate>Mon, 07 Dec 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/metasploitctf2020/</guid><description>Summary Over the weekend I participated in Metasploit Community December CTF by Rapid7 with team fr334aks . We ended up getting position 57/413. The CTF was meant to be beginner-friendly.
+Intro Teams are provided with their own instance of a kali box which is public facing to act as a jump host to reach an ubuntu VM which hosts the challenges.
+On the ubuntu VM there are 20 open ports for each challenge.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>Over the weekend I participated in &lt;a href="https://ctftime.org/event/1200" target="_blank" rel="noopener">Metasploit Community December CTF&lt;/a>
 by Rapid7
 with team &lt;a href="https://twitter.com/fr334aks" target="_blank" rel="noopener">fr334aks&lt;/a>
@@ -3448,7 +3453,8 @@ things to learn.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title><link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link><pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid><description/><content>&lt;h2 id="summary">Summary&lt;/h2>
+&lt;/p></content></item><item><title>Grayhat Red Team Village CTF 2020 WriteUp: Tunneler</title><link>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</link><pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/grayhat_red_team_village_ctf_tunneler_writeup/</guid><description>Summary During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for ssh tunneling techniques.
+I am writing this to serve as a personal reference for ssh tunneling as it has a very good practical aspect to use as an example.</description><content>&lt;h2 id="summary">Summary&lt;/h2>
 &lt;p>During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided
 to participate as we enjoyed the previous CTF created by them during DEFCON. I tackled the Tunneler challenges
 that were exactly the same as the previous CTF. So with the less pressure it was a nice opportunity to make a writeup for
@@ -3672,7 +3678,8 @@ on how he used a different approach using metasploit:&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
+&lt;/p></content></item><item><title>RaziCTF 2020 WriteUp: Chasing a lock</title><link>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</link><pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/razictf-chasingalock-writeup/</guid><description>Summary I recently participated in RaziCTF 2020 with team fr344aks and I was able to solve an android challenge that I thought needs a proper writeup. I was able to reverse engineer the provided app and use frida for dynamic analysis for a quick win.
+Challenge Description: I first installed the app in my genymotion emulator to see the basic functionality. There is a padlock icon constantly changing position on the screen and text at the bottom that says 20000 to break the lock.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>I recently participated in &lt;a href="https://ctftime.org/event/1167" target="_blank" rel="noopener">RaziCTF 2020&lt;/a>
 with team
 &lt;a href="https://ctftime.org/team/112710" target="_blank" rel="noopener">fr344aks&lt;/a>
@@ -3732,8 +3739,9 @@ This way I don&amp;rsquo;t need to interact with the app.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description/><content>&lt;h1 id="summary">Summary&lt;/h1>
-&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
+&lt;/p></content></item><item><title>CyberSpaceKenya CTF: ZuluMeats3</title><link>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</link><pubDate>Fri, 12 Jun 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/cyberspacectf-zulumeats3/</guid><description>I recently worked on a CTF challenge by CyberSpace Kenya which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.
+Flag 3 I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:
+Extracting the apk contents with apktool Reversing the app code with jadx-gui Using apktool is pretty simple just run this command on the apk:</description><content>&lt;p>I recently worked on a CTF challenge by &lt;a href="https://twitter.com/CyberSpaceKenya" target="_blank" rel="noopener">CyberSpace Kenya&lt;/a>
 which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.&lt;/p>
 &lt;h2 id="flag-3">Flag 3&lt;/h2>
 &lt;p>I haven&amp;rsquo;t done tons of mobile app reverse engineering but as I was learning about the subject in previous challenges I found this 2-step approach to work well:&lt;/p>
@@ -3860,8 +3868,8 @@ for the prize.&lt;/p>
 &lt;p>Twitter: &lt;a href="https://twitter.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
 &lt;/p>
 &lt;p>Github: &lt;a href="https://github.com/ikuamike" target="_blank" rel="noopener">ikuamike&lt;/a>
-&lt;/p></content></item><item><title>Hack The Box: Bitlab</title><link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link><pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/bitlab/info_card.png" alt="Bastion Info Card" class="center" style="border-radius: 8px;" />
-&lt;h1 id="summary">Summary&lt;/h1>
+&lt;/p></content></item><item><title>Hack The Box: Bitlab</title><link>https://blog.ikuamike.io/posts/2020/bitlab-htb/</link><pubDate>Sat, 11 Jan 2020 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2020/bitlab-htb/</guid><description>Summary As the name suggests this box had a instance of gitlab where the initial foothold involves getting credentials from obfuscated javascript and once logged into the gitlab instance we abuse webhooks to add our own code and execute it to get a reverse shell. Read on to see how I able to root the box.
+Enumeration As usual I start with a quick nmap scan to find open ports and then run a second scan for service and version detection.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>As the name suggests this box had a instance of gitlab where the initial foothold involves getting credentials from obfuscated javascript and once logged into the gitlab instance we abuse webhooks to add our own code and execute it to get a reverse shell. Read on to see how I able to root the box.&lt;/p>
 &lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;p>As usual I start with a quick nmap scan to find open ports and then run a second scan for service and version detection.&lt;/p>
@@ -3979,8 +3987,8 @@ for the prize.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-17.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
 &lt;p>After making this file executable, we just have to make any change to the repo on the gitlab instance like creating a txt file and make sure we merge it to master. Once that is done, we can run sudo git pull and get a root reverse shell.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/bitlab/bitlab-18.png" alt="gitlab instance" class="center" style="border-radius: 8px;" />
-&lt;p>As you may have noticed since we used the www-data user to get root, we would have skipped the getting user path using the postgresql db and read user.txt from the root user.&lt;/p></content></item><item><title>Hack The Box: Bastion</title><link>https://blog.ikuamike.io/posts/2019/bastion-htb/</link><pubDate>Fri, 06 Sep 2019 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2019/bastion-htb/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/bastion/info_card.png" alt="Bastion Info Card" class="center" style="border-radius: 8px;" />
-&lt;h1 id="summary">Summary&lt;/h1>
+&lt;p>As you may have noticed since we used the www-data user to get root, we would have skipped the getting user path using the postgresql db and read user.txt from the root user.&lt;/p></content></item><item><title>Hack The Box: Bastion</title><link>https://blog.ikuamike.io/posts/2019/bastion-htb/</link><pubDate>Fri, 06 Sep 2019 00:00:00 +0000</pubDate><guid>https://blog.ikuamike.io/posts/2019/bastion-htb/</guid><description>Summary Bastion was a relatively easy box. There is an smb share is accessible without credentials and inside there is a backup drive that we can mount and access. From the drive we can dump the SAM file and crack it to get login credentials. Once logged in we find mRemoteNG installed and extract its saved passwords to get admin access.
+Enumeration I start with this nmap command to quickly find open ports.</description><content>&lt;h1 id="summary">Summary&lt;/h1>
 &lt;p>Bastion was a relatively easy box. There is an smb share is accessible without credentials and inside there is a backup drive that we can mount and access. From the drive we can dump the SAM file and crack it to get login credentials. Once logged in we find mRemoteNG installed and extract its saved passwords to get admin access.&lt;/p>
 &lt;h1 id="enumeration">Enumeration&lt;/h1>
 &lt;p>I start with this nmap command to quickly find open ports.&lt;/p>
