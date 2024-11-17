@@ -155,9 +155,10 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Error occurred: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_30.png" class="center" style="border-radius: 8px;" />
+&lt;p>During the CTF, it definitely wouldn&amp;rsquo;t have been the first thing to try, but still interesting to see that it works.&lt;/p>
 &lt;p>I&amp;rsquo;m not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn&amp;rsquo;t really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don&amp;rsquo;t really cover this.&lt;/p>
 &lt;p>There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
-&lt;p>It tried using wp-json but I didn&amp;rsquo;t succeed.&lt;/p>
+&lt;p>It tried using wp-json as well but I didn&amp;rsquo;t succeed.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>This was good challenge, cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
 . Thanks for reading to the end!&lt;/p></content></item><item><title>NahamCon CTF 2024 WriteUp - Mobile</title><link>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</link><pubDate>Tue, 28 May 2024 00:02:45 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/nahamcon_ctf_2024_mobile/</guid><description>Introduction Following my previous writeup that I did for Misc challenges in the NahamCon CTF, I decided to play the challenges in the Mobile category. This is post CTF as they left the challenges up for a few days after the competition was over.
