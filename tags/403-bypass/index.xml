@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>403 Bypass on</title><link>https://blog.ikuamike.io/tags/403-bypass/</link><description>Recent content in 403 Bypass on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 17 Nov 2024 02:10:36 +0300</lastBuildDate><atom:link href="https://blog.ikuamike.io/tags/403-bypass/index.xml" rel="self" type="application/rss+xml"/><item><title>P3RF3CT R00T CTF 2024 Writeup - Active Directory</title><link>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</link><pubDate>Sun, 17 Nov 2024 02:10:36 +0300</pubDate><guid>https://blog.ikuamike.io/posts/2024/p3rf3ctr00t_ctf_2024_ad/</guid><description/><content>&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" class="center" style="border-radius: 8px;" />
+&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
+ctf team, barely got some sleep. They really did a good job considering it&amp;rsquo;s their first edition of the CTF, I didn&amp;rsquo;t experience any downtime and support was very helpful on their discord server. They had over 50 challenges!&lt;/p>
+&lt;p>Kudos to them, I am happy to see an evolution of CTFs in the Kenyan hacking scene. I have been playing CTFs for a while and this one gave me a fun challenge, at some point I was number 1. I was playing solo under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
+&lt;p>Alright, let&amp;rsquo;s get into the writeup. The AD category was a challenge to everyone, even after 24 hrs I was the only solver.&lt;/p>
+&lt;h2 id="attack">Attack&lt;/h2>
+&lt;p>We start of with the challenge information. Important info here is the IP and the Artifact.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_1.png" class="center" style="border-radius: 8px;" />
+&lt;p>We begin by running a full portscan on the target.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_2.png" class="center" style="border-radius: 8px;" />
+&lt;p>We only get port 22 and 80 open, on port 80 we have a Wordpress site.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_3.png" class="center" style="border-radius: 8px;" />
+&lt;p>I fired up wpscan, to get recon going as I clicked around the site to see what was posted.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>wpscan --url http://154.12.228.253/ -e ap,at,tt,cb,dbe,u --api-token --redacted-- -o wpscan.out
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From the scan, the only notable finding was the discovered user, we could also see the username on the site from a published post.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_4.png" class="center" style="border-radius: 8px;" />
+&lt;p>After recon, the only logical next step was to target this user. Remember the &lt;strong>Artifact - Winterseason1234&lt;/strong> from the challenge info? Let&amp;rsquo;s test it as the password for this account.&lt;/p>
+&lt;p>Unfortunately, when we try accessing /wp-admin we are forbidden. Based on the output, there&amp;rsquo;s a proxy blocking this access.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_5.png" class="center" style="border-radius: 8px;" />
+&lt;p>So how do we test the credentials? Since I remember xmlrpc was accessible based on the wpscan output, I used metasploit&amp;rsquo;s &lt;code>wordpress_xmlrpc_login&lt;/code> module to check if the password is valid.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_6.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now that we confirm the password is valid, what next? We can&amp;rsquo;t access wp-admin.&lt;/p>
+&lt;p>I got stuck here for some time doing various things against wordpress, I tried scanning again to see if I missed anything. I tried using xmlrpc to make modifications on the site but it has very limited functionality. Without much success, I decided that finding a bypass so as to access wp-admin was the only way forward.&lt;/p>
+&lt;p>I tried several bypasses such as adding X-Forwared-For headers but no dice. Finally a little trickery with the URL worked.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_7.png" class="center" style="border-radius: 8px;" />
+&lt;p>By using path traversal, I was able to bypass the proxy and get to Wordpress. As you can see we no longer get 403 Forbidden.&lt;/p>
+&lt;p>The next step is to make sure I can comfortably do this on the browser. Burp&amp;rsquo;s Match and Replace for the win.&lt;/p>
+&lt;p>I added the following rule that ensures, whenever I use &lt;code>/wp-admin&lt;/code> on the browser, Burp would replace it with &lt;code>/wp-content/../wp-admin&lt;/code> and forward it to the server.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_8.png" class="center" style="border-radius: 8px;" />
+&lt;p>To make things smoother, I did the same for wp-login.php as well.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_9.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now we can comfortably login to wp-admin.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_10.png" class="center" style="border-radius: 8px;" />
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_11.png" class="center" style="border-radius: 8px;" />
+&lt;p>With access to the admin panel, getting a shell is straighforward. We can modify one of the theme files to include our php shell payload. I initially did this, but later realized I had skipped the intended path. So let&amp;rsquo;s follow the intended path (which is easier).&lt;/p>
+&lt;h3 id="wordstress-flag">WordStress Flag&lt;/h3>
+&lt;p>In the comments, there&amp;rsquo;s one comment that is in the trash. This includes the WordStress flag and the password to crocodile on the host.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_12.png" class="center" style="border-radius: 8px;" />
+&lt;p>WordStress Flag: &lt;code>r00t{well_lif3_1s_T00_h4rD_w1d_p0xies_pixies}&lt;/code>&lt;/p>
+&lt;p>We can now comfortably ssh into the box. The important bit, was to ensure we specify the domain. This was not a local user but a user on Active Directory.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_13.png" class="center" style="border-radius: 8px;" />
+&lt;p>This was easier for me since I initially got access to the box via a reverse shell and discovered the domain name.&lt;/p>
+&lt;p>I would imagine, it wouldn&amp;rsquo;t have been so intuitive to provide the domain name on the first try. Even though on the comment we are given some sort of hint, I bet it wouldn&amp;rsquo;t have been a quick thing to figure out.&lt;/p>
+&lt;h3 id="calm-belt-flag">Calm Belt Flag&lt;/h3>
+&lt;p>Once logged in we have access to the next flag.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_14.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;code>r00t{Th3_calm_b3lt_isnt_s0_calm}&lt;/code>&lt;/p>
+&lt;p>After some local recon, the next step seemed to point to attacking Active Directory no need for privesc to root.&lt;/p>
+&lt;p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_15.png" class="center" style="border-radius: 8px;" />
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_16.png" class="center" style="border-radius: 8px;" />
+&lt;/p>
+&lt;p>We now have the IP of what could be Domain Controller as that&amp;rsquo;s where our DNS is pointed to. I&amp;rsquo;ll use this linux box to proxy traffic to the DC and attack directly from my local kali machine.&lt;/p>
+&lt;p>Let&amp;rsquo;s setup a socks proxy over SSH.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>ssh -D &lt;span style="color:#ae81ff">1080&lt;/span> &lt;span style="color:#e6db74">&amp;#39;crocodile@grandline.local&amp;#39;&lt;/span>@154.12.228.253
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I&amp;rsquo;ll point my proxychains config to 127.0.0.1 1080 and everything is all set. I&amp;rsquo;ll begin by using netexec as it has a lot of good features built-in.&lt;/p>
+&lt;p>I am able to confirm that the IP we have is indeed for the domain controller and the credentials for the crocodile user are valid for the domain.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_17.png" class="center" style="border-radius: 8px;" />
+&lt;p>Now let&amp;rsquo;s do some more recon on the domain.&lt;/p>
+&lt;h4 id="domain-users">Domain Users:&lt;/h4>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q netexec smb 94.72.112.254 -u crocodile -p &lt;span style="color:#e6db74">&amp;#39;Cr0c0d1le_tears_lol1234&amp;#39;&lt;/span> --users
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>There were many users present, but since the password for most of them were set in the same minute. I chose to consider only a few who were interesting and had different password set times meaning they could have some significance in the challenge.&lt;/p>
+&lt;ol>
+&lt;li>Administrator&lt;/li>
+&lt;li>krbtgt&lt;/li>
+&lt;li>sanji&lt;/li>
+&lt;li>crocodile&lt;/li>
+&lt;li>koala&lt;/li>
+&lt;/ol>
+&lt;p>The user sanji is also present in the linux box.&lt;/p>
+&lt;h4 id="domain-computers">Domain Computers:&lt;/h4>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q netexec smb 94.72.112.254 -u crocodile -p &lt;span style="color:#e6db74">&amp;#39;Cr0c0d1le_tears_lol1234&amp;#39;&lt;/span> --computers
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Only two are present.&lt;/p>
+&lt;ol>
+&lt;li>\calmbelt$ (our Linux box)&lt;/li>
+&lt;li>grandline.local\DC$ (the DC)&lt;/li>
+&lt;/ol>
+&lt;h4 id="network-shares">Network Shares&lt;/h4>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q netexec smb 94.72.112.254 -u crocodile -p &lt;span style="color:#e6db74">&amp;#39;Cr0c0d1le_tears_lol1234&amp;#39;&lt;/span> --shares
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>One of the network shares was interesting to me, since it&amp;rsquo;s not usually present by default. This signalled to me that we have ADCS configured and it could potentially be our attack vector.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_18.png" class="center" style="border-radius: 8px;" />
+&lt;h4 id="bloudhound">BloudHound&lt;/h4>
+&lt;p>Netexec also has the option to collect data for use in bloodhound.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q netexec ldap 94.72.112.254 -u crocodile -p &lt;span style="color:#e6db74">&amp;#39;Cr0c0d1le_tears_lol1234&amp;#39;&lt;/span> --bloodhound --dns-server 94.72.112.254 -c All
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_19.png" class="center" style="border-radius: 8px;" />
+&lt;p>In bloodhound, when we look at the information about the interesting users we previously got. Sanji seems to have additional privileges on the Domain. He is part of the &lt;code>Remote Management Users&lt;/code> group.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_20.png" class="center" style="border-radius: 8px;" />
+&lt;p>This means, we may need to first get access as sanji. I remembered that during my local recon on the linux box there was a ccache file for sanji in /tmp.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_21.png" class="center" style="border-radius: 8px;" />
+&lt;p>After downloading the file to my local machine, I imported the ccache file and could now use it for kerberos authentication auth as sanji. For netexec we need to specify &lt;code>--use-kcache&lt;/code>.&lt;/p>
+&lt;p>proxychains -q netexec smb 94.72.112.254 &amp;ndash;use-kcache&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_22.png" class="center" style="border-radius: 8px;" />
+&lt;p>At this point, this was well and good but I still couldn&amp;rsquo;t use this access to connect to the DC. So I switched to trying out ADCS. Since we noted it was present when we did recon on the available shares.&lt;/p>
+&lt;p>I used certipy and specified -old-bloodhound, so I can import the results into the bloodhound.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy find -u crocodile@grandline.local -p &lt;span style="color:#e6db74">&amp;#39;Cr0c0d1le_tears_lol1234&amp;#39;&lt;/span> -dc-ip 94.72.112.254 -old-bloodhound
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_23.png" class="center" style="border-radius: 8px;" />
+&lt;p>From Bloodhound, we can see that we have 2 certificates that we can use for ESC1 attack.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_24.png" class="center" style="border-radius: 8px;" />
+&lt;p>If we checked from our owned principals, we see that we can use sanji to abuse this.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_25.png" class="center" style="border-radius: 8px;" />
+&lt;p>From certipy output (if you don&amp;rsquo;t provide the -old-bloodhound option), we can confirm that sanji has rights on this certificate. This is also the challenge name, so it was a no brainer this was the intended path.&lt;/p>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_26.png" class="center" style="border-radius: 8px;" />
+&lt;h3 id="marinford-degree-flag">Marinford Degree Flag&lt;/h3>
+&lt;p>Now we can exploit this and get administrator access and access the flag.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy req -k -ca grandline-DC-CA -target dc.grandline.local -template Marinford_Degree -upn administrator@grandline.local -dns-tcp -dc-ip 94.72.112.254
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_27.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_28.png" class="center" style="border-radius: 8px;" />
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>proxychains -q certipy auth -pfx administrator_dc.pfx -dc-ip 94.72.112.254
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_29.png" class="center" style="border-radius: 8px;" />
+&lt;p>Flag: &lt;code>r00t{C3rtificate_f0r_grandline_wh4t_a_j0ke_I_can_for9e}&lt;/code>&lt;/p></content></item></channel></rss>
