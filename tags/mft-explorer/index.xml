@@ -2,7 +2,7 @@
 &lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by &lt;a href="https://twitter.com/p3rf3ctr00t" target="_blank" rel="noopener">p3rf3ctr00t&lt;/a>
 ctf team.&lt;/p>
-&lt;p>This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically the &lt;strong>Streams and Secrets&lt;/strong> set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this challenge under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
+&lt;p>This is my second writeup, I&amp;rsquo;ll cover the forensics category specifically how I solved the &lt;strong>Streams and Secrets&lt;/strong> set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under &lt;strong>NoPwnNoGain&lt;/strong>.&lt;/p>
 &lt;h2 id="part-1">Part 1&lt;/h2>
 &lt;p>We start of with the challenge info.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_1.png" class="center" style="border-radius: 8px;" />
