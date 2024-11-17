@@ -2,7 +2,6 @@
 title = "Metasploit Community CTF December 2020 WriteUp"
 date = "2020-12-07"
 author = ""
-cover = ""
 tags = ["CTF"]
 keywords = ["", ""]
 description = ""
@@ -10,7 +9,6 @@ showFullContent = false
 toc = true
 +++
 
-<!--more-->
 
 # Summary
 Over the weekend I participated in [Metasploit Community December CTF](https://ctftime.org/event/1200) by Rapid7 

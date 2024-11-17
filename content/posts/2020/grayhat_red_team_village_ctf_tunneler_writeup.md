@@ -2,7 +2,6 @@
 title = "Grayhat Red Team Village CTF 2020 WriteUp: Tunneler"
 date = "2020-11-01"
 author = ""
-cover = ""
 tags = ["CTF", "SSH", "Tunneling"]
 keywords = ["", ""]
 description = ""
@@ -10,7 +9,6 @@ showFullContent = false
 toc = true
 +++
 
-<!--more-->
 
 ## Summary
 During Grayhat Conference the Red Team Village hosted a beginner/intermediate CTF. Our CTF team fr334aks decided

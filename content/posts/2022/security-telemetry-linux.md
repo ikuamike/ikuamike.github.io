@@ -3,7 +3,6 @@ title = "Security Telemetry Linux"
 date = "2022-09-03T21:30:01+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["", ""]
 keywords = ["", ""]
 description = ""
@@ -11,8 +10,7 @@ showFullContent = false
 draft = true
 +++
 
-<!--more-->
-{{< image src="/img/forest/logo.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

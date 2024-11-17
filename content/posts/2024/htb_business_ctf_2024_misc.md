@@ -3,7 +3,6 @@ title = "HTB Business CTF 2024 WriteUp - Misc"
 date = "2024-05-22T00:25:15+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "Misc", "Web", "Unicode", "Python", "Git"]
 keywords = ["", ""]
 description = ""
@@ -12,11 +11,10 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/htb_business_ctf_2024/ctf_logo.jpg"]
+cover = "/img/htb_business_ctf_2024/ctf_logo.jpg"
 +++
 
-<!--more-->
-{{< image src="/img/htb_business_ctf_2024/ctf_logo.jpg" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 In this post, I'll be covering solutions to the Misc Challenges from the [HTB Business CTF 2024](https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474).

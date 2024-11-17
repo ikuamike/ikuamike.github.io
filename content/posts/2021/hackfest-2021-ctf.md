@@ -3,17 +3,15 @@ title = "SheHacksKE HackFest 2021 CTF WriteUp"
 date = "2021-11-11"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "Forensics"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/shehacks-hackfest-2021/banner.png"]
+cover = "/img/shehacks-hackfest-2021/banner.png"
 +++
 
-<!--more-->
-{{< image src="/img/shehacks-hackfest-2021/scoreboard.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

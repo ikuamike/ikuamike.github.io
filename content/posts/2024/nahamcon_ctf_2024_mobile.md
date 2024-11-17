@@ -3,7 +3,6 @@ title = "NahamCon CTF 2024 WriteUp - Mobile"
 date = "2024-05-28T00:02:45+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "Android", "jadx-gui", "Logcat"]
 keywords = ["", ""]
 description = ""
@@ -12,7 +11,7 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/nahamcon_ctf_2024/logo.jpeg"]
+cover = "/img/nahamcon_ctf_2024/logo.jpeg"
 +++
 
 ## Introduction

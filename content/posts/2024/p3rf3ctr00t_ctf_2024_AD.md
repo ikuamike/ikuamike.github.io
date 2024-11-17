@@ -3,7 +3,6 @@ title = "P3RF3CT R00T CTF 2024 Writeup - Active Directory"
 date = "2024-11-17"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "WordPress", "WPScan", "403 Bypass", "Active Directory", "NetExec", "BloodHound", "Certipy", "ADCS ESC1"]
 keywords = []
 description = ""
@@ -12,11 +11,8 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
+cover = "/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"
 +++
-
-<!--more-->
-{{< image src="/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" alt="" position="center" style="border-radius: 8px;" >}}
 
 ## Introduction
 This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by [p3rf3ctr00t](https://twitter.com/p3rf3ctr00t) ctf team, barely got some sleep. They really did a good job considering it's their first edition of the CTF, I didn't experience any downtime and support was very helpful on their discord server. They had over 50 challenges!

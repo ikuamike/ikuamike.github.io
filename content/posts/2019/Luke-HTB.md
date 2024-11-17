@@ -2,7 +2,6 @@
 title = "Hack The Box: Luke"
 date = "2019-09-13"
 author = ""
-cover = ""
 tags = ["HTB"]
 keywords = ["", ""]
 description = ""
@@ -10,8 +9,7 @@ draft = true
 showFullContent = false
 +++
 
-<!--more-->
-{{< image src="/img/luke/luke_1.png" alt="Bastion Info Card" position="center" style="border-radius: 8px;" >}}
+
 
 # Enumeration
 

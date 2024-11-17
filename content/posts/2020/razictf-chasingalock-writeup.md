@@ -2,13 +2,11 @@
 title = "RaziCTF 2020 WriteUp: Chasing a lock"
 date = "2020-10-28"
 author = ""
-cover = ""
 tags = ["CTF", "Android", "jadx-gui", "frida"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 +++
-<!--more-->
 
 # Summary
 

@@ -3,16 +3,14 @@ title = "Vulnhub: EVM 1"
 date = "2021-03-05"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "Password Bruteforce", "WordPress", "WPScan"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/evm/evm.png"]
+cover = "/img/evm/evm.png"
 +++
 
-<!--more-->
-{{< image src="/img/evm/evm.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author |
 | ---------- | ------------ | ------ | 

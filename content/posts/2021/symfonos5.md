@@ -3,16 +3,14 @@ title = "Vulnhub: Symfonos 5"
 date = "2021-02-17T21:54:20+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "LDAP Injection", "LFI", "LDAP", "Sudo"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/symfonos1/symfonos1.png"]
+cover = "/img/symfonos1/symfonos1.png"
 +++
 
-<!--more-->
-{{< image src="/img/symfonos1/symfonos1.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author | 
 | ---------- | ------------ | ------ | 

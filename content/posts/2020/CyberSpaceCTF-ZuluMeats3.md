@@ -2,14 +2,12 @@
 title = "CyberSpaceKenya CTF: ZuluMeats3"
 date = "2020-06-12"
 author = ""
-cover = ""
 tags = ["Cyberspace", "CTF", "Android", "Reversing"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 +++
-<!--more-->
-# Summary
+
 
 I recently worked on a CTF challenge by [CyberSpace Kenya](https://twitter.com/CyberSpaceKenya) which I ended up winning. This is a writeup on how I solved the challenge. We were provided with an android app to reverse engineer and submit 3 flags.
 

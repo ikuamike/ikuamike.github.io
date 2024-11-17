@@ -3,16 +3,14 @@ title = "Linux Privilege Escalation - Package Managers"
 date = "2021-08-08"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Linux Privilege Escalation", "Sudo", "Package Managers"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/package_manager_privesc/package.png"]
+cover = "/img/package_manager_privesc/package.png"
 +++
 
-<!--more-->
 
 {{< image src="/img/package_manager_privesc/package.png" alt="" position="center" style="border-radius: 8px;" >}}
 

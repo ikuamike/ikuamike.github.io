@@ -2,16 +2,14 @@
 title = "Vulnhub: Symfonos 1"
 date = "2021-01-22"
 author = ""
-cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "Wordpress", "LFI", "SUID"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/symfonos1/symfonos1.png"]
+cover = "/img/symfonos1/symfonos1.png"
 +++
 
-<!--more-->
-{{< image src="/img/symfonos1/symfonos1.png" alt="symfonos1" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author | 
 | ---------- | ------------ | ------ | 

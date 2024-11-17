@@ -3,16 +3,14 @@ title = "Vulnhub: Lemon Squeezy 1"
 date = "2021-04-13"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "Directory Bruteforce", "ffuf", "WordPress", "WPScan", "PHPMyAdmin", "Cron"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/lemonsqueezy1/lemon.png"]
+cover = "/img/lemonsqueezy1/lemon.png"
 +++
 
-<!--more-->
-{{< image src="/img/lemonsqueezy1/lemon.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author |
 | ---------- | ------------ | ------ |

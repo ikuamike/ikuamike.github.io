@@ -3,17 +3,15 @@ title = "H@cktivityCon 2021 CTF Writeup"
 date = "2021-09-18"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/hacktivitycon-2021/hacktivity.jpeg"]
+cover = "/img/hacktivitycon-2021/hacktivity.jpeg"
 +++
 
-<!--more-->
-{{< image src="/img/hacktivitycon-2021/hacktivity.jpeg" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

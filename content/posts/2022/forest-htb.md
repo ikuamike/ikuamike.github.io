@@ -3,17 +3,15 @@ title = "Hack The Box: Forest"
 date = "2022-03-01"
 author = ""
 authorTwitter = ""
-cover = ""
 tags = ["Learning AD", "HTB", "LDAP", "AS-REP Roasting", "BloodHound"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/forest/logo-card.png"]
+cover = "/img/forest/logo-card.png"
 +++
 
-<!--more-->
-{{< image src="/img/forest/logo.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

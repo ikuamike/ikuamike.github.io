@@ -3,17 +3,15 @@ title = "Metasploit Community CTF 2021 WriteUp"
 date = "2021-12-06"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/metasploitctf2021/metasploit-ascii.png"]
+cover = "/img/metasploitctf2021/metasploit-ascii.png"
 +++
 
-<!--more-->
-{{< image src="/img/metasploitctf2021/metasploit-ascii.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

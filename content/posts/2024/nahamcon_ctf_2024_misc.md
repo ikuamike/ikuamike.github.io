@@ -3,7 +3,6 @@ title = "NahamCon CTF 2024 WriteUp - Misc"
 date = "2024-05-25T21:17:45+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "Lynx", "Curl", "Passwd"]
 keywords = ["", ""]
 description = ""
@@ -12,7 +11,7 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/nahamcon_ctf_2024/logo.jpeg"]
+cover = "/img/nahamcon_ctf_2024/logo.jpeg"
 +++
 
 

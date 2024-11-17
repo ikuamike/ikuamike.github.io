@@ -2,15 +2,13 @@
 title = "Hack The Box: Bitlab"
 date = "2020-01-11"
 author = ""
-cover = ""
 tags = ["HTB", "Gitlab", "Postgres", "Git"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/bitlab/info_card.png"]
+cover = "/img/bitlab/info_card.png"
 +++
-<!--more-->
-{{< image src="/img/bitlab/info_card.png" alt="Bastion Info Card" position="center" style="border-radius: 8px;" >}}
+
 
 # Summary
 

@@ -3,17 +3,15 @@ title = "Vulnub: Misdirection 1"
 date = "2021-04-21"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Beginner", "Vulnhub", "OSCP Prep", "Sudo", "lxd", "Writeable Passwd"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 draft = false
-images = ["/img/misdirection1/misdirection.png"]
+cover = "/img/misdirection1/misdirection.png"
 +++
 
-<!--more-->
-{{< image src="/img/misdirection1/misdirection.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author |
 | ---------- | ------------ | ------ |

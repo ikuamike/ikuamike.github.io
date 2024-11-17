@@ -12,11 +12,9 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 +++
 
-<!--more-->
-{{< image src="/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by [p3rf3ctr00t](https://twitter.com/p3rf3ctr00t) ctf team.

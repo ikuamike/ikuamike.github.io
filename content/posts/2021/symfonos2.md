@@ -2,16 +2,14 @@
 title = "Vulnhub: Symfonos 2"
 date = "2021-02-10"
 author = ""
-cover = ""
 tags = ["Intermediate", "Vulnhub", "OSCP Prep", "Samba","ProFTPD", "CVE-2015-3306","LibreNMS","CVE-2018-20434", "Sudo", "MySQL"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/symfonos1/symfonos1.png"]
+cover = "/img/symfonos1/symfonos1.png"
 +++
 
-<!--more-->
-{{< image src="/img/symfonos1/symfonos1.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author | 
 | ---------- | ------------ | ------ | 

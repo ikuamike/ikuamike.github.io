@@ -3,17 +3,15 @@ title = "AfricaHackon 2021 CTF Finals WriteUp"
 date = "2021-11-09"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 toc = true
-images = ["/img/ahfinals2021/ahctf1.jpg"]
+cover = "/img/ahfinals2021/ahctf1.jpg"
 +++
 
-<!--more-->
-{{< image src="/img/ahfinals2021/processing0.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 

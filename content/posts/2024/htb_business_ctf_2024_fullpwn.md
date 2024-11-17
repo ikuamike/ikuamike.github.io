@@ -3,7 +3,6 @@ title = "HTB Business CTF 2024 WriteUp - FullPwn"
 date = "2024-05-22T18:22:15+03:00"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["CTF", "CVE", "Kernel Privesc", "Docker", "WSL"]
 keywords = ["", ""]
 description = ""
@@ -12,11 +11,10 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
-images = ["/img/htb_business_ctf_2024/ctf_logo.jpg"]
+cover = "/img/htb_business_ctf_2024/ctf_logo.jpg"
 +++
 
-<!--more-->
-{{< image src="/img/htb_business_ctf_2024/ctf_logo.jpg" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 After a long while since I participated in a CTF, I had the pleasure to participate in [HTB Business CTF 2024](https://ctf.hackthebox.com/event/details/htb-business-ctf-2024-the-vault-of-hope-1474) these past few days. I enjoyed myself despite having only solved a handful of challenges. I went solo and didn't rank quite high but I'm still pleased with myself.

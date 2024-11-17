@@ -3,16 +3,14 @@ title = "Vulnhub: Symfonos 4"
 date = "2021-02-15"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Intermediate", "Vulnhub", "OSCP Prep", "ffuf", "Directory Bruteforce", "LFI", "Pickle", "Deserialization", "SQLi"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/symfonos1/symfonos1.png"]
+cover = "/img/symfonos1/symfonos1.png"
 +++
 
-<!--more-->
-{{< image src="/img/symfonos1/symfonos1.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author | 
 | ---------- | ------------ | ------ | 

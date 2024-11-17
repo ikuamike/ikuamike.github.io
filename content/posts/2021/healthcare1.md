@@ -3,16 +3,14 @@ title = "Vulnhub: Healthcare 1"
 date = "2021-04-03"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Intermediate", "Vulnhub", "OSCP Prep", "Directory Bruteforce", "OpenEMR", "SQLi", "SUID"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
-images = ["/img/healthcare1/healthcare.png"]
+cover = "/img/healthcare1/healthcare.png"
 +++
 
-<!--more-->
-{{< image src="/img/healthcare1/healthcare.png" alt="symfonos" position="center" style="border-radius: 8px;" >}}
+
 
 | Difficulty | Release Date | Author | 
 | ---------- | ------------ | ------ | 

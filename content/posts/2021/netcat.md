@@ -3,18 +3,16 @@ title = "Netcat - All you need to know"
 date = "2021-07-08"
 author = ""
 authorTwitter = "" #do not include @
-cover = ""
 tags = ["Netcat", "Ncat"]
 keywords = ["", ""]
 description = ""
 showFullContent = false
 draft = false
 toc = true
-images = ["/img/netcat/netcat.png"]
+cover = "/img/netcat/netcat.png"
 +++
 
-<!--more-->
-{{< image src="/img/netcat/netcat.png" alt="" position="center" style="border-radius: 8px;" >}}
+
 
 ## Introduction
 
