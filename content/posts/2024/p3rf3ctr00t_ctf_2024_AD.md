@@ -309,4 +309,6 @@ Therefore it was possible to bypass with other variations such as:
 - //wp-admin
 
 ## Conclusion
-This was good challenge, especially the first part where the linux box is part of the domain that was unique. Cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
+This was good challenge, especially the first part where the linux box is part of the domain that was unique. 
+
+Cheers to the author [Winter](https://x.com/byronchris25). Thanks for reading to the end!
