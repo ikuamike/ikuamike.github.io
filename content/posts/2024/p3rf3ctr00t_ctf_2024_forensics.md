@@ -12,6 +12,7 @@ readingTime = false
 hideComments = false
 color = "" #color from the theme settings
 toc = true
+images = ["/img/p3rf3ctr00t_ctf_2024/ctf_logo.jpg"]
 +++
 
 
