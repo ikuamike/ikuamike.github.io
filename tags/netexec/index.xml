@@ -33,7 +33,7 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;p>Now we can comfortably login to wp-admin.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_10.png" class="center" style="border-radius: 8px;" />
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_11.png" class="center" style="border-radius: 8px;" />
-&lt;p>With access to the admin panel, getting a shell is straighforward. We can modify one of the theme files to include our php shell payload. I initially did this, but later realized I had skipped the intended path. So let&amp;rsquo;s follow the intended path (which is easier).&lt;/p>
+&lt;p>With access to the admin panel, getting a shell is straighforward. We can modify one of the theme files to include our php shell payload. I initially did that, but later realized I had skipped the intended path. So let&amp;rsquo;s follow the intended path (which is easier).&lt;/p>
 &lt;h3 id="wordstress-flag">WordStress Flag&lt;/h3>
 &lt;p>In the comments, there&amp;rsquo;s one comment that is in the trash. This includes the WordStress flag and the password to crocodile on the host.&lt;/p>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_12.png" class="center" style="border-radius: 8px;" />
@@ -160,5 +160,5 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;p>There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
 &lt;p>It tried using wp-json as well but I didn&amp;rsquo;t succeed.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
-&lt;p>This was good challenge, cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
+&lt;p>This was good challenge, especially the first part where the linux box is part of the domain that was unique. Cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
 . Thanks for reading to the end!&lt;/p></content></item></channel></rss>
