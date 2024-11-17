@@ -156,7 +156,7 @@ ctf team, barely got some sleep. They really did a good job considering it&amp;r
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
 &lt;img src="https://blog.ikuamike.io/img/p3rf3ctr00t_ctf_2024/wordstress_30.png" class="center" style="border-radius: 8px;" />
 &lt;p>I&amp;rsquo;m not sure the author knew this was possible. This is a clear indication that blocking access to the wp-admin portal doesn&amp;rsquo;t really fully protect the wordpress instance, xmlrpc has some useful functionality! This is if you have valid credentials. Most online resources around attacking wordpress using xmlrpc don&amp;rsquo;t really cover this.&lt;/p>
-&lt;p>There is potential to write an enum script that goes through xmlrpc if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
+&lt;p>There is potential to write an script that goes through xmlrpc and dumps various info if wp-admin is blocked. I hope you the reader can look into it. I surely will.&lt;/p>
 &lt;p>It tried using wp-json but I didn&amp;rsquo;t succeed.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>This was good challenge, cheers to the author &lt;a href="https://x.com/byronchris25" target="_blank" rel="noopener">Winter&lt;/a>
