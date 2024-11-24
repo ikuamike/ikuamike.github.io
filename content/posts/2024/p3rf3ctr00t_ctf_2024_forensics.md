@@ -20,17 +20,17 @@ toc = true
 ## Introduction
 This weekend I had some fun participating in the P3RF3CTR00T CTF 2024 by [p3rf3ctr00t](https://twitter.com/p3rf3ctr00t) ctf team.
 
-This is my second writeup, I'll cover the forensics category specifically how I solved the **Streams and Secrets** set. I am not really that into forensics but I had to give it a try to score some points, I also got first blood on some of them. I was going solo in this CTF under **NoPwnNoGain**.
+This is my second writeup. I'll cover the forensics category, specifically how I solved the **Streams and Secrets** set. I am not really that into forensics but I had to give it a try to score some points. I also got first blood on some of them. I was going solo in this CTF under **NoPwnNoGain**.
 
 ## Part 1
 
-We start of with the challenge info.
+We'll start of with the challenge info.
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_1.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-We are given 2 files, a script and the challenge artifact which we can download from the dump link.
+We are given 2 files i.e, a script and the challenge artifact which we can download from the dump link.
 
-This first one was easy to solve, I just got strings from the artifact.
+The first one was easy to solve, I just got strings from the artifact.
 
 ```sh
 strings -30 \$MFT.copy0
@@ -44,7 +44,7 @@ Flag: `r00t{Analyst}`
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_4.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 
-Here I faced a bit of a challenge since I couldn't work with this file on linux anymore. Based on the strings, it was clear I needed to use Windows. 
+Here I faced a bit of a challenge since I couldn't work with this file on linux anymore. Based on the strings, it was clear that I needed to use Windows. 
 
 I also did a lot of googling around what MFT. I found this resource [https://aboutdfir.com/toolsandartifacts/windows/mft-explorer-mftecmd/](https://aboutdfir.com/toolsandartifacts/windows/mft-explorer-mftecmd/) that guided me on the using MFTECmd and MFT Explorer.
 
@@ -53,11 +53,11 @@ I also did a lot of googling around what MFT. I found this resource [https://abo
  ```
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_2.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-With the csv extracted, we can through the information. I applied a filter on the filename to only show filenames with the name secret.
+With the csv extracted, we can go through the information. I applied a filter on the filename to only show filenames with the name secret.
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_3.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-We can see we have two last modified columns, I used the most latest of the two.
+We can see we have two last modified columns, I used the most recent of the two.
 
 Flag: `r00t{2024-10-07_21:52:47}`
 
@@ -65,7 +65,7 @@ Flag: `r00t{2024-10-07_21:52:47}`
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_5.png" alt="" position="center" style="border-radius: 8px;" >}}
 
-This was only solvable after getting the original contents of the secret.txt file. So we needed the encryption key as well as the contents of the file. From the awesomeScript.py we know the encryption function.
+This was only solvable after getting the original contents of the secret.txt file. So we needed the encryption key as well as the contents of the file. From the awesomeScript.py, we know the encryption function.
 
 Using MFTECmd, we need to get the EntryNumber and SequenceNumber to dump the details.
 
@@ -89,7 +89,7 @@ MFT Explorer can give us all the data at one glance.
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_9.png" alt="" position="center" style="border-radius: 8px;" >}}
 
 
-With the key we can craft our decode script as below and get the original contents of secrets.txt
+With the key we can craft our decode script as shown below and get the original contents of secrets.txt
 
 ```py
 from cryptography.fernet import Fernet
@@ -118,7 +118,7 @@ If we create the file locally, linux shows the size as 34.
 
 Flag: `r00t{34}`
 
-Based on the solves of the next challenges, seems the decryption was the biggest hurdle.
+Based on the solves of the next challenges, it seems the decryption was the biggest hurdle.
 
 ## Part 4
 
@@ -141,7 +141,7 @@ I definitely learnt a thing or two here about forensics on the Master File Table
 
 ## Extras
 
-Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail, I just assumed it's the original size of the file.
+Seems the intended path for part 3 (According to the author) was just focusing on the info from MFTECmd or MFT Explorer and getting the logical size. I completely missed that detail and assumed it's the original size of the file.
 
 {{< image src="/img/p3rf3ctr00t_ctf_2024/streams_and_secrets_13.png" alt="" position="center" style="border-radius: 8px;" >}}
 
