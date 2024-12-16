@@ -26,11 +26,15 @@ My main focus is on Offensive Security (Penetration Testing and Red Team Operati
 </a>
 
 <a href="https://blog.ikuamike.io/certs/Michael-Ikua-INE-eCPPT.pdf" target="_blank">
-  <img  src="/img/eCPPT.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding: 5px 5px;" width=auto height="205"></img>
+  <img  src="/img/eCPPT.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding: 5px 20px;" width=auto height="195"></img>
 </a>
 
 <a href="https://blog.ikuamike.io/certs/Michael-Ikua-CRTO.pdf" target="_blank">
-  <img  src="/img/CRTO.png" alt="eCPPTv2" position="center" style="border-radius: 10px;float:left;padding: 10px 10px;" width=auto height="205"></img>
+  <img  src="/img/CRTO.png" alt="CRTO" position="center" style="border-radius: 10px;float:left;padding: 10px 10px;" width=auto height="185"></img>
+</a>
+
+<a href="https://blog.ikuamike.io/certs/Michael-Ikua-CNPen.pdf" target="_blank">
+  <img  src="/img/CNPen.png" alt="CNPen" position="center" style="border-radius: 10px;float:left;padding: 10px 10px;" width=auto height="185"></img>
 </a>
 
 <div style="clear: both;padding: 10px;"></div>
